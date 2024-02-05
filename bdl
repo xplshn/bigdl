@@ -11,7 +11,7 @@ INSTALL_DIR="${HOME}/.local/bin" # You may change this to whatever dir you want,
 TEMP_DIR="${TMPDIR:-/tmp}/bdl_cached"
 CACHE_FILE="${TMPDIR:-${TEMP_DIR}}/bdl_install-less_bins_cached"
 METADATA_URL="https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json"
-SYSTEM_ARCH="$(uname -m)_Linux"
+SYSTEM_ARCH="$(uname -m)"
 if [ -z "$BASH_VERSION" ]; then
     xPATH="$PATH"
     PATH="$PATH:$TEMP_DIR/bdl_bootstrap"
