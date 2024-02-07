@@ -1,4 +1,4 @@
-module bigdl
+module bigDL
 
 go 1.21.6
 
