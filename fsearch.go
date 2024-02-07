@@ -15,7 +15,7 @@ import (
 )
 
 // fSearch searches for packages based on the given search term.
-func fSearch(searchTerm string) {
+func fSearch(searchTerm string, desiredArch string) {
 	// Fetch metadata
 	response, err := http.Get(RMetadataURL)
 	if err != nil {
@@ -36,12 +36,15 @@ func fSearch(searchTerm string) {
 		return
 	}
 
-	// Filter packages based on the search term
+	// Filter packages based on the search term and architecture
 	searchResultsSet := make(map[string]struct{}) // Use a set to keep track of unique entries
 	for _, pkg := range metadata["packages"] {
 		if strings.Contains(strings.ToLower(pkg.Name+pkg.Description), strings.ToLower(searchTerm)) {
-			entry := fmt.Sprintf("%s - %s", pkg.Name, pkg.Description)
-			searchResultsSet[entry] = struct{}{} // Add the entry to the set
+			// Check if architecture matches the desired architecture
+			if pkg.Architecture == desiredArch {
+				entry := fmt.Sprintf("%s - %s", pkg.Name, pkg.Description)
+				searchResultsSet[entry] = struct{}{} // Add the entry to the set
+			}
 		}
 	}
 

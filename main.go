@@ -5,23 +5,45 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 )
 
 // Repositories contains the URLs for fetching metadata.
-var Repositories = []string{
-	"https://bin.ajam.dev/x86_64_Linux/",
-	"https://bin.ajam.dev/x86_64_Linux/Baseutils/",
-	"https://raw.githubusercontent.com/xplshn/Handyscripts/master/",
-}
+var Repositories []string
 
 // MetadataURLs contains the URLs for fetching metadata.
-var MetadataURLs = []string{
-	"https://bin.ajam.dev/x86_64_Linux/METADATA.json",
-	"https://bin.ajam.dev/x86_64_Linux/Baseutils/METADATA.json",
-	"https://api.github.com/repos/xplshn/Handyscripts/contents",
+var MetadataURLs []string
+
+// Array for storing a variable that fsearch and info use.
+var validatedArch = [2]string{}
+
+func init() {
+	switch runtime.GOARCH {
+	case "amd64":
+		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/")
+		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
+		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/Baseutils/")
+		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
+		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/METADATA.json")
+		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/Baseutils/METADATA.json")
+		validatedArch = [2]string{"x86_64_Linux", "x86_64"}
+	case "arm64":
+		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/")
+		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
+		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/")
+		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/METADATA.json")
+		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
+		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/METADATA.json")
+		validatedArch = [2]string{"aarch64_arm64_Linux", "aarch64_arm64"}
+	default:
+		fmt.Println("Unsupported architecture:", runtime.GOARCH)
+		os.Exit(1)
+	}
 }
 
 const RMetadataURL = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json"
+
+///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
 // TMPDIR is the directory for storing temporary files.
 const TEMP_DIR = "/tmp/bigdl_cached"
@@ -70,14 +92,14 @@ func main() {
 			os.Exit(1)
 		}
 		packageName := os.Args[2]
-		showPackageInfo(packageName)
+		showPackageInfo(packageName, validatedArch[1])
 	case "search":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl search <search-term>")
 			os.Exit(1)
 		}
 		searchTerm := os.Args[2]
-		fSearch(searchTerm)
+		fSearch(searchTerm, validatedArch[1])
 	case "remove":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl remove <binary>")
