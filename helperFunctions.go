@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"sync"
 )
@@ -22,6 +23,15 @@ func fetchBinaryFromURL(url, destination string) error {
 		defer wg.Done()
 		Spin()
 	}()
+
+	// Check if the destination includes directory paths
+	dir := filepath.Dir(destination)
+	if dir != "." {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			StopSpinner() // Stop the spinner in case of an error
+			return fmt.Errorf("failed to create directory structure: %v", err)
+		}
+	}
 
 	// Fetch the binary from the given URL
 	resp, err := http.Get(url)
