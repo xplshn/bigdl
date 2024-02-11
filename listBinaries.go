@@ -69,6 +69,7 @@ func listBinaries() {
 		".md":   {},
 		".txt":  {},
 		".tar":  {},
+		"_dir":  {},
 		".zip":  {},
 	}
 
