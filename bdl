@@ -72,6 +72,12 @@ fetch_binary() {
     PACKAGE_NAME="$1"
     nINSTALL_DIR="$2"
     DESTINATION="${3:-$nINSTALL_DIR/$PACKAGE_NAME}"
+    
+    # Check if PACKAGE_NAME contains slashes indicating it's a path
+    if [[ "$PACKAGE_NAME" == *"/"* ]]; then
+        mkdir -p "$(dirname "$DESTINATION")"
+    fi
+
     mkdir -p "$nINSTALL_DIR"
     determine_fetcher
     SOURCE_URL=$(find_url "$PACKAGE_NAME")
@@ -211,7 +217,6 @@ remove_package() {
 # Function to retrieve package source URL
 find_url() {
     PACKAGE_NAME="$1"
-
     if [ -n "$NO_METADATA" ]; then
         if [ -n "$BASE" ]; then
             echo "https://bin.ajam.dev/$SYSTEM_ARCH/Baseutils/$PACKAGE_NAME"
@@ -225,11 +230,11 @@ find_url() {
     # Check if source URL is empty -> Find the URL manually if so. #NOTE:If the firt SOURCE_URL check works, it saves time, that's why we preffer extracting from metadata first and turning to "curl --fail" IFs/checks as a last resort
     if [ -z "$SOURCE_URL" ]; then
         SOURCE_URL="https://bin.ajam.dev/$SYSTEM_ARCH/$PACKAGE_NAME"
-        if ! curl --output /dev/null --silent --fail "$SOURCE_URL"; then
+        if ! curl --location --output /dev/null --silent --fail "$SOURCE_URL"; then
             SOURCE_URL="https://bin.ajam.dev/$SYSTEM_ARCH/Baseutils/$PACKAGE_NAME"
-            if ! curl --output /dev/null --silent --fail "$SOURCE_URL"; then
+            if ! curl --location --output /dev/null --silent --fail "$SOURCE_URL"; then
                 SOURCE_URL="https://raw.githubusercontent.com/xplshn/Handyscripts/master/$PACKAGE_NAME"
-                if ! curl --output /dev/null --silent --fail "$SOURCE_URL"; then
+                if ! curl --location --output /dev/null --silent --fail "$SOURCE_URL"; then
                     print_color "$YELLOW" "Source URL not found for '$PACKAGE_NAME'."
                     return 1
                 fi
@@ -329,7 +334,7 @@ list_packages() {
             curl -qfsSL "https://bin.ajam.dev/$SYSTEM_ARCH/METADATA.json" && \
             curl -qfsSL "https://bin.ajam.dev/$SYSTEM_ARCH/Baseutils/METADATA.json" && \
             curl -qfsSL "https://api.github.com/repos/xplshn/Handyscripts/contents"
-        } | jq -r '.[] | (.Name // .name)' | grep -v "\.7z$\|\.bz2$\|\.json$\|\.gz$\|\.md$\|\.txt$\|\.tar$\|\.zip$" | uniq | sort)
+        } | jq -r '.[] | (.Name // .name)' | grep -v "\.7z$\|\.bz2$\|\.json$\|\.gz$\|\.md$\|\.txt$\|\.tar$\|\.zip$\|\_dir$" | sort -u)
         
     kill "$spinner_pid" >/dev/null 2>&1
     printf "\033[2K\r%s\n" "$packages"
