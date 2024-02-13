@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
@@ -52,8 +53,14 @@ const TEMP_DIR = "/tmp/bigdl_cached"
 const CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
 
 func main() {
+	var installDir = os.Getenv("INSTALL_DIR")
+
+	if installDir == "" {
+		installDir = filepath.Join(os.Getenv("HOME"), ".local", "bin")
+	}
+
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl {list|install|bulk_update|remove|run|info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
@@ -79,7 +86,14 @@ func main() {
 		}
 		installCommand(binaryName, []string{installDir, installMessage})
 	case "list":
-		listBinaries()
+		if _, err := listBinaries(false); err != nil {
+			fmt.Printf("Notice: %v\n", err)
+		}
+	case "bulk_update":
+		if err := updateBulk([]string{installDir}); err != nil {
+			fmt.Printf("Error updating binaries: %v\n", err)
+			os.Exit(1)
+		}
 	case "run":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl run <binary> [args...]")
@@ -94,7 +108,7 @@ func main() {
 		RunFromCache("tlrc", os.Args[2:]) // Rust version of tldr.sh (its called tldr on the repo.) | I'd like to use something lighter tho.
 	case "info":
 		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl info <package-name>")
+			fmt.Println("Usage: bigdl info <binary>")
 			os.Exit(1)
 		}
 		packageName := os.Args[2]
