@@ -30,12 +30,13 @@ $ Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]
 Don't worry if you're accustomed to the old ways. BigDL maintains compatibility with BDL commands for a smooth transition:
 
 ```
-$ Usage: bdl {list|install|remove|run|info|search|tldr} <PACKAGE_NAME>
+$ Usage: bdl {list|install|remove|run|info|search|tldr} [args...]
 ```
+See? Same syntax!
 
 #### So why wait?
 
-Get your hands on BigDL now and experience the thrill of managing binaries like never before. It's time to turn up the heat on your command line experience! 🚀
+Get your hands on BigDL now and experience your binaries like never before. It's time to turn up the heat on your command line experience! 🚀
 
 ### Contribute:
 
