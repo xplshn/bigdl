@@ -2,6 +2,8 @@
 # NOT POSIX, AT ALL. TODO: Make this not suck. Create a bash fork that does not have any of the BASH exclusive "features" and is 100% POSIX and ISO C.
 # UPDATE: POSIX syntax. Still relies on undefined behaviour/BASHisms/features the GNU might have accidentally implemented in their attempt to rework Thompson Shell.
 # If you install "Gum" (https://github.com/charmbracelet/gum) you will get some TUI fanciness.
+# UPDATE: Dismiss the TODO; Try: "https://github.com/xplshn/bigdl", which you can statically link, and no longer depend on anything but a Linux system.
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
@@ -72,12 +74,6 @@ fetch_binary() {
     PACKAGE_NAME="$1"
     nINSTALL_DIR="$2"
     DESTINATION="${3:-$nINSTALL_DIR/$PACKAGE_NAME}"
-    
-    # Check if PACKAGE_NAME contains slashes indicating it's a path
-    if [[ "$PACKAGE_NAME" == *"/"* ]]; then
-        mkdir -p "$(dirname "$DESTINATION")"
-    fi
-
     mkdir -p "$nINSTALL_DIR"
     determine_fetcher
     SOURCE_URL=$(find_url "$PACKAGE_NAME")
@@ -217,6 +213,7 @@ remove_package() {
 # Function to retrieve package source URL
 find_url() {
     PACKAGE_NAME="$1"
+
     if [ -n "$NO_METADATA" ]; then
         if [ -n "$BASE" ]; then
             echo "https://bin.ajam.dev/$SYSTEM_ARCH/Baseutils/$PACKAGE_NAME"
@@ -334,7 +331,7 @@ list_packages() {
             curl -qfsSL "https://bin.ajam.dev/$SYSTEM_ARCH/METADATA.json" && \
             curl -qfsSL "https://bin.ajam.dev/$SYSTEM_ARCH/Baseutils/METADATA.json" && \
             curl -qfsSL "https://api.github.com/repos/xplshn/Handyscripts/contents"
-        } | jq -r '.[] | (.Name // .name)' | grep -v "\.7z$\|\.bz2$\|\.json$\|\.gz$\|\.md$\|\.txt$\|\.tar$\|\.zip$\|\_dir$" | sort -u)
+        } | jq -r '.[] | (.Name // .name)' | grep -v "\.7z$\|\.bz2$\|\.json$\|\.gz$\|\.md$\|\.txt$\|\.tar$\|\.zip$\|_dir$" | sort -u)
         
     kill "$spinner_pid" >/dev/null 2>&1
     printf "\033[2K\r%s\n" "$packages"
