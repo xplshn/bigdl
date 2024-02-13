@@ -22,7 +22,7 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
 #### Usage:
 
 ```
-$ Usage: bigdl {list|install|remove|run|info|search} [args...]
+$ Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]
 ```
 
 #### BDL Compatibility:
@@ -30,7 +30,7 @@ $ Usage: bigdl {list|install|remove|run|info|search} [args...]
 Don't worry if you're accustomed to the old ways. BigDL maintains compatibility with BDL commands for a smooth transition:
 
 ```
-$ Usage: bdl {run|install|remove|search|info|list|tldr} <PACKAGE_NAME>
+$ Usage: bdl {list|install|remove|run|info|search|tldr} <PACKAGE_NAME>
 ```
 
 #### So why wait?
