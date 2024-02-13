@@ -11,16 +11,17 @@ NC='\033[0m' # No Color
 # Directories, files, etc. NOTE: Not consistent. TODO: Enhance readability, simplify variables.
 INSTALL_DIR="${HOME}/.local/bin" # You may change this to whatever dir you want, make sure to add it to your PATH.
 TEMP_DIR="${TMPDIR:-/tmp}/bdl_cached"
+CACHE_DIR="$HOME/.cache/bdl_bootstraped"
 CACHE_FILE="${TMPDIR:-${TEMP_DIR}}/bdl_install-less_bins_cached"
 METADATA_URL="https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json"
 SYSTEM_ARCH="$(uname -m)"
 if [ -z "$BASH_VERSION" ]; then
     xPATH="$PATH"
-    PATH="$PATH:$TEMP_DIR/bdl_bootstrap"
+    PATH="$PATH:$CACHE_DIR"
     if command -v bash >/dev/null 2>&1; then
         exec bash "$0" "$@"
     else
-        echo "Running under SH, some features might not work(run), unless bash is installed or bootstrapped, there will be undefined behaviour."
+        echo "Running under SH, some features might not work(run), unless bash is installed or bootstrapped, there will be undefined behaviour. If the command you want to run fails try one more time. It might be related to this."
     fi
     PATH="$xPATH"
 fi
@@ -338,29 +339,29 @@ list_packages() {
 }
 
 bootstrap() {
-    mkdir -p "$TEMP_DIR/bdl_bootstrap"
-    PATH="$TEMP_DIR/bdl_bootstrap:$PATH"
+    mkdir -p "$CACHE_DIR"
+    PATH="$PATH:$CACHE_DIR"
     if [ -n "$FETCHER" ]; then
         export NO_METADATA=1
         if ! command -v bash >/dev/null 2>&1; then
             print_color "${YELLOW}" "bash is not available. Bootstrapping..."
-            BASE="true" fetch_binary "bash" "$TEMP_DIR/bdl_bootstrap"
+            BASE="true" fetch_binary "bash" "$CACHE_DIR"
         fi
         if ! command -v curl >/dev/null 2>&1; then
             print_color "${YELLOW}" "curl is not installed. Bootstrapping..."
-            fetch_binary curl "$TEMP_DIR/bdl_bootstrap"
+            fetch_binary curl "$CACHE_DIR"
         fi
         if ! command -v jq >/dev/null 2>&1; then
             print_color "${YELLOW}" "jq is not installed. Bootstrapping..."
-            fetch_binary "jq" "$TEMP_DIR/bdl_bootstrap"
+            fetch_binary "jq" "$CACHE_DIR"
         fi
         if ! command -v awk >/dev/null 2>&1; then
             print_color "${YELLOW}" "awk is not installed. Bootstrapping..."
-            BASE="true" fetch_binary "awk" "$TEMP_DIR/bdl_bootstrap"
+            BASE="true" fetch_binary "awk" "$CACHE_DIR"
         fi
         if ! command -v tput >/dev/null 2>&1; then
             print_color "${YELLOW}" "tput is not available (from the netcurses package). Bootstrapping..."
-            BASE="true" fetch_binary "tput" "$TEMP_DIR/bdl_bootstrap"
+            BASE="true" fetch_binary "tput" "$CACHE_DIR"
         fi
         unset NO_METADATA
     fi
