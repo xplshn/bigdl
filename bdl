@@ -393,7 +393,7 @@ case $1 in
         run_from_cache tlrc "${@:2}" # Official TL;DR pages client written in Rust.
         ;;
     *)
-        printf 'Usage: %s {run|install|remove|search|info|list|tldr} <PACKAGE_NAME>\n' "$0"
+        printf 'Usage: %s {list|install|remove|run|info|search|tldr} [args...]\n' "$0"
         exit 1
         ;;
 esac
