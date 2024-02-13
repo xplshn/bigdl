@@ -53,7 +53,7 @@ const CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl {list|install|remove|run|info|search} [args...]")
+		fmt.Println("Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
@@ -86,6 +86,12 @@ func main() {
 			os.Exit(1)
 		}
 		RunFromCache(os.Args[2], os.Args[3:])
+	case "tldr":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: bigdl tldr <page> [args...]")
+			os.Exit(1)
+		}
+		RunFromCache("tlrc", os.Args[2:]) // Rust version of tldr.sh (its called tldr on the repo.) | I'd like to use something lighter tho.
 	case "info":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl info <package-name>")
