@@ -16,6 +16,8 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
    - `run`: Execute programs instantly, without the hassle of installing.
    - `info`: Get detailed information about a specific program.
    - `search`: Find the perfect program to suit your needs.
+   - `tldr`: Show a 'TL;DR' page (without installing any 'TLDR' client)
+<abbr title="Details: its just an alias to 'bigdl run tlrc'">tldr</abbr>
 
 #### Usage:
 
