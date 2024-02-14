@@ -60,7 +60,7 @@ func main() {
 	}
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl {list|install|bulk_update|remove|run|info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 

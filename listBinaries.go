@@ -71,6 +71,9 @@ func listBinaries(return_var bool) ([]string, error) {
 		}
 	}
 
+	// Remove duplicates
+	allBinaries = removeDuplicates(allBinaries)
+
 	// Exclude specified file types and file names
 	excludedFileTypes := map[string]struct{}{
 		".7z":   {},
@@ -101,18 +104,15 @@ func listBinaries(return_var bool) ([]string, error) {
 		}
 	}
 
-	// Remove duplicates
-	uniqueBinaries := removeDuplicates(filteredBinaries)
-
 	// Sort binaries alphabetically
-	sort.Strings(uniqueBinaries)
+	sort.Strings(filteredBinaries)
 
 	// If return_var is true, return the list of binaries
 	if return_var {
-		return uniqueBinaries, nil
+		return filteredBinaries, nil
 	}
 
 	// Otherwise, print the binaries
-	fmt.Println(strings.Join(uniqueBinaries, "\n"))
+	fmt.Println(strings.Join(filteredBinaries, "\n"))
 	return nil, nil
 }
