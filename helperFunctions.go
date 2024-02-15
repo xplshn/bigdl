@@ -7,68 +7,104 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"sort"
-	"sync"
+	"syscall"
 )
 
 // fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 func fetchBinaryFromURL(url, destination string) error {
-	// Use a wait group to wait for both the binary fetching and Spin to finish
-	var wg sync.WaitGroup
-
-	// Start Spin in a separate goroutine
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		Spin()
-	}()
-
-	// Check if the destination includes directory paths
-	dir := filepath.Dir(destination)
-	if dir != "." {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			StopSpinner() // Stop the spinner in case of an error
-			return fmt.Errorf("failed to create directory structure: %v", err)
-		}
+	// Create a temporary directory if it doesn't exist
+	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
+		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
+
+	// Create a channel to handle interruption with CTRL+C or other signals
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+
+	// Use a flag to indicate if the download was successful
+	downloadSuccessful := false
+
+	// Start spinner
+	Spin("")
+
+	// Create a temporary file to download the binary
+	tempFile := filepath.Join(TEMP_DIR, filepath.Base(destination)+".tmp")
+	out, err := os.Create(tempFile)
+	if err != nil {
+		return fmt.Errorf("failed to create temporary file: %v", err)
+	}
+	defer out.Close()
 
 	// Fetch the binary from the given URL
 	resp, err := http.Get(url)
 	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Error fetching binary from %s: %v", url, err)
+		return fmt.Errorf("error fetching binary from %s: %v", url, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		StopSpinner() // Stop the spinner if fetching fails
-		return fmt.Errorf("Failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
+		return fmt.Errorf("failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
 	}
 
-	// Create the file at the specified destination
-	out, err := os.Create(destination)
-	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to create file for binary: %v", err)
-	}
-	defer out.Close()
-
-	// Write the binary to the file
+	// Write the binary to the temporary file
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to write binary to file: %v", err)
+		return fmt.Errorf("failed to write binary to file: %v", err)
 	}
 
 	// Set executable bit
-	if err := os.Chmod(destination, 0755); err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to set executable bit: %v", err)
+	if err := os.Chmod(tempFile, 0755); err != nil {
+		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
-	StopSpinner() // Stop the spinner when binary fetching is successful
-	wg.Wait()     // Wait for Spin to finish
+	// Copy the binary to its destination
+	if err := copyFile(tempFile, destination); err != nil {
+		return fmt.Errorf("failed to copy binary to destination: %v", err)
+	}
+
+	// Mark download as successful
+	downloadSuccessful = true
+
+	// Handle interruption signal
+	select {
+	case <-sig:
+		// If the program receives an interruption signal, remove the temporary file
+		if !downloadSuccessful {
+			os.Remove(tempFile)
+		}
+		// Stop spinner
+		StopSpinner()
+	default:
+	}
+
+	// Stop spinner
+	StopSpinner()
+
+	return nil
+}
+
+// copyFile copies a file from src to dst
+func copyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
