@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 )
 
 // listBinariesCommand fetches and lists binary names from the given URL.
-func listBinaries(return_var bool) ([]string, error) {
+func listBinaries() {
 	var allBinaries []string
 
 	// Fetch binaries from each metadata URL
@@ -21,30 +22,21 @@ func listBinaries(return_var bool) ([]string, error) {
 		// Fetch metadata from the given URL
 		resp, err := http.Get(url)
 		if err != nil {
-			if return_var {
-				return nil, fmt.Errorf("error fetching metadata from %s: %v", url, err)
-			}
-			fmt.Printf("Notice: Error fetching metadata from %s: %v\n", url, err)
-			continue
+			fmt.Printf("Error fetching metadata from %s: %v\n", url, err)
+			os.Exit(1)
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			if return_var {
-				return nil, fmt.Errorf("failed to fetch metadata from %s. HTTP status code: %d", url, resp.StatusCode)
-			}
-			fmt.Printf("Notice: Failed to fetch metadata from %s. HTTP status code: %d\n", url, resp.StatusCode)
-			continue
+			fmt.Printf("Failed to fetch metadata from %s. HTTP status code: %d\n", url, resp.StatusCode)
+			os.Exit(1)
 		}
 
 		// Read response body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			if return_var {
-				return nil, fmt.Errorf("failed to read response body: %v", err)
-			}
-			fmt.Printf("Notice: Failed to read response body: %v\n", err)
-			continue
+			fmt.Printf("Failed to read response body: %v\n", err)
+			os.Exit(1)
 		}
 
 		// Unmarshal JSON
@@ -53,11 +45,8 @@ func listBinaries(return_var bool) ([]string, error) {
 			NameAlt string `json:"Name"` // Consider both "name" and "Name" fields
 		}
 		if err := json.Unmarshal(body, &metadata); err != nil {
-			if return_var {
-				return nil, fmt.Errorf("failed to unmarshal metadata JSON from %s: %v", url, err)
-			}
-			fmt.Printf("Notice: Failed to unmarshal metadata JSON from %s: %v\n", url, err)
-			continue
+			fmt.Printf("Failed to unmarshal metadata JSON from %s: %v\n", url, err)
+			os.Exit(1)
 		}
 
 		// Extract binary names
@@ -71,9 +60,6 @@ func listBinaries(return_var bool) ([]string, error) {
 		}
 	}
 
-	// Remove duplicates
-	allBinaries = removeDuplicates(allBinaries)
-
 	// Exclude specified file types and file names
 	excludedFileTypes := map[string]struct{}{
 		".7z":   {},
@@ -83,13 +69,12 @@ func listBinaries(return_var bool) ([]string, error) {
 		".md":   {},
 		".txt":  {},
 		".tar":  {},
-		".zip":  {},
 		"_dir":  {},
+		".zip":  {},
 	}
 
 	excludedFileNames := map[string]struct{}{
 		"robotstxt": {},
-		"LICENSE":   {},
 	}
 
 	// Filter out excluded file types and file names
@@ -104,15 +89,12 @@ func listBinaries(return_var bool) ([]string, error) {
 		}
 	}
 
+	// Remove duplicates
+	uniqueBinaries := removeDuplicates(filteredBinaries)
+
 	// Sort binaries alphabetically
-	sort.Strings(filteredBinaries)
+	sort.Strings(uniqueBinaries)
 
-	// If return_var is true, return the list of binaries
-	if return_var {
-		return filteredBinaries, nil
-	}
-
-	// Otherwise, print the binaries
-	fmt.Println(strings.Join(filteredBinaries, "\n"))
-	return nil, nil
+	// Print binaries
+	fmt.Println(strings.Join(uniqueBinaries, "\n"))
 }

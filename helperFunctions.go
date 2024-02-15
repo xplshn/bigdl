@@ -55,18 +55,25 @@ func fetchBinaryFromURL(url, destination string) error {
 		return fmt.Errorf("failed to write binary to file: %v", err)
 	}
 
+	// Close the file before setting executable bit
+	if err := out.Close(); err != nil {
+		return fmt.Errorf("failed to close temporary file: %v", err)
+	}
+
 	// Set executable bit
 	if err := os.Chmod(tempFile, 0755); err != nil {
 		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
-	// Copy the binary to its destination
-	if err := copyFile(tempFile, destination); err != nil {
-		return fmt.Errorf("failed to copy binary to destination: %v", err)
-	}
-
 	// Mark download as successful
 	downloadSuccessful = true
+
+	// Move the binary to its destination
+	if err := os.Rename(tempFile, destination); err != nil {
+		// If moving fails, remove the temporary file
+		os.Remove(tempFile)
+		return fmt.Errorf("failed to move binary to destination: %v", err)
+	}
 
 	// Handle interruption signal
 	select {
@@ -104,6 +111,9 @@ func copyFile(src, dst string) error {
 	if err != nil {
 		return err
 	}
+
+	// Remove the temporary file after copying
+	os.Remove(src)
 
 	return nil
 }
