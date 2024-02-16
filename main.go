@@ -92,7 +92,7 @@ func main() {
 		listBinaries()
 	case "run":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl run <binary> [args...]")
+			fmt.Println("Usage: bigdl run [--verbose] <binary> [args...]")
 			os.Exit(1)
 		}
 		RunFromCache(os.Args[2], os.Args[3:])
