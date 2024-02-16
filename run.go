@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+var verboseMode bool
+
 // ReturnCachedFile retrieves the cached file location.
 // Returns an empty string and error code  1 if not found.
 func ReturnCachedFile(packageName string) (string, int) {
@@ -29,10 +31,23 @@ func ReturnCachedFile(packageName string) (string, int) {
 
 // RunFromCache runs the binary from cache or fetches it if not found.
 func RunFromCache(packageName string, args []string) {
+	// Check for verbose mode flag
+	if packageName == "--verbose" {
+		// In this case, we should set packageName to the next argument if available
+		if len(args) > 0 {
+			packageName = args[0]
+			args = args[1:] // Remove the flag from the arguments
+			verboseMode = true
+		} else {
+			fmt.Println("Error: Package name not provided after --verbose flag.")
+			os.Exit(1)
+		}
+	}
+
 	cachedFile := filepath.Join(TEMP_DIR, packageName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
 		fmt.Printf("Running '%s' from cache...\n", packageName)
-		runBinary(cachedFile, args)
+		runBinary(cachedFile, args, verboseMode)
 		cleanCache()
 	} else {
 		fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", packageName)
@@ -42,20 +57,38 @@ func RunFromCache(packageName string, args []string) {
 			os.Exit(1)
 		}
 		cleanCache()
-		runBinary(cachedFile, args)
+		runBinary(cachedFile, args, verboseMode)
 	}
 }
 
 // runBinary executes the binary with the given arguments.
-func runBinary(binaryPath string, args []string) {
+func runBinary(binaryPath string, args []string, verboseMode bool) {
 	cmd := exec.Command(binaryPath, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
 
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Error running binary '%s': %v\n", binaryPath, err)
+		// Check if the error is an exit error and if the exit status is non-zero
+		if exitError, ok := err.(*exec.ExitError); ok {
+			// The program has exited with a non-zero exit status
+			// This is an error from the binary itself
+			if status, ok := exitError.Sys().(syscall.WaitStatus); ok {
+				// In verbose mode, print the error message with the program name and exit code
+				if verboseMode {
+					fmt.Printf("The program (%s) errored out with a non-zero exit code (%d).\n", binaryPath, status.ExitStatus())
+				}
+				// Exit with the same exit code as the binary
+				os.Exit(status.ExitStatus())
+			}
+		}
+		// If we can't determine the exit code, exit with a default code
 		os.Exit(1)
+	}
+
+	// If the command executed successfully, exit with its exit code
+	if status, ok := cmd.ProcessState.Sys().(syscall.WaitStatus); ok {
+		os.Exit(status.ExitStatus())
 	}
 }
 

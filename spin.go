@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -14,6 +15,7 @@ var SpinCompleteFlag bool
 type errMsg error
 
 // Spin starts the spinner
+// Spin starts the spinner
 func Spin(text string) {
 	stopSpinner = make(chan struct{})
 	SpinCompleteFlag = false
@@ -23,6 +25,9 @@ func Spin(text string) {
 		for {
 			select {
 			case <-stopSpinner:
+				// When the spinner is stopped, print spaces to clean up the output
+				fmt.Printf("\r%s\r", strings.Repeat(" ", len(text)+5)) //  5 is the length of "Working..."
+				SpinCompleteFlag = true
 				return
 			default:
 				fmt.Printf("\r%c Working... %s", spinChars[spinIndex], text)
