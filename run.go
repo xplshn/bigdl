@@ -16,20 +16,14 @@ import (
 // Returns an empty string and error code  1 if not found.
 func ReturnCachedFile(packageName string) (string, int) {
 	// Construct the expected cached file pattern
-	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("bigdl_%s-*", packageName))
+	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("%s.bin", packageName))
 
-	// Find the first file that matches the expected pattern
-	files, err := filepath.Glob(expectedCachedFile)
-	if err != nil {
-		return "", 1
+	// Check if the file exists using the fileExists function
+	if fileExists(expectedCachedFile) {
+		return expectedCachedFile, 0
 	}
 
-	// If a file is found, return the first one
-	if len(files) > 0 {
-		return files[0], 0
-	}
-
-	// If no file is found, return an error
+	// If the file does not exist, return an error
 	return "", 1
 }
 
