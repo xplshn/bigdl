@@ -3,6 +3,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,38 +16,35 @@ import (
 
 // signalHandler sets up a channel to listen for interrupt signals and returns a function
 // that can be called to check if an interrupt has been received.
-func signalHandler() (func() bool, error) {
+func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
-	interrupted := false
 	go func() {
 		<-sigChan
-		interrupted = true
+		cancel() // Call the cancel function when an interrupt is received
 	}()
 
 	return func() bool {
-		return interrupted
+		select {
+		case <-ctx.Done():
+			return true
+		default:
+			return false
+		}
 	}, nil
 }
 
 // fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
-// fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 func fetchBinaryFromURL(url, destination string) error {
 	// Set up the signal handler at the start of the function.
-	isInterrupted, err := signalHandler()
-	if err != nil {
-		return fmt.Errorf("error setting up signal handler: %v", err)
-	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel() // Ensure the cancel function is called when the function returns
 
 	// Create a temporary directory if it doesn't exist
 	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
 		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
-
-	// Create a channel to handle interruption with CTRL+C or other signals
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
 
 	// Start spinner
 	Spin("")
@@ -60,7 +58,12 @@ func fetchBinaryFromURL(url, destination string) error {
 	defer out.Close()
 
 	// Fetch the binary from the given URL
-	resp, err := http.Get(url)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("error fetching binary from %s: %v", url, err)
 	}
@@ -71,9 +74,26 @@ func fetchBinaryFromURL(url, destination string) error {
 	}
 
 	// Write the binary to the temporary file
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return fmt.Errorf("failed to write binary to file: %v", err)
+	buf := make([]byte, 32*1024) //  32KB buffer
+	for {
+		n, err := resp.Body.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				// End of file, break the loop
+				break
+			}
+			// Delete the line before printing the error
+			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
+			return fmt.Errorf("failed to read from response body: %v", err)
+		}
+
+		// Write to the temporary file
+		_, err = out.Write(buf[:n])
+		if err != nil {
+			// Delete the line before printing the error
+			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
+			return fmt.Errorf("failed to write to temporary file: %v", err)
+		}
 	}
 
 	// Close the file before setting executable bit
@@ -81,17 +101,11 @@ func fetchBinaryFromURL(url, destination string) error {
 		return fmt.Errorf("failed to close temporary file: %v", err)
 	}
 
-	// Check for interruption after the binary has been downloaded.
-	if isInterrupted() {
-		// If an interrupt was received, clean up and exit.
-		StopSpinner()
-		return fmt.Errorf("installation interrupted")
-	}
+	// Stop the spinner
+	StopSpinner()
 
 	// Move the binary to its destination
 	if err := copyFile(tempFile, destination); err != nil {
-		// If copying fails, remove the temporary file
-		os.Remove(tempFile)
 		return fmt.Errorf("failed to move binary to destination: %v", err)
 	}
 
@@ -99,9 +113,6 @@ func fetchBinaryFromURL(url, destination string) error {
 	if err := os.Chmod(destination, 0755); err != nil {
 		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
-
-	// Stop spinner
-	StopSpinner()
 
 	return nil
 }

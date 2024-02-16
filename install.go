@@ -48,12 +48,7 @@ func installCommand(binaryName string, args []string) {
 		}
 	}
 
-	installMessage := "Installation complete: %s at %s\n"
-	if len(args) > 1 && args[1] != "" {
-		installMessage = args[1]
-	}
-
 	// Use the escape sequence for newline directly
-	fmt.Printf(installMessage, binaryName, installPath)
+	fmt.Printf("Installation complete: %s\n", installPath)
 	fmt.Println() // Adding a newline for proper PS1 behavior
 }
