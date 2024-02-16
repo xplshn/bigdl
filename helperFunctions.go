@@ -169,3 +169,12 @@ func fileSize(filePath string) int64 {
 
 	return stat.Size()
 }
+
+// isExecutable checks if the file at the specified path is executable.
+func isExecutable(filePath string) bool {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
+}

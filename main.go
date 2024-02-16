@@ -45,11 +45,15 @@ const RMetadataURL = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
-// TMPDIR is the directory for storing temporary files.
-const TEMP_DIR = "/tmp/bigdl_cached"
-
-// CACHE_FILE is the file path for caching installation information.
-const CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
+const (
+	// Cache size limit & handling.
+	MaxCacheSize     = 10
+	BinariesToDelete = 5
+	// TMPDIR is the directory for storing temporary files.
+	TEMP_DIR = "/tmp/bigdl_cached"
+	// CACHE_FILE is the file path for caching installation information.
+	CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
+)
 
 func main() {
 	if len(os.Args) < 2 {
