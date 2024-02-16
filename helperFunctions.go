@@ -3,72 +3,157 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"sort"
-	"sync"
+	"syscall"
 )
+
+// signalHandler sets up a channel to listen for interrupt signals and returns a function
+// that can be called to check if an interrupt has been received.
+func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigChan
+		cancel() // Call the cancel function when an interrupt is received
+	}()
+
+	return func() bool {
+		select {
+		case <-ctx.Done():
+			return true
+		default:
+			return false
+		}
+	}, nil
+}
 
 // fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 func fetchBinaryFromURL(url, destination string) error {
-	// Use a wait group to wait for both the binary fetching and Spin to finish
-	var wg sync.WaitGroup
+	// Set up the signal handler at the start of the function.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel() // Ensure the cancel function is called when the function returns
 
-	// Start Spin in a separate goroutine
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		Spin()
-	}()
-
-	// Check if the destination includes directory paths
-	dir := filepath.Dir(destination)
-	if dir != "." {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			StopSpinner() // Stop the spinner in case of an error
-			return fmt.Errorf("failed to create directory structure: %v", err)
-		}
+	// Create a temporary directory if it doesn't exist
+	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
+		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 
-	// Fetch the binary from the given URL
-	resp, err := http.Get(url)
+	// Start spinner
+	Spin("")
+
+	// Create a temporary file to download the binary
+	tempFile := filepath.Join(TEMP_DIR, filepath.Base(destination)+".tmp")
+	out, err := os.Create(tempFile)
 	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Error fetching binary from %s: %v", url, err)
+		return fmt.Errorf("failed to create temporary file: %v", err)
+	}
+	defer out.Close()
+
+	// Fetch the binary from the given URL
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("error fetching binary from %s: %v", url, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		StopSpinner() // Stop the spinner if fetching fails
-		return fmt.Errorf("Failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
+		return fmt.Errorf("failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
 	}
 
-	// Create the file at the specified destination
-	out, err := os.Create(destination)
-	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to create file for binary: %v", err)
-	}
-	defer out.Close()
+	// Write the binary to the temporary file
+	buf := make([]byte, 32*1024) //  32KB buffer
+	for {
+		n, err := resp.Body.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				// End of file, break the loop
+				break
+			}
+			// Delete the line before printing the error
+			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
+			return fmt.Errorf("failed to read from response body: %v", err)
+		}
 
-	// Write the binary to the file
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to write binary to file: %v", err)
+		// Write to the temporary file
+		_, err = out.Write(buf[:n])
+		if err != nil {
+			// Delete the line before printing the error
+			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
+			return fmt.Errorf("failed to write to temporary file: %v", err)
+		}
 	}
 
-	// Set executable bit
+	// Close the file before setting executable bit
+	if err := out.Close(); err != nil {
+		return fmt.Errorf("failed to close temporary file: %v", err)
+	}
+
+	// Stop the spinner
+	StopSpinner()
+
+	// Move the binary to its destination
+	if err := copyFile(tempFile, destination); err != nil {
+		return fmt.Errorf("failed to move binary to destination: %v", err)
+	}
+
+	// Set executable bit immediately after copying
 	if err := os.Chmod(destination, 0755); err != nil {
-		StopSpinner() // Stop the spinner in case of an error
-		return fmt.Errorf("Failed to set executable bit: %v", err)
+		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
-	StopSpinner() // Stop the spinner when binary fetching is successful
-	wg.Wait()     // Wait for Spin to finish
+	return nil
+}
+
+// copyFile copies(removes original after copy) a file from src to dst
+func copyFile(src, dst string) error {
+	// Check if the destination file already exists
+	if fileExists(dst) {
+		// File exists, handle accordingly (e.g., overwrite or skip)
+		// For this example, we'll overwrite the file
+		if err := os.Remove(dst); err != nil {
+			return fmt.Errorf("failed to remove existing destination file: %v", err)
+		}
+	}
+
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return fmt.Errorf("failed to open source file: %v", err)
+	}
+	defer sourceFile.Close()
+
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("failed to create destination file: %v", err)
+	}
+
+	_, err = io.Copy(destFile, sourceFile)
+	if err != nil {
+		destFile.Close() // Ensure the destination file is closed
+		return fmt.Errorf("failed to copy file: %v", err)
+	}
+
+	if err := destFile.Close(); err != nil {
+		return fmt.Errorf("failed to close destination file: %v", err)
+	}
+
+	// Remove the temporary file after copying
+	if err := os.Remove(src); err != nil {
+		return fmt.Errorf("failed to remove source file: %v", err)
+	}
+
 	return nil
 }
 
@@ -122,4 +207,13 @@ func fileSize(filePath string) int64 {
 	}
 
 	return stat.Size()
+}
+
+// isExecutable checks if the file at the specified path is executable.
+func isExecutable(filePath string) bool {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
 }

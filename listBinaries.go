@@ -69,12 +69,13 @@ func listBinaries() {
 		".md":   {},
 		".txt":  {},
 		".tar":  {},
-		"_dir":  {},
 		".zip":  {},
 	}
 
 	excludedFileNames := map[string]struct{}{
-		"robotstxt": {},
+		"robotstxt":                {},
+		"LICENSE":                  {},
+		"experimentalBinaries_dir": {},
 	}
 
 	// Filter out excluded file types and file names

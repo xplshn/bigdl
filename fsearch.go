@@ -52,7 +52,7 @@ func fSearch(searchTerm string, desiredArch string) {
 	if len(searchResultsSet) == 0 {
 		fmt.Printf("No matching packages found for '%s'.\n", searchTerm)
 		return
-	} else if len(searchResultsSet) > 10 {
+	} else if len(searchResultsSet) > 90 {
 		fmt.Printf("Too many matching packages found for '%s'.\n", searchTerm)
 		return
 	}
