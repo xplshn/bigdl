@@ -13,8 +13,32 @@ import (
 	"syscall"
 )
 
+// signalHandler sets up a channel to listen for interrupt signals and returns a function
+// that can be called to check if an interrupt has been received.
+func signalHandler() (func() bool, error) {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	interrupted := false
+	go func() {
+		<-sigChan
+		interrupted = true
+	}()
+
+	return func() bool {
+		return interrupted
+	}, nil
+}
+
+// fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 // fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 func fetchBinaryFromURL(url, destination string) error {
+	// Set up the signal handler at the start of the function.
+	isInterrupted, err := signalHandler()
+	if err != nil {
+		return fmt.Errorf("error setting up signal handler: %v", err)
+	}
+
 	// Create a temporary directory if it doesn't exist
 	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
 		return fmt.Errorf("failed to create temporary directory: %v", err)
@@ -23,9 +47,6 @@ func fetchBinaryFromURL(url, destination string) error {
 	// Create a channel to handle interruption with CTRL+C or other signals
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
-
-	// Use a flag to indicate if the download was successful
-	downloadSuccessful := false
 
 	// Start spinner
 	Spin("")
@@ -60,31 +81,23 @@ func fetchBinaryFromURL(url, destination string) error {
 		return fmt.Errorf("failed to close temporary file: %v", err)
 	}
 
-	// Set executable bit
-	if err := os.Chmod(tempFile, 0755); err != nil {
-		return fmt.Errorf("failed to set executable bit: %v", err)
+	// Check for interruption after the binary has been downloaded.
+	if isInterrupted() {
+		// If an interrupt was received, clean up and exit.
+		StopSpinner()
+		return fmt.Errorf("installation interrupted")
 	}
 
-	// Mark download as successful
-	downloadSuccessful = true
-
 	// Move the binary to its destination
-	if err := os.Rename(tempFile, destination); err != nil {
-		// If moving fails, remove the temporary file
+	if err := copyFile(tempFile, destination); err != nil {
+		// If copying fails, remove the temporary file
 		os.Remove(tempFile)
 		return fmt.Errorf("failed to move binary to destination: %v", err)
 	}
 
-	// Handle interruption signal
-	select {
-	case <-sig:
-		// If the program receives an interruption signal, remove the temporary file
-		if !downloadSuccessful {
-			os.Remove(tempFile)
-		}
-		// Stop spinner
-		StopSpinner()
-	default:
+	// Set executable bit immediately after copying
+	if err := os.Chmod(destination, 0755); err != nil {
+		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
 	// Stop spinner
@@ -93,27 +106,42 @@ func fetchBinaryFromURL(url, destination string) error {
 	return nil
 }
 
-// copyFile copies a file from src to dst
+// copyFile copies(removes original after copy) a file from src to dst
 func copyFile(src, dst string) error {
+	// Check if the destination file already exists
+	if fileExists(dst) {
+		// File exists, handle accordingly (e.g., overwrite or skip)
+		// For this example, we'll overwrite the file
+		if err := os.Remove(dst); err != nil {
+			return fmt.Errorf("failed to remove existing destination file: %v", err)
+		}
+	}
+
 	sourceFile, err := os.Open(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open source file: %v", err)
 	}
 	defer sourceFile.Close()
 
 	destFile, err := os.Create(dst)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create destination file: %v", err)
 	}
-	defer destFile.Close()
 
 	_, err = io.Copy(destFile, sourceFile)
 	if err != nil {
-		return err
+		destFile.Close() // Ensure the destination file is closed
+		return fmt.Errorf("failed to copy file: %v", err)
+	}
+
+	if err := destFile.Close(); err != nil {
+		return fmt.Errorf("failed to close destination file: %v", err)
 	}
 
 	// Remove the temporary file after copying
-	os.Remove(src)
+	if err := os.Remove(src); err != nil {
+		return fmt.Errorf("failed to remove source file: %v", err)
+	}
 
 	return nil
 }
