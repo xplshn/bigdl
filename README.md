@@ -3,11 +3,11 @@
 BigDL, the sizzling hot Golang rewrite of BDL! 🔥
 
 BigDL is your sleek and efficient companion for managing and downloading static binaries effortlessly. It flaunts its independence, requiring nothing but a Linux system.
-Unlike BDL which required either wget or curl, BigDL is suited for embedded systems (minimum needed: 8MBs of RAM/Swap. Amd64/Aarch64).
+Unlike BDL which required either wget or curl, BigDL is suited for embedded systems (minimum needed: 8MBs of RAM and storage. Amd64/Aarch64).
 
 #### Features:
 
-1. **Minimal Dependencies**: BigDL prides itself on its self-sufficiency. No bloated dependencies, here we like 'em slim.
+1. **Minimal Dependencies**: BigDL prides itself on its self-sufficiency. No bloated dependencies, we like 'em slim.
 
 2. **Versatile Commands**:
    - `list`: View all available binaries across all three repos.
@@ -22,7 +22,7 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
 #### Usage:
 
 ```
-$ Usage: bigdl {list|install|remove|run|info|search|tldr} [args...]
+$ Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]
 ```
 
 #### BDL Compatibility:
@@ -50,4 +50,4 @@ BigDL is licensed under the [New BSD License](LICENSE), so feel free to use, mod
 
 BigDL is designed for those who like their command line experiences spicy. Use responsibly and at your own risk. We are not liable for any overheating systems or heart palpitations caused by the sheer awesomeness of BigDL. 😎
 
-###### Special thanks to ChatGPT for the awesome Readme
+###### Special thanks to ChatGPT for the awesome (And very stupid) Readme
