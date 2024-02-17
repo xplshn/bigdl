@@ -52,8 +52,6 @@ const (
 	BinariesToDelete = 5
 	// TMPDIR is the directory for storing temporary files.
 	TEMP_DIR = "/tmp/bigdl_cached"
-	// CACHE_FILE is the file path for caching installation information.
-	CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
 )
 
 func printHelp() {
