@@ -113,7 +113,7 @@ func main() {
 		}
 	case "install", "add":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl install <binary> [install_dir] [install_message]")
+			fmt.Printf("Usage: bigdl %s <binary> [install_dir] [install_message]\n", os.Args[1])
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
@@ -127,11 +127,10 @@ func main() {
 		installCommand(binaryName, []string{installDir, installMessage})
 	case "remove", "del":
 		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl remove <binary>")
+			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])
 			os.Exit(1)
 		}
-		binaryToRemove := os.Args[2]
-		remove(binaryToRemove)
+		remove(os.Args[2])
 	case "run":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl run [--verbose] <binary> [args...]")

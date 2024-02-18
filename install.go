@@ -48,8 +48,6 @@ func installCommand(binaryName string, args []string) error {
 	}
 
 	// Use the escape sequence for newline directly
-	fmt.Printf("Installation complete: %s\n", installPath)
-	fmt.Println() // Adding a newline for proper PS1 behavior
-
+	fmt.Printf("Installation complete: %s \n", installPath)
 	return nil
 }
