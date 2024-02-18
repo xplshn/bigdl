@@ -41,7 +41,7 @@ func init() {
 	}
 }
 
-const RMetadataURL = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json"
+const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const VERSION = "1.1"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
@@ -143,7 +143,39 @@ func main() {
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
-		showBinaryInfo(binaryName)
+		binaryInfo, err := getBinaryInfo(binaryName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		// Print the fields
+		fmt.Printf("Name: %s\n", binaryInfo.Name)
+		if binaryInfo.Repo != "" {
+			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
+		}
+		if binaryInfo.Source != "" {
+			fmt.Printf("Repo: %s\n", binaryInfo.Source)
+		}
+		if binaryInfo.Size != "" {
+			fmt.Printf("Size: %s\n", binaryInfo.Size)
+		}
+		if binaryInfo.SHA256 != "" {
+			fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
+		}
+		if binaryInfo.B3SUM != "" {
+			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
+		}
+		if binaryInfo.Description != "" {
+			fmt.Printf("Description: %s\n", binaryInfo.Description)
+		}
+	case "fast_info":
+		if len(os.Args) != 3 {
+			fmt.Println("Usage: bigdl fast_info <binary>")
+			os.Exit(1)
+		}
+		binaryName := os.Args[2]
+		fast_showBinaryInfo(binaryName, validatedArch[1])
 	case "search":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl search <search-term>")
@@ -151,6 +183,8 @@ func main() {
 		}
 		searchTerm := os.Args[2]
 		fSearch(searchTerm, validatedArch[1])
+	case "update":
+		update()
 	default:
 		fmt.Printf("bigdl: Unknown command: %s\n", os.Args[1])
 		os.Exit(1)

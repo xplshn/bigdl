@@ -13,6 +13,7 @@ import (
 type BinaryInfo struct {
 	Name        string `json:"Name"`
 	Repo        string `json:"Repo"`
+	Source      string `json:"Source"`
 	Size        string `json:"Size"`
 	SHA256      string `json:"SHA256"`
 	B3SUM       string `json:"B3SUM"`
@@ -24,67 +25,46 @@ type BinaryMetadata struct {
 	Binaries []BinaryInfo `json:"binaries"`
 }
 
-// showBinaryInfo fetches binary information from MetadataURLs and prints it.
-func showBinaryInfo(binaryName string) {
+// getBinaryInfo fetches binary information from MetadataURLs and returns it as a BinaryInfo struct.
+func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
 	for i, metadataURL := range MetadataURLs {
-		if i >= 2 { // TODO: Correctly unmarshal Github's REST API's "contents" endpoint.
+		if i >= 2 { // TODO: Correctly unmarshal Github's REST API's "contents" endpoint. In order not to do this ugly thing.
 			break
 		}
-
 		response, err := http.Get(metadataURL)
 		if err != nil {
-			fmt.Printf("Error fetching metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error fetching metadata from %s: %v", metadataURL, err)
 		}
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			fmt.Printf("Error reading metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error reading metadata from %s: %v", metadataURL, err)
 		}
 
 		var metadata []BinaryInfo
 		if err := json.Unmarshal(body, &metadata); err != nil {
-			fmt.Printf("Error decoding metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error decoding metadata from %s: %v", metadataURL, err)
 		}
 
 		for _, bin := range metadata {
 			if bin.Name == binaryName {
-				fmt.Printf("Binary Name: %s\n", bin.Name)
-				if bin.Repo != "" {
-					fmt.Printf("Repo: %s\n", bin.Repo)
-				}
-				if bin.Size != "" {
-					fmt.Printf("Size: %s\n", bin.Size)
-				}
-				if bin.SHA256 != "" {
-					fmt.Printf("SHA256: %s\n", bin.SHA256)
-				}
-				if bin.B3SUM != "" {
-					fmt.Printf("B3SUM: %s\n", bin.B3SUM)
-				}
-
 				// Fetch the description from RMetadataURL
 				response, err = http.Get(RMetadataURL)
 				if err != nil {
-					fmt.Printf("Error fetching description from %s: %v\n", RMetadataURL, err)
-					return
+					return nil, fmt.Errorf("error fetching description from %s: %v", RMetadataURL, err)
 				}
 				defer response.Body.Close()
 
 				body, err = ioutil.ReadAll(response.Body)
 				if err != nil {
-					fmt.Printf("Error reading description from %s: %v\n", RMetadataURL, err)
-					return
+					return nil, fmt.Errorf("error reading description from %s: %v", RMetadataURL, err)
 				}
 
 				// Unmarshal the description as a BinaryMetadata object
 				var binaryMetadata BinaryMetadata
 				if err := json.Unmarshal(body, &binaryMetadata); err != nil {
-					fmt.Printf("Error decoding description from %s: %v\n", RMetadataURL, err)
-					return
+					return nil, fmt.Errorf("error decoding description from %s: %v", RMetadataURL, err)
 				}
 
 				// Find the binary in the metadata and set the description
@@ -95,13 +75,10 @@ func showBinaryInfo(binaryName string) {
 					}
 				}
 
-				if bin.Description != "" {
-					fmt.Printf("Description: %s\n", bin.Description)
-				}
-				return
+				return &bin, nil
 			}
 		}
 	}
 
-	fmt.Printf("Info for the requested binary ('%s') not found in the metadata.json files. Please contribute to the repositories.\n", binaryName)
+	return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json files", binaryName)
 }

@@ -7,14 +7,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 )
 
 // listBinariesCommand fetches and lists binary names from the given URL.
-func listBinaries() {
+func listBinaries() ([]string, error) {
 	var allBinaries []string
 
 	// Fetch binaries from each metadata URL
@@ -22,21 +21,18 @@ func listBinaries() {
 		// Fetch metadata from the given URL
 		resp, err := http.Get(url)
 		if err != nil {
-			fmt.Printf("Error fetching metadata from %s: %v\n", url, err)
-			os.Exit(1)
+			return nil, fmt.Errorf("error fetching metadata from %s: %v", url, err)
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			fmt.Printf("Failed to fetch metadata from %s. HTTP status code: %d\n", url, resp.StatusCode)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to fetch metadata from %s. HTTP status code: %d", url, resp.StatusCode)
 		}
 
 		// Read response body
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("Failed to read response body: %v\n", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to read response body: %v", err)
 		}
 
 		// Unmarshal JSON
@@ -45,8 +41,7 @@ func listBinaries() {
 			NameAlt string `json:"Name"` // Consider both "name" and "Name" fields
 		}
 		if err := json.Unmarshal(body, &metadata); err != nil {
-			fmt.Printf("Failed to unmarshal metadata JSON from %s: %v\n", url, err)
-			os.Exit(1)
+			return nil, fmt.Errorf("failed to unmarshal metadata JSON from %s: %v", url, err)
 		}
 
 		// Extract binary names
@@ -96,6 +91,6 @@ func listBinaries() {
 	// Sort binaries alphabetically
 	sort.Strings(uniqueBinaries)
 
-	// Print binaries
-	fmt.Println(strings.Join(uniqueBinaries, "\n"))
+	// Return the list of binaries
+	return uniqueBinaries, nil
 }
