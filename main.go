@@ -52,8 +52,6 @@ const (
 	BinariesToDelete = 5
 	// TMPDIR is the directory for storing temporary files.
 	TEMP_DIR = "/tmp/bigdl_cached"
-	// CACHE_FILE is the file path for caching installation information.
-	CACHE_FILE = TEMP_DIR + "/bigdl_cache.log"
 )
 
 func printHelp() {
@@ -106,7 +104,7 @@ func main() {
 		findURLCommand(os.Args[2])
 	case "list":
 		listBinaries()
-	case "install":
+	case "install", "add":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl install <binary> [install_dir] [install_message]")
 			os.Exit(1)
@@ -120,7 +118,7 @@ func main() {
 			installMessage = os.Args[4]
 		}
 		installCommand(binaryName, []string{installDir, installMessage})
-	case "remove":
+	case "remove", "del":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl remove <binary>")
 			os.Exit(1)
