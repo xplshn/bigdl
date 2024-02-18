@@ -1,4 +1,4 @@
-// listBinaries.go // This file implements the listBinaries function //
+// listBinaries.go // This file implements the listBinaries function //>
 
 package main
 

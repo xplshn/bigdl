@@ -1,5 +1,4 @@
 // install.go // This file implements the install functionality //
-
 package main
 
 import (

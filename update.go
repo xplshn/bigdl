@@ -1,6 +1,4 @@
 // update.go // This file holds the implementation for the "update" functionality //>
-// W.I.P // TODO: Handle signals like CTRL+C gracefully. // ENSURE THINGS ARE DONE RIGHT.
-
 package main
 
 import (

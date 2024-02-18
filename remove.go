@@ -1,3 +1,4 @@
+// remove.go // This file implements the functionality of "remove" //>
 package main
 
 import (

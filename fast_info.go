@@ -1,4 +1,4 @@
-// fast_info.go // this file implements the functionality of 'f_info'
+// fast_info.go // this file implements the functionality of 'f_info' //>
 package main
 
 import (

@@ -1,5 +1,4 @@
-// fsearch.go // this file implements the search option
-
+// fsearch.go // this file implements the search option //>
 package main
 
 import (

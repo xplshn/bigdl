@@ -1,4 +1,4 @@
-// helperFunctions.go // This file contains commonly used functions //
+// helperFunctions.go // This file contains commonly used functions //>
 
 package main
 
