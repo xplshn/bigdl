@@ -23,17 +23,17 @@ func init() {
 		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/")
 		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/Baseutils/")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/METADATA.json")
 		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/Baseutils/METADATA.json")
+		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [2]string{"x86_64_Linux", "x86_64"}
 	case "arm64":
 		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/")
 		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/")
 		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/METADATA.json")
+		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [2]string{"aarch64_arm64_Linux", "aarch64_arm64"}
 	default:
 		fmt.Println("Unsupported architecture:", runtime.GOARCH)
@@ -64,8 +64,8 @@ func printHelp() {
 	fmt.Println("  install       Install a binary")
 	fmt.Println("  remove        Remove a binary")
 	fmt.Println("  run           Run a binary")
-	fmt.Println("  info          Show information about a package")
-	fmt.Println("  search        Search for a binary")
+	fmt.Println("  info          Show information about a specific binary")
+	fmt.Println("  search        Search for a binary - (not all binaries have metadata. Use list to see all binaries)")
 	fmt.Println("  tldr          Show a brief description & usage examples for a given program/command")
 	fmt.Println("\nExamples:")
 	fmt.Println("  bigdl install micro")
@@ -139,11 +139,11 @@ func main() {
 		RunFromCache("tlrc", os.Args[2:])
 	case "info":
 		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl info <package-name>")
+			fmt.Println("Usage: bigdl info <binary>")
 			os.Exit(1)
 		}
-		packageName := os.Args[2]
-		showPackageInfo(packageName, validatedArch[1])
+		binaryName := os.Args[2]
+		showBinaryInfo(binaryName)
 	case "search":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl search <search-term>")

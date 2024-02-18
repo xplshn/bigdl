@@ -15,10 +15,10 @@ import (
 var verboseMode bool
 
 // ReturnCachedFile retrieves the cached file location.
-// Returns an empty string and error code  1 if not found.
-func ReturnCachedFile(packageName string) (string, int) {
+// Returns an empty string and error code   1 if not found.
+func ReturnCachedFile(binaryName string) (string, int) {
 	// Construct the expected cached file pattern
-	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("%s.bin", packageName))
+	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("%s.bin", binaryName))
 
 	// Check if the file exists using the fileExists function
 	if fileExists(expectedCachedFile) {
@@ -30,30 +30,30 @@ func ReturnCachedFile(packageName string) (string, int) {
 }
 
 // RunFromCache runs the binary from cache or fetches it if not found.
-func RunFromCache(packageName string, args []string) {
+func RunFromCache(binaryName string, args []string) {
 	// Check for verbose mode flag
-	if packageName == "--verbose" {
-		// In this case, we should set packageName to the next argument if available
+	if binaryName == "--verbose" {
+		// In this case, we should set binaryName to the next argument if available
 		if len(args) > 0 {
-			packageName = args[0]
+			binaryName = args[0]
 			args = args[1:] // Remove the flag from the arguments
 			verboseMode = true
 		} else {
-			fmt.Println("Error: Package name not provided after --verbose flag.")
+			fmt.Println("Error: Binary name not provided after --verbose flag.")
 			os.Exit(1)
 		}
 	}
 
-	cachedFile := filepath.Join(TEMP_DIR, packageName+".bin")
+	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
-		fmt.Printf("Running '%s' from cache...\n", packageName)
+		fmt.Printf("Running '%s' from cache...\n", binaryName)
 		runBinary(cachedFile, args, verboseMode)
 		cleanCache()
 	} else {
-		fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", packageName)
-		err := fetchBinary(packageName)
+		fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", binaryName)
+		err := fetchBinary(binaryName)
 		if err != nil {
-			fmt.Printf("Error fetching binary for '%s': %v\n", packageName, err)
+			fmt.Printf("Error fetching binary for '%s': %v\n", binaryName, err)
 			os.Exit(1)
 		}
 		cleanCache()
@@ -93,18 +93,18 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 }
 
 // fetchBinary downloads the binary and caches it.
-func fetchBinary(packageName string) error {
-	url, err := findURL(packageName)
+func fetchBinary(binaryName string) error {
+	url, err := findURL(binaryName)
 	if err != nil {
 		return err
 	}
 
-	cachedFile := filepath.Join(TEMP_DIR, packageName+".bin")
+	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 
 	// Fetch the binary from the internet and save it to the cache
 	err = fetchBinaryFromURL(url, cachedFile)
 	if err != nil {
-		return fmt.Errorf("error fetching binary for %s: %v", packageName, err)
+		return fmt.Errorf("error fetching binary for %s: %v", binaryName, err)
 	}
 
 	// Ensure the cache size does not exceed the limit

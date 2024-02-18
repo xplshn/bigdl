@@ -14,12 +14,12 @@ import (
 	"strings"
 )
 
-// fSearch searches for packages based on the given search term.
+// fSearch searches for binaries based on the given search term.
 func fSearch(searchTerm string, desiredArch string) {
 	// Fetch metadata
 	response, err := http.Get(RMetadataURL)
 	if err != nil {
-		fmt.Println("Failed to fetch package information.")
+		fmt.Println("Failed to fetch binary information.")
 		return
 	}
 	defer response.Body.Close()
@@ -30,30 +30,27 @@ func fSearch(searchTerm string, desiredArch string) {
 		return
 	}
 
-	var metadata map[string][]PackageInfo
+	var metadata map[string][]BinaryInfo
 	if err := json.Unmarshal(body, &metadata); err != nil {
 		fmt.Println("Failed to decode metadata.")
 		return
 	}
 
-	// Filter packages based on the search term and architecture
+	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{}) // Use a set to keep track of unique entries
-	for _, pkg := range metadata["packages"] {
-		if strings.Contains(strings.ToLower(pkg.Name+pkg.Description), strings.ToLower(searchTerm)) {
-			// Check if architecture matches the desired architecture
-			if pkg.Architecture == desiredArch {
-				entry := fmt.Sprintf("%s - %s", pkg.Name, pkg.Description)
-				searchResultsSet[entry] = struct{}{} // Add the entry to the set
-			}
+	for _, bin := range metadata["binaries"] {
+		if strings.Contains(strings.ToLower(bin.Name+bin.Description), strings.ToLower(searchTerm)) {
+			entry := fmt.Sprintf("%s - %s", bin.Name, bin.Description)
+			searchResultsSet[entry] = struct{}{} // Add the entry to the set
 		}
 	}
 
-	// Check if no matching packages found
+	// Check if no matching binaries found
 	if len(searchResultsSet) == 0 {
-		fmt.Printf("No matching packages found for '%s'.\n", searchTerm)
+		fmt.Printf("No matching binaries found for '%s'.\n", searchTerm)
 		return
 	} else if len(searchResultsSet) > 90 {
-		fmt.Printf("Too many matching packages found for '%s'.\n", searchTerm)
+		fmt.Printf("Too many matching binaries found for '%s'.\n", searchTerm)
 		return
 	}
 
@@ -72,16 +69,16 @@ func fSearch(searchTerm string, desiredArch string) {
 		cmd.Stdin = os.Stdin
 		out, err := cmd.Output()
 		if err != nil {
-			return 80 // Default to 80 columns if unable to get terminal width
+			return 80 // Default to  80 columns if unable to get terminal width
 		}
 		width, err := strconv.Atoi(strings.TrimSpace(string(out)))
 		if err != nil {
-			return 80 // Default to 80 columns if unable to convert width to integer
+			return 80 // Default to  80 columns if unable to convert width to integer
 		}
 		return width
 	}
 
-	// Check if the package binary exists in the INSTALL_DIR and print results with installation state indicators
+	// Check if the binary exists in the INSTALL_DIR and print results with installation state indicators
 	for _, line := range searchResults {
 		parts := strings.SplitN(line, " - ", 2)
 		name := parts[0]
@@ -106,7 +103,7 @@ func fSearch(searchTerm string, desiredArch string) {
 		}
 
 		// Calculate available space for description
-		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 // 4 accounts for space around ' - '
+		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 //  4 accounts for space around ' - '
 
 		// Truncate the description if it exceeds the available space
 		if len(description) > availableSpace {
