@@ -41,7 +41,7 @@ func init() {
 }
 
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
-const VERSION = "1.1"
+const VERSION = "1.2"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
