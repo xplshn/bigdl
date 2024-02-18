@@ -54,7 +54,7 @@ const (
 )
 
 func printHelp() {
-	fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|fast_info|search|tldr} [args...]")
+	fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]")
 	fmt.Println("\nOptions:")
 	fmt.Println("  -h, --help     Show this help message")
 	fmt.Println("  -v, --version  Show the version number")
@@ -62,6 +62,7 @@ func printHelp() {
 	fmt.Println("  list           List all available binaries")
 	fmt.Println("  install, add   Install a binary")
 	fmt.Println("  remove, del    Remove a binary")
+	fmt.Println("  update         Update binaries, by checking their SHA against the repo's SHA.")
 	fmt.Println("  run            Run a binary")
 	fmt.Println("  info           Show information about a specific binary")
 	fmt.Println("  fast_info      Show information about a specific binary - Using a single metadata file")
@@ -73,6 +74,8 @@ func printHelp() {
 	fmt.Println("  bigdl info jq")
 	fmt.Println("  bigdl search fzf")
 	fmt.Println("  bigdl tldr gum")
+	fmt.Println("  bigdl run --verbose neofetch")
+	fmt.Println("  bigdl run btop")
 	fmt.Println("\nVersion:", VERSION)
 }
 
@@ -91,7 +94,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|fast_info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
