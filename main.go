@@ -72,7 +72,7 @@ func printHelp() {
 	fmt.Println("  bigdl install micro")
 	fmt.Println("  bigdl remove bed")
 	fmt.Println("  bigdl info jq")
-	fmt.Println("  bigdl search fzf")
+	fmt.Println("  bigdl search editor")
 	fmt.Println("  bigdl tldr gum")
 	fmt.Println("  bigdl run --verbose neofetch")
 	fmt.Println("  bigdl run btop")
