@@ -9,15 +9,26 @@ import (
 	"net/http"
 )
 
+/*
+Binary Name: jq
+Description: Command-line JSON processor
+Version: jq-1.7.1
+Updated: 2023-12-13T19:56:17Z
+Size: 2.32 MB
+SHA: 5942c9b0934e510ee61eb3e30273f1b3fe2590df93933a93d7c58b81d19c8ff5
+Source: https://bin.ajam.dev/x86_64_Linux/jq
+*/
+
 // BinaryInfo represents the structure of binary information.
 type BinaryInfo struct {
 	Name        string `json:"Name"`
+	Description string `json:"Description"`
 	Repo        string `json:"Repo"`
-	Source      string `json:"Source"`
+	ModTime     string `json:"ModTime"`
 	Size        string `json:"Size"`
 	SHA256      string `json:"SHA256"`
 	B3SUM       string `json:"B3SUM"`
-	Description string `json:"Description"`
+	Source      string `json:"Source"`
 }
 
 // BinaryMetadata represents the structure of the metadata for a binary.

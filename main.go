@@ -55,7 +55,7 @@ const (
 )
 
 func printHelp() {
-	fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]")
+	fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|fast_info|search|tldr} [args...]")
 	fmt.Println("\nOptions:")
 	fmt.Println("  -h, --help    Show this help message")
 	fmt.Println("  -v, --version Show the version number")
@@ -65,6 +65,7 @@ func printHelp() {
 	fmt.Println("  remove        Remove a binary")
 	fmt.Println("  run           Run a binary")
 	fmt.Println("  info          Show information about a specific binary")
+	fmt.Println("  fast_info     Show information about a specific binary - Using a single metadata file")
 	fmt.Println("  search        Search for a binary - (not all binaries have metadata. Use list to see all binaries)")
 	fmt.Println("  tldr          Show a brief description & usage examples for a given program/command")
 	fmt.Println("\nExamples:")
@@ -91,7 +92,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|fast_info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
@@ -103,7 +104,14 @@ func main() {
 		}
 		findURLCommand(os.Args[2])
 	case "list":
-		listBinaries()
+		binaries, err := listBinaries()
+		if err != nil {
+			fmt.Println("Error listing binaries:", err)
+			os.Exit(1)
+		}
+		for _, binary := range binaries {
+			fmt.Println(binary)
+		}
 	case "install", "add":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl install <binary> [install_dir] [install_message]")
@@ -150,12 +158,14 @@ func main() {
 		}
 
 		// Print the fields
-		fmt.Printf("Name: %s\n", binaryInfo.Name)
+		if binaryInfo.Name != "" {
+			fmt.Printf("Name: %s\n", binaryInfo.Name)
+		}
+		if binaryInfo.Description != "" {
+			fmt.Printf("Description: %s\n", binaryInfo.Description)
+		}
 		if binaryInfo.Repo != "" {
 			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
-		}
-		if binaryInfo.Source != "" {
-			fmt.Printf("Repo: %s\n", binaryInfo.Source)
 		}
 		if binaryInfo.Size != "" {
 			fmt.Printf("Size: %s\n", binaryInfo.Size)
@@ -166,8 +176,8 @@ func main() {
 		if binaryInfo.B3SUM != "" {
 			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
 		}
-		if binaryInfo.Description != "" {
-			fmt.Printf("Description: %s\n", binaryInfo.Description)
+		if binaryInfo.Source != "" {
+			fmt.Printf("Source: %s\n", binaryInfo.Source)
 		}
 	case "fast_info":
 		if len(os.Args) != 3 {

@@ -53,7 +53,7 @@ func fast_showBinaryInfo(binaryName string, validatedArch string) {
 	for _, bin := range binaries {
 		if bin.Name == binaryName && bin.Architecture == validatedArch {
 			// Print the binary information
-			fmt.Printf("Binary Name: %s\n", bin.Name)
+			fmt.Printf("Name: %s\n", bin.Name)
 			fmt.Printf("Description: %s\n", bin.Description)
 			if bin.Version != "" {
 				fmt.Printf("Version: %s\n", bin.Version)
