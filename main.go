@@ -75,6 +75,7 @@ func printHelp() {
 	fmt.Println("  bigdl search editor")
 	fmt.Println("  bigdl tldr gum")
 	fmt.Println("  bigdl run --verbose neofetch")
+	fmt.Println("  bigdl run --silent micro")
 	fmt.Println("  bigdl run btop")
 	fmt.Println("\nVersion:", VERSION)
 }
@@ -140,7 +141,7 @@ func main() {
 		remove(os.Args[2])
 	case "run":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl run [--verbose] <binary> [args...]")
+			fmt.Println("Usage: bigdl run [--verbose, --silent] <binary> [args...]")
 			os.Exit(1)
 		}
 		RunFromCache(os.Args[2], os.Args[3:])
