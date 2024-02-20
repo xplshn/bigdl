@@ -127,7 +127,11 @@ func main() {
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		installCommand(binaryName, []string{installDir, installMessage})
+		err := installCommand(binaryName, []string{installDir, installMessage})
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(1)
+		}
 	case "remove", "del":
 		if len(os.Args) != 3 {
 			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])

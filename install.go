@@ -16,13 +16,13 @@ func installCommand(binaryName string, args []string) error {
 	if installDir == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			return fmt.Errorf("failed to get user home directory: %w", err)
+			return fmt.Errorf("Error: Failed to get user's Home directory: %w", err)
 		}
 		installDir = filepath.Join(homeDir, ".local", "bin")
 	}
 
 	if err := os.MkdirAll(installDir, os.ModePerm); err != nil {
-		return fmt.Errorf("error creating installation directory: %v", err)
+		return fmt.Errorf("Error: Could not create installation directory: %v", err)
 	}
 
 	installPath := filepath.Join(installDir, binaryName)
@@ -34,16 +34,16 @@ func installCommand(binaryName string, args []string) error {
 		fmt.Printf("Using cached file: %s\n", cachedFile)
 		// Copy the cached file to the install path
 		if err := copyFile(cachedFile, installPath); err != nil {
-			return fmt.Errorf("error copying cached file: %v", err)
+			return fmt.Errorf("Error: Could not copy cached file: %v", err)
 		}
 	} else {
 		// If the cached file does not exist, download the binary
 		url, err := findURL(binaryName)
 		if err != nil {
-			return fmt.Errorf("error finding URL: %v", err)
+			return fmt.Errorf("Error: %v", err)
 		}
 		if err := fetchBinaryFromURL(url, installPath); err != nil {
-			return fmt.Errorf("error installing binary: %v", err)
+			return fmt.Errorf("Error: Could not install binary: %v", err)
 		}
 	}
 
