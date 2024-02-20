@@ -1,5 +1,4 @@
-// main.go // This is the main entrypoint, which calls all the different functions //
-
+// main.go // This is the main entrypoint, which calls all the different functions //>
 package main
 
 import (
@@ -41,8 +40,8 @@ func init() {
 	}
 }
 
-const RMetadataURL = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json"
-const VERSION = "1.1"
+const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
+const VERSION = "1.2"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
@@ -55,24 +54,29 @@ const (
 )
 
 func printHelp() {
-	fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]")
+	fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]")
 	fmt.Println("\nOptions:")
-	fmt.Println("  -h, --help    Show this help message")
-	fmt.Println("  -v, --version Show the version number")
+	fmt.Println("  -h, --help     Show this help message")
+	fmt.Println("  -v, --version  Show the version number")
 	fmt.Println("\nCommands:")
-	fmt.Println("  list          List all available binaries")
-	fmt.Println("  install       Install a binary")
-	fmt.Println("  remove        Remove a binary")
-	fmt.Println("  run           Run a binary")
-	fmt.Println("  info          Show information about a specific binary")
-	fmt.Println("  search        Search for a binary - (not all binaries have metadata. Use list to see all binaries)")
-	fmt.Println("  tldr          Show a brief description & usage examples for a given program/command")
+	fmt.Println("  list           List all available binaries")
+	fmt.Println("  install, add   Install a binary")
+	fmt.Println("  remove, del    Remove a binary")
+	fmt.Println("  update         Update binaries, by checking their SHA against the repo's SHA.")
+	fmt.Println("  run            Run a binary")
+	fmt.Println("  info           Show information about a specific binary")
+	fmt.Println("  fast_info      Show information about a specific binary - Using a single metadata file")
+	fmt.Println("  search         Search for a binary - (not all binaries have metadata. Use list to see all binaries)")
+	fmt.Println("  tldr           Show a brief description & usage examples for a given program/command")
 	fmt.Println("\nExamples:")
 	fmt.Println("  bigdl install micro")
 	fmt.Println("  bigdl remove bed")
 	fmt.Println("  bigdl info jq")
-	fmt.Println("  bigdl search fzf")
+	fmt.Println("  bigdl search editor")
 	fmt.Println("  bigdl tldr gum")
+	fmt.Println("  bigdl run --verbose neofetch")
+	fmt.Println("  bigdl run --silent micro")
+	fmt.Println("  bigdl run btop")
 	fmt.Println("\nVersion:", VERSION)
 }
 
@@ -91,7 +95,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
@@ -103,10 +107,17 @@ func main() {
 		}
 		findURLCommand(os.Args[2])
 	case "list":
-		listBinaries()
+		binaries, err := listBinaries()
+		if err != nil {
+			fmt.Println("Error listing binaries:", err)
+			os.Exit(1)
+		}
+		for _, binary := range binaries {
+			fmt.Println(binary)
+		}
 	case "install", "add":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl install <binary> [install_dir] [install_message]")
+			fmt.Printf("Usage: bigdl %s <binary> [install_dir] [install_message]\n", os.Args[1])
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
@@ -117,17 +128,20 @@ func main() {
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		installCommand(binaryName, []string{installDir, installMessage})
-	case "remove", "del":
-		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl remove <binary>")
+		err := installCommand(binaryName, []string{installDir, installMessage})
+		if err != nil {
+			fmt.Printf("%s\n", err.Error())
 			os.Exit(1)
 		}
-		binaryToRemove := os.Args[2]
-		remove(binaryToRemove)
+	case "remove", "del":
+		if len(os.Args) != 3 {
+			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])
+			os.Exit(1)
+		}
+		remove(os.Args[2])
 	case "run":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl run [--verbose] <binary> [args...]")
+			fmt.Println("Usage: bigdl run [--verbose, --silent] <binary> [args...]")
 			os.Exit(1)
 		}
 		RunFromCache(os.Args[2], os.Args[3:])
@@ -143,7 +157,41 @@ func main() {
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
-		showBinaryInfo(binaryName)
+		binaryInfo, err := getBinaryInfo(binaryName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		// Print the fields
+		if binaryInfo.Name != "" {
+			fmt.Printf("Name: %s\n", binaryInfo.Name)
+		}
+		if binaryInfo.Description != "" {
+			fmt.Printf("Description: %s\n", binaryInfo.Description)
+		}
+		if binaryInfo.Repo != "" {
+			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
+		}
+		if binaryInfo.Size != "" {
+			fmt.Printf("Size: %s\n", binaryInfo.Size)
+		}
+		if binaryInfo.SHA256 != "" {
+			fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
+		}
+		if binaryInfo.B3SUM != "" {
+			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
+		}
+		if binaryInfo.Source != "" {
+			fmt.Printf("Source: %s\n", binaryInfo.Source)
+		}
+	case "fast_info":
+		if len(os.Args) != 3 {
+			fmt.Println("Usage: bigdl fast_info <binary>")
+			os.Exit(1)
+		}
+		binaryName := os.Args[2]
+		fast_showBinaryInfo(binaryName, validatedArch[1])
 	case "search":
 		if len(os.Args) != 3 {
 			fmt.Println("Usage: bigdl search <search-term>")
@@ -151,6 +199,8 @@ func main() {
 		}
 		searchTerm := os.Args[2]
 		fSearch(searchTerm, validatedArch[1])
+	case "update":
+		update()
 	default:
 		fmt.Printf("bigdl: Unknown command: %s\n", os.Args[1])
 		os.Exit(1)

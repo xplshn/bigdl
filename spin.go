@@ -1,5 +1,4 @@
-// spin.go // Implements the spin function which fetch_binary uses to report status.
-
+// spin.go // Implements the spin function which fetch_binary uses to report status. //>
 package main
 
 import (

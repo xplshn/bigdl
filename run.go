@@ -1,5 +1,4 @@
-// run.go // This file implements functions related to the Run options //
-
+// run.go // This file implements the "run" functionality //>
 package main
 
 import (
@@ -13,6 +12,7 @@ import (
 )
 
 var verboseMode bool
+var silentMode bool
 
 // ReturnCachedFile retrieves the cached file location.
 // Returns an empty string and error code   1 if not found.
@@ -44,16 +44,35 @@ func RunFromCache(binaryName string, args []string) {
 		}
 	}
 
+	// Check for silent mode flag
+	if binaryName == "--silent" {
+		// In this case, we should set binaryName to the next argument if available
+		if len(args) > 0 {
+			binaryName = args[0]
+			args = args[1:] // Remove the flag from the arguments
+			silentMode = true
+		} else {
+			fmt.Println("Error: Binary name not provided after --silent flag.")
+			os.Exit(1)
+		}
+	}
+
 	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
-		fmt.Printf("Running '%s' from cache...\n", binaryName)
+		if !silentMode { // Check if not in silent mode before printing
+			fmt.Printf("Running '%s' from cache...\n", binaryName)
+		}
 		runBinary(cachedFile, args, verboseMode)
 		cleanCache()
 	} else {
-		fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", binaryName)
+		if !silentMode { // Check if not in silent mode before printing
+			fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", binaryName)
+		}
 		err := fetchBinary(binaryName)
 		if err != nil {
-			fmt.Printf("Error fetching binary for '%s': %v\n", binaryName, err)
+			if !silentMode { // Check if not in silent mode before printing
+				fmt.Printf("Error fetching binary for '%s': %v\n", binaryName, err)
+			}
 			os.Exit(1)
 		}
 		cleanCache()
@@ -163,7 +182,9 @@ func cleanCache() {
 	for i := 0; i < BinariesToDelete; i++ {
 		err := os.Remove(filepath.Join(TEMP_DIR, filesWithAtime[i].info.Name()))
 		if err != nil {
-			fmt.Printf("Error removing file: %v\n", err)
+			if !silentMode { // Check if not in silent mode before printing
+				fmt.Printf("Error removing file: %v\n", err)
+			}
 		}
 	}
 }

@@ -1,5 +1,4 @@
-// info.go // this file implements the functionality of 'info'
-
+// info.go // this file implements the functionality of 'info' //>
 package main
 
 import (
@@ -12,11 +11,13 @@ import (
 // BinaryInfo represents the structure of binary information.
 type BinaryInfo struct {
 	Name        string `json:"Name"`
+	Description string `json:"Description"`
 	Repo        string `json:"Repo"`
+	ModTime     string `json:"ModTime"`
 	Size        string `json:"Size"`
 	SHA256      string `json:"SHA256"`
 	B3SUM       string `json:"B3SUM"`
-	Description string `json:"Description"`
+	Source      string `json:"Source"`
 }
 
 // BinaryMetadata represents the structure of the metadata for a binary.
@@ -24,84 +25,66 @@ type BinaryMetadata struct {
 	Binaries []BinaryInfo `json:"binaries"`
 }
 
-// showBinaryInfo fetches binary information from MetadataURLs and prints it.
-func showBinaryInfo(binaryName string) {
+// getBinaryInfo fetches binary information from MetadataURLs and returns it as a BinaryInfo struct.
+func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
 	for i, metadataURL := range MetadataURLs {
-		if i >= 2 { // TODO: Correctly unmarshal Github's REST API's "contents" endpoint.
+		if i >= 2 { // TODO: Correctly unmarshal Github's REST API's "contents" endpoint. In order not to do this ugly thing.
 			break
 		}
-
 		response, err := http.Get(metadataURL)
 		if err != nil {
-			fmt.Printf("Error fetching metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error fetching metadata from %s: %v", metadataURL, err)
 		}
 		defer response.Body.Close()
 
 		body, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			fmt.Printf("Error reading metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error reading metadata from %s: %v", metadataURL, err)
 		}
 
 		var metadata []BinaryInfo
 		if err := json.Unmarshal(body, &metadata); err != nil {
-			fmt.Printf("Error decoding metadata from %s: %v\n", metadataURL, err)
-			continue
+			return nil, fmt.Errorf("error decoding metadata from %s: %v", metadataURL, err)
 		}
 
 		for _, bin := range metadata {
 			if bin.Name == binaryName {
-				fmt.Printf("Binary Name: %s\n", bin.Name)
-				if bin.Repo != "" {
-					fmt.Printf("Repo: %s\n", bin.Repo)
-				}
-				if bin.Size != "" {
-					fmt.Printf("Size: %s\n", bin.Size)
-				}
-				if bin.SHA256 != "" {
-					fmt.Printf("SHA256: %s\n", bin.SHA256)
-				}
-				if bin.B3SUM != "" {
-					fmt.Printf("B3SUM: %s\n", bin.B3SUM)
-				}
-
 				// Fetch the description from RMetadataURL
 				response, err = http.Get(RMetadataURL)
 				if err != nil {
-					fmt.Printf("Error fetching description from %s: %v\n", RMetadataURL, err)
-					return
+					return nil, fmt.Errorf("error fetching description from %s: %v", RMetadataURL, err)
 				}
 				defer response.Body.Close()
 
 				body, err = ioutil.ReadAll(response.Body)
 				if err != nil {
-					fmt.Printf("Error reading description from %s: %v\n", RMetadataURL, err)
-					return
+					return nil, fmt.Errorf("error reading description from %s: %v", RMetadataURL, err)
 				}
 
-				// Unmarshal the description as a BinaryMetadata object
-				var binaryMetadata BinaryMetadata
-				if err := json.Unmarshal(body, &binaryMetadata); err != nil {
-					fmt.Printf("Error decoding description from %s: %v\n", RMetadataURL, err)
-					return
+				// Unmarshal the description as a map with a slice of BinaryInfo objects
+				var descriptionMetadata map[string][]BinaryInfo
+				if err := json.Unmarshal(body, &descriptionMetadata); err != nil {
+					return nil, fmt.Errorf("error decoding description from %s: %v", RMetadataURL, err)
 				}
 
-				// Find the binary in the metadata and set the description
-				for _, binInfo := range binaryMetadata.Binaries {
+				// TODO: Once Github repos are supported, optionally detect METADATA.json files in the repos.
+				binaries, exists := descriptionMetadata["packages"]
+				if !exists {
+					return nil, fmt.Errorf("invalid description metadata format. No 'packages' field found.")
+				}
+
+				// Find the binary with the matching name and set its description
+				for _, binInfo := range binaries {
 					if binInfo.Name == binaryName {
 						bin.Description = binInfo.Description
 						break
 					}
 				}
 
-				if bin.Description != "" {
-					fmt.Printf("Description: %s\n", bin.Description)
-				}
-				return
+				return &bin, nil
 			}
 		}
 	}
 
-	fmt.Printf("Info for the requested binary ('%s') not found in the metadata.json files. Please contribute to the repositories.\n", binaryName)
+	return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json files", binaryName)
 }
