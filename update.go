@@ -49,41 +49,40 @@ func update() error {
 
 			localSHA256, err := getLocalSHA256(filepath.Join(installDir, binaryName))
 			if err != nil {
-				fmt.Printf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping.   ", binaryName)
+				fmt.Printf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping.", binaryName)
 				skipped++
 				continue
 			}
 
 			binaryInfo, err := getBinaryInfo(binaryName)
 			if err != nil {
-				fmt.Printf("\033[2K\rWarning: Failed to get metadata for %s. Skipping.   ", binaryName)
+				fmt.Printf("\033[2K\rWarning: Failed to get metadata for %s. Skipping.", binaryName)
 				skipped++
 				continue
 			}
 
 			// Skip if the SHA field is null
 			if binaryInfo.SHA256 == "" {
-				fmt.Printf("\033[2K\rSkipping %s because the SHA256 field is null.   ", binaryName)
+				fmt.Printf("\033[2K\rSkipping %s because the SHA256 field is null.", binaryName)
 				skipped++
 				continue
 			}
 
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
-				fmt.Printf("\033[2K\rDetected a difference in %s. Updating...   ", binaryName)
+				fmt.Printf("\033[2K\rDetected a difference in %s. Updating...", binaryName)
 				installMessage := fmt.Sprintf("Updating %s to version %s", binaryName, binaryInfo.SHA256)
 				err := installCommand(binaryName, []string{installDir, installMessage})
 				if err != nil {
-					fmt.Printf("\033[2K\rError: Failed to update %s: %v   ", binaryName, err)
+					fmt.Printf("\033[2K\rError: Failed to update %s: %v", binaryName, err)
 					continue
 				}
-				fmt.Printf("\033[2K\rSuccessfully updated %s.   ", binaryName)
+				fmt.Printf("\033[2K\rSuccessfully updated %s.", binaryName)
 				updated++
 			} else {
-				fmt.Printf("\033[2K\rNo updates available for %s.   ", binaryName)
+				fmt.Printf("\033[2K\rNo updates available for %s.", binaryName)
 			}
 		}
 	}
-
 	// Print final counts
 	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
 
