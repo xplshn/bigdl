@@ -61,14 +61,20 @@ func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
 					return nil, fmt.Errorf("error reading description from %s: %v", RMetadataURL, err)
 				}
 
-				// Unmarshal the description as a BinaryMetadata object
-				var binaryMetadata BinaryMetadata
-				if err := json.Unmarshal(body, &binaryMetadata); err != nil {
+				// Unmarshal the description as a map with a slice of BinaryInfo objects
+				var descriptionMetadata map[string][]BinaryInfo
+				if err := json.Unmarshal(body, &descriptionMetadata); err != nil {
 					return nil, fmt.Errorf("error decoding description from %s: %v", RMetadataURL, err)
 				}
 
-				// Find the binary in the metadata and set the description
-				for _, binInfo := range binaryMetadata.Binaries {
+				// TODO: Once Github repos are supported, optionally detect METADATA.json files in the repos.
+				binaries, exists := descriptionMetadata["packages"]
+				if !exists {
+					return nil, fmt.Errorf("invalid description metadata format. No 'packages' field found.")
+				}
+
+				// Find the binary with the matching name and set its description
+				for _, binInfo := range binaries {
 					if binInfo.Name == binaryName {
 						bin.Description = binInfo.Description
 						break

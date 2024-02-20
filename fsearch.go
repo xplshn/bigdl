@@ -29,17 +29,29 @@ func fSearch(searchTerm string, desiredArch string) {
 		return
 	}
 
-	var metadata map[string][]BinaryInfo
-	if err := json.Unmarshal(body, &metadata); err != nil {
+	// Define a struct to match the JSON structure from RMetadataURL
+	type Binary struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		// Include other fields if needed
+	}
+
+	type RMetadata struct {
+		Binaries []Binary `json:"packages"`
+	}
+
+	// Unmarshal the description as an RMetadata object
+	var rMetadata RMetadata
+	if err := json.Unmarshal(body, &rMetadata); err != nil {
 		fmt.Println("Failed to decode metadata.")
 		return
 	}
 
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{}) // Use a set to keep track of unique entries
-	for _, bin := range metadata["binaries"] {
-		if strings.Contains(strings.ToLower(bin.Name+bin.Description), strings.ToLower(searchTerm)) {
-			entry := fmt.Sprintf("%s - %s", bin.Name, bin.Description)
+	for _, pkg := range rMetadata.Binaries {
+		if strings.Contains(strings.ToLower(pkg.Name+pkg.Description), strings.ToLower(searchTerm)) {
+			entry := fmt.Sprintf("%s - %s", pkg.Name, pkg.Description)
 			searchResultsSet[entry] = struct{}{} // Add the entry to the set
 		}
 	}
@@ -49,7 +61,7 @@ func fSearch(searchTerm string, desiredArch string) {
 		fmt.Printf("No matching binaries found for '%s'.\n", searchTerm)
 		return
 	} else if len(searchResultsSet) > 90 {
-		fmt.Printf("Too many matching binaries found for '%s'.\n", searchTerm)
+		fmt.Printf("Too many matching binaries (+90. [Limit defined in fsearch.go:63:36,37]) found for '%s'.\n", searchTerm)
 		return
 	}
 
@@ -68,11 +80,11 @@ func fSearch(searchTerm string, desiredArch string) {
 		cmd.Stdin = os.Stdin
 		out, err := cmd.Output()
 		if err != nil {
-			return 80 // Default to  80 columns if unable to get terminal width
+			return 80 // Default to   80 columns if unable to get terminal width
 		}
 		width, err := strconv.Atoi(strings.TrimSpace(string(out)))
 		if err != nil {
-			return 80 // Default to  80 columns if unable to convert width to integer
+			return 80 // Default to   80 columns if unable to convert width to integer
 		}
 		return width
 	}
@@ -102,7 +114,7 @@ func fSearch(searchTerm string, desiredArch string) {
 		}
 
 		// Calculate available space for description
-		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 //  4 accounts for space around ' - '
+		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 //   4 accounts for space around ' - '
 
 		// Truncate the description if it exceeds the available space
 		if len(description) > availableSpace {
