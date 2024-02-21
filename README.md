@@ -13,8 +13,9 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
    - `list`: View all available binaries across all three repos.
    - `install`: Seamlessly add your desired program to your system.
    - `remove`: Say goodbye to programs you no longer need.
+   - `update`: Get new features. Update all, or a select list of programs in an instant.
    - `run`: Execute programs instantly, without the hassle of installing.
-   - `info`: Get detailed information about a specific program.
+   - `info|fast_info`: Get detailed information about a specific program.
    - `search`: Find the perfect program to suit your needs.
    - `tldr`: Show a <abbr title="Details: its just an alias to 'bigdl run tlrc'">tldr</abbr> page (without installing any 'TLDR' client)
 
@@ -22,7 +23,7 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
 #### Usage:
 
 ```
-$ Usage: bigdl [-vh] {list|install|remove|run|info|search|tldr} [args...]
+$ Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]
 ```
 
 #### BDL Compatibility:
