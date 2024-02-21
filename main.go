@@ -200,7 +200,20 @@ func main() {
 		searchTerm := os.Args[2]
 		fSearch(searchTerm, validatedArch[1])
 	case "update":
-		update()
+		if len(os.Args) > 2 {
+			// Bulk update with list of programs to update
+			programsToUpdate := os.Args[2:]
+			if err := update(programsToUpdate); err != nil {
+				fmt.Printf("Error updating programs: %v\n", err)
+				os.Exit(1)
+			}
+		} else {
+			// Update by listing files from InstallDir
+			if err := update(nil); err != nil {
+				fmt.Printf("Error updating programs: %v\n", err)
+				os.Exit(1)
+			}
+		}
 	default:
 		fmt.Printf("bigdl: Unknown command: %s\n", os.Args[1])
 		os.Exit(1)

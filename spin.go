@@ -27,7 +27,7 @@ func Spin(text string) {
 				stopSpinner = nil
 				return
 			default:
-				fmt.Printf("\r%c Working... %s", spinChars[spinIndex], text)
+				fmt.Printf("\033[2K\r%c Working... %s", spinChars[spinIndex], text)
 				spinIndex = (spinIndex + 1) % len(spinChars)
 				time.Sleep(100 * time.Millisecond)
 			}

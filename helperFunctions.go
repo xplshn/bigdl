@@ -8,9 +8,12 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"sort"
+	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -216,4 +219,60 @@ func isExecutable(filePath string) bool {
 		return false
 	}
 	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
+}
+
+// truncateSprintf formats the string and truncates it if it exceeds the terminal width.
+func truncateSprintf(format string, a ...interface{}) string {
+	// Format the string first
+	formatted := fmt.Sprintf(format, a...)
+
+	// Determine the truncation length
+	getTerminalWidth := func() int {
+		// Try using stty size
+		cmd := exec.Command("stty", "size")
+		cmd.Stdin = os.Stdin
+		out, err := cmd.Output()
+		if err == nil {
+			// stty size returns rows and columns, we only need columns
+			parts := strings.Split(strings.TrimSpace(string(out)), " ")
+			if len(parts) == 2 {
+				width, err := strconv.Atoi(parts[1])
+				if err == nil {
+					return width
+				}
+			}
+		}
+
+		// Fallback to tput cols
+		cmd = exec.Command("tput", "cols")
+		cmd.Stdin = os.Stdin
+		out, err = cmd.Output()
+		if err == nil {
+			width, err := strconv.Atoi(strings.TrimSpace(string(out)))
+			if err == nil {
+				return width
+			}
+		}
+
+		// Fallback to   80 columns
+		return 80
+	}
+
+	// Truncate the formatted string if it exceeds the available space
+	availableSpace := getTerminalWidth()
+	if len(formatted) > availableSpace {
+		formatted = fmt.Sprintf("%s...", formatted[:availableSpace-3]) // Shrink to the maximum line size
+	}
+
+	// Return the possibly truncated string
+	return formatted
+}
+
+// truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
+func truncatePrintf(format string, a ...interface{}) (n int, err error) {
+	// Call truncateSprintf to get the formatted and truncated string
+	formatted := truncateSprintf(format, a...)
+
+	// Print the possibly truncated string
+	return fmt.Print(formatted)
 }

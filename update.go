@@ -11,11 +11,45 @@ import (
 )
 
 // update checks for updates to the valid programs and installs any that have changed.
-func update() error {
-	validPrograms, err := listBinaries()
-	if err != nil {
-		return fmt.Errorf("failed to list binaries: %w", err)
+func update(programsToUpdate []string) error {
+	// If programsToUpdate is nil, list files from InstallDir
+	if programsToUpdate == nil {
+		validPrograms, err := listBinaries()
+		if err != nil {
+			return fmt.Errorf("failed to list binaries: %w", err)
+		}
+
+		installDir := os.Getenv("INSTALL_DIR")
+		if installDir == "" {
+			homeDir, err := os.UserHomeDir()
+			if err != nil {
+				return fmt.Errorf("failed to get user home directory: %w", err)
+			}
+			installDir = filepath.Join(homeDir, ".local", "bin")
+		}
+
+		info, err := os.Stat(installDir)
+		if err != nil || !info.IsDir() {
+			return fmt.Errorf("installation directory %s is not a directory", installDir)
+		}
+
+		files, err := os.ReadDir(installDir)
+		if err != nil {
+			return fmt.Errorf("failed to read directory %s: %w", installDir, err)
+		}
+
+		programsToUpdate = make([]string, 0)
+		for _, file := range files {
+			if !file.IsDir() && contains(validPrograms, file.Name()) {
+				programsToUpdate = append(programsToUpdate, file.Name())
+			}
+		}
 	}
+
+	totalPrograms := len(programsToUpdate)
+
+	// Initialize counters
+	var skipped, updated, checked int
 
 	installDir := os.Getenv("INSTALL_DIR")
 	if installDir == "" {
@@ -31,60 +65,59 @@ func update() error {
 		return fmt.Errorf("installation directory %s is not a directory", installDir)
 	}
 
-	files, err := os.ReadDir(installDir)
-	if err != nil {
-		return fmt.Errorf("failed to read directory %s: %w", installDir, err)
-	}
-
-	// Initialize counters
-	var skipped, updated, checked int
-
-	for _, file := range files {
-		if file.IsDir() {
+	for _, program := range programsToUpdate {
+		checked++ // Increment the checked counter for every processed program
+		leftToGoStr := fmt.Sprintf("(%d/%d)", checked, totalPrograms)
+		localFilePath := filepath.Join(installDir, program)
+		_, err := os.Stat(localFilePath)
+		if os.IsNotExist(err) {
+			truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. %s\n", program, leftToGoStr)
+			skipped++
+			continue
+		} else if err != nil {
+			truncatePrintf("\033[2K\rWarning: Failed to access program %s. Skipping. %s", program, leftToGoStr)
+			skipped++
 			continue
 		}
-		binaryName := file.Name()
-		if contains(validPrograms, binaryName) {
-			checked++ // Increment the checked counter for every processed binary
 
-			localSHA256, err := getLocalSHA256(filepath.Join(installDir, binaryName))
+		localSHA256, err := getLocalSHA256(localFilePath)
+		if err != nil {
+			truncatePrintf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping. %s", program, leftToGoStr)
+			skipped++
+			continue
+		}
+
+		binaryInfo, err := getBinaryInfo(program)
+		if err != nil {
+			truncatePrintf("\033[2K\rWarning: Failed to get metadata for %s. Skipping. %s", program, leftToGoStr)
+			skipped++
+			continue
+		}
+
+		// Skip if the SHA field is null
+		if binaryInfo.SHA256 == "" {
+			truncatePrintf("\033[2K\rSkipping %s because the SHA256 field is null. %s", program, leftToGoStr)
+			skipped++
+			continue
+		}
+
+		if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
+			truncatePrintf("\033[2K\rDetected a difference in %s. Updating... %s", program, leftToGoStr)
+			installMessage := truncateSprintf("\033[2K\rUpdating %s to version %s", program, binaryInfo.SHA256)
+			err := installCommand(program, []string{installDir}, installMessage)
 			if err != nil {
-				fmt.Printf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping.", binaryName)
-				skipped++
+				truncatePrintf("\033[2K\rError: Failed to update %s: %v", program, err)
 				continue
 			}
-
-			binaryInfo, err := getBinaryInfo(binaryName)
-			if err != nil {
-				fmt.Printf("\033[2K\rWarning: Failed to get metadata for %s. Skipping.", binaryName)
-				skipped++
-				continue
-			}
-
-			// Skip if the SHA field is null
-			if binaryInfo.SHA256 == "" {
-				fmt.Printf("\033[2K\rSkipping %s because the SHA256 field is null.", binaryName)
-				skipped++
-				continue
-			}
-
-			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
-				fmt.Printf("\033[2K\rDetected a difference in %s. Updating...", binaryName)
-				installMessage := fmt.Sprintf("Updating %s to version %s", binaryName, binaryInfo.SHA256)
-				err := installCommand(binaryName, []string{installDir, installMessage})
-				if err != nil {
-					fmt.Printf("\033[2K\rError: Failed to update %s: %v", binaryName, err)
-					continue
-				}
-				fmt.Printf("\033[2K\rSuccessfully updated %s.", binaryName)
-				updated++
-			} else {
-				fmt.Printf("\033[2K\rNo updates available for %s.", binaryName)
-			}
+			truncatePrintf("\033[2K\rSuccessfully updated %s. %s", program, leftToGoStr)
+			updated++
+		} else {
+			truncatePrintf("\033[2K\rNo updates available for %s. %s", program, leftToGoStr)
 		}
 	}
+
 	// Print final counts
-	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
+	truncatePrintf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
 
 	return nil
 }

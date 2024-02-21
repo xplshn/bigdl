@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func installCommand(binaryName string, args []string) error {
+func installCommand(binaryName string, args []string, messages ...string) error {
 	installDir := os.Getenv("INSTALL_DIR")
 	if len(args) > 0 && args[0] != "" {
 		installDir = args[0]
@@ -47,7 +47,14 @@ func installCommand(binaryName string, args []string) error {
 		}
 	}
 
-	// Use the escape sequence for newline directly
-	fmt.Printf("Installation complete: %s \n", installPath)
+	// Check if any messages are provided and print them
+	if len(messages) > 0 {
+		for _, message := range messages {
+			fmt.Printf(message)
+		}
+	} else {
+		// If no message provided, print default installation complete message
+		fmt.Printf("Installation complete: %s \n", installPath)
+	}
 	return nil
 }
