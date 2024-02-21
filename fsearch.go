@@ -7,9 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -49,9 +47,9 @@ func fSearch(searchTerm string, desiredArch string) {
 
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{}) // Use a set to keep track of unique entries
-	for _, pkg := range rMetadata.Binaries {
-		if strings.Contains(strings.ToLower(pkg.Name+pkg.Description), strings.ToLower(searchTerm)) {
-			entry := fmt.Sprintf("%s - %s", pkg.Name, pkg.Description)
+	for _, binary := range rMetadata.Binaries {
+		if strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
+			entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
 			searchResultsSet[entry] = struct{}{} // Add the entry to the set
 		}
 	}
@@ -73,21 +71,6 @@ func fSearch(searchTerm string, desiredArch string) {
 
 	// Sort the search results
 	searchResults = sortBinaries(searchResults)
-
-	// Determine the truncation length
-	getTerminalWidth := func() int {
-		cmd := exec.Command("tput", "cols")
-		cmd.Stdin = os.Stdin
-		out, err := cmd.Output()
-		if err != nil {
-			return 80 // Default to   80 columns if unable to get terminal width
-		}
-		width, err := strconv.Atoi(strings.TrimSpace(string(out)))
-		if err != nil {
-			return 80 // Default to   80 columns if unable to convert width to integer
-		}
-		return width
-	}
 
 	// Check if the binary exists in the INSTALL_DIR and print results with installation state indicators
 	for _, line := range searchResults {
@@ -113,14 +96,6 @@ func fSearch(searchTerm string, desiredArch string) {
 			prefix = "[-]"
 		}
 
-		// Calculate available space for description
-		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 //   4 accounts for space around ' - '
-
-		// Truncate the description if it exceeds the available space
-		if len(description) > availableSpace {
-			description = fmt.Sprintf("%s...", description[:availableSpace-3]) // Shrink to the maximum line size
-		}
-
-		fmt.Printf("%s %s - %s\n", prefix, name, description)
+		truncatePrintf("%s %s - %s\n", prefix, name, description)
 	}
 }
