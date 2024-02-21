@@ -128,7 +128,7 @@ func main() {
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		err := installCommand(binaryName, []string{installDir, installMessage})
+		err := installCommand(binaryName, []string{installDir}, installMessage)
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(1)

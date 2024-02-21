@@ -106,7 +106,7 @@ func update(programsToUpdate []string) error {
 			installMessage := truncateSprintf("\033[2K\rUpdating %s to version %s", program, binaryInfo.SHA256)
 			err := installCommand(program, []string{installDir}, installMessage)
 			if err != nil {
-				truncatePrintf("\033[2K\rError: Failed to update %s: %v", program, err)
+				fmt.Printf("%s\n", err.Error())
 				continue
 			}
 			truncatePrintf("\033[2K\rSuccessfully updated %s. %s", program, leftToGoStr)
