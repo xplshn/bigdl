@@ -48,7 +48,7 @@ func installCommand(binaryName string, args []string, messages ...string) error 
 	}
 
 	// Check if any messages are provided and print them
-	if len(messages) > 0 {
+	if len(messages) > 0 && messages[0] != "" {
 		for _, message := range messages {
 			fmt.Printf(message)
 		}
