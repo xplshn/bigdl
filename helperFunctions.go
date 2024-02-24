@@ -1,5 +1,5 @@
 // helperFunctions.go // This file contains commonly used functions //>
-
+// TODO: Add *PROPER* error handling in the truncate functions. Ensure escape sequences are correctly handled?
 package main
 
 import (
@@ -260,13 +260,13 @@ func truncateSprintf(format string, a ...interface{}) string {
 	formatted := fmt.Sprintf(format, a...)
 
 	// Determine the truncation length & truncate the formatted string if it exceeds the available space
-	availableSpace := getTerminalWidth()
+	availableSpace := getTerminalWidth() - 3
 	if len(formatted) > availableSpace {
-		formatted = fmt.Sprintf("%s", formatted[:availableSpace-4]) // Shrink to the maximum line size, accounting for the dots to be added.
+		formatted = fmt.Sprintf("%s", formatted[:availableSpace])
 		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
 			formatted = formatted[:len(formatted)-1]
 		}
-		formatted = fmt.Sprintf("%s...>", formatted) // Add the dots
+		formatted = fmt.Sprintf("%s...>", formatted) // Add the dots.
 	}
 
 	return formatted
@@ -280,3 +280,5 @@ func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 	// Print the possibly truncated string
 	return fmt.Print(formatted)
 }
+
+// NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
