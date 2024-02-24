@@ -221,50 +221,54 @@ func isExecutable(filePath string) bool {
 	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
 }
 
+// GetTerminalWidth attempts to determine the width of the terminal.
+// It first tries using "stty size", then "tput cols", and finally falls back to  80 columns.
+func getTerminalWidth() int {
+	// Try using stty size
+	cmd := exec.Command("stty", "size")
+	cmd.Stdin = os.Stdin
+	out, err := cmd.Output()
+	if err == nil {
+		// stty size returns rows and columns
+		parts := strings.Split(strings.TrimSpace(string(out)), " ")
+		if len(parts) == 2 {
+			width, err := strconv.Atoi(parts[1])
+			if err == nil {
+				return width
+			}
+		}
+	}
+
+	// Fallback to tput cols
+	cmd = exec.Command("tput", "cols")
+	cmd.Stdin = os.Stdin
+	out, err = cmd.Output()
+	if err == nil {
+		width, err := strconv.Atoi(strings.TrimSpace(string(out)))
+		if err == nil {
+			return width
+		}
+	}
+
+	// Fallback to  80 columns
+	return 80
+}
+
 // truncateSprintf formats the string and truncates it if it exceeds the terminal width.
 func truncateSprintf(format string, a ...interface{}) string {
 	// Format the string first
 	formatted := fmt.Sprintf(format, a...)
 
-	// Determine the truncation length
-	getTerminalWidth := func() int {
-		// Try using stty size
-		cmd := exec.Command("stty", "size")
-		cmd.Stdin = os.Stdin
-		out, err := cmd.Output()
-		if err == nil {
-			// stty size returns rows and columns, we only need columns
-			parts := strings.Split(strings.TrimSpace(string(out)), " ")
-			if len(parts) == 2 {
-				width, err := strconv.Atoi(parts[1])
-				if err == nil {
-					return width
-				}
-			}
-		}
-
-		// Fallback to tput cols
-		cmd = exec.Command("tput", "cols")
-		cmd.Stdin = os.Stdin
-		out, err = cmd.Output()
-		if err == nil {
-			width, err := strconv.Atoi(strings.TrimSpace(string(out)))
-			if err == nil {
-				return width
-			}
-		}
-
-		// Fallback to   80 columns
-		return 80
-	}
-
-	// Truncate the formatted string if it exceeds the available space
+	// Determine the truncation length & truncate the formatted string if it exceeds the available space
 	availableSpace := getTerminalWidth()
 	if len(formatted) > availableSpace {
-		formatted = fmt.Sprintf("%s...", formatted[:availableSpace-3]) // Shrink to the maximum line size
+		formatted = fmt.Sprintf("%s", formatted[:availableSpace-4]) // Shrink to the maximum line size, accounting for the dots to be added.
+		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
+			formatted = formatted[:len(formatted)-1]
+		}
+		formatted = fmt.Sprintf("%s...>", formatted) // Add the dots
 	}
 
-	// Return the possibly truncated string
 	return formatted
 }
 

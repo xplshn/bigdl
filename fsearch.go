@@ -1,4 +1,5 @@
-// fsearch.go // this file implements the search option //>
+// fsearch.go // this file implements the search option
+
 package main
 
 import (
@@ -96,6 +97,14 @@ func fSearch(searchTerm string, desiredArch string) {
 			prefix = "[-]"
 		}
 
-		truncatePrintf("%s %s - %s\n", prefix, name, description)
+		// Calculate available space for description
+		availableSpace := getTerminalWidth() - len(prefix) - len(name) - 4 //  4 accounts for space around ' - '
+
+		// Truncate the description if it exceeds the available space
+		if len(description) > availableSpace {
+			description = fmt.Sprintf("%s...", description[:availableSpace-3]) // Shrink to the maximum line size
+		}
+
+		fmt.Printf("%s %s - %s\n", prefix, name, description)
 	}
 }
