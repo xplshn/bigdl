@@ -42,7 +42,7 @@ func init() {
 
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
-const VERSION = "1.2"
+const VERSION = "1.3"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
@@ -51,7 +51,7 @@ const (
 	MaxCacheSize     = 10
 	BinariesToDelete = 5
 	// TMPDIR is the directory for storing temporary files.
-	TEMP_DIR = "/tmp/bigdl_cached"
+	TEMP_DIR = "/tmp/bigdl_cached" // TODO: Don't hardcode this value.
 )
 
 func printHelp() {
@@ -95,7 +95,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|fast_info|search|tldr} [args...]")
+		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]")
 		os.Exit(1)
 	}
 
