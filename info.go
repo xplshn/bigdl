@@ -22,7 +22,7 @@ type BinaryInfo struct {
 
 // getBinaryInfo fetches a binary's information from RNMetadataURL and RMetadataURL and returns it as a BinaryInfo struct.
 func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
-	// Fetch binary technical details from RNMetadataURL
+	// Fetch a binary's details from RNMetadataURL
 	response, err := http.Get(RNMetadataURL)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching metadata from %s: %v", RNMetadataURL, err)
@@ -79,7 +79,7 @@ func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
 	}
 
 	if !found {
-		return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json file for architecture '%s'", binaryName, validatedArch)
+		return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json file for architecture '%s'", binaryName, validatedArch[2])
 	}
 
 	// Fetch binary description from RMetadataURL
