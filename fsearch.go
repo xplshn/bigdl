@@ -13,7 +13,7 @@ import (
 )
 
 // fSearch searches for binaries based on the given search term.
-func fSearch(searchTerm string, desiredArch string) {
+func fSearch(searchTerm string) {
 	// Fetch metadata
 	response, err := http.Get(RMetadataURL)
 	if err != nil {
