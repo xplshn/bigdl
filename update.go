@@ -71,7 +71,8 @@ func update(programsToUpdate []string) error {
 		localFilePath := filepath.Join(installDir, program)
 		_, err := os.Stat(localFilePath)
 		if os.IsNotExist(err) {
-			truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. %s\n", program, leftToGoStr)
+			truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. %s", program, leftToGoStr)
+			fmt.Printf("\n")
 			skipped++
 			continue
 		} else if err != nil {
@@ -117,8 +118,7 @@ func update(programsToUpdate []string) error {
 	}
 
 	// Print final counts
-	truncatePrintf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
-
+	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
 	return nil
 }
 
