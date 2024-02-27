@@ -260,7 +260,7 @@ func truncateSprintf(format string, a ...interface{}) string {
 	formatted := fmt.Sprintf(format, a...)
 
 	// Determine the truncation length & truncate the formatted string if it exceeds the available space
-	availableSpace := getTerminalWidth() - 3
+	availableSpace := getTerminalWidth() - 4
 	if len(formatted) > availableSpace {
 		formatted = fmt.Sprintf("%s", formatted[:availableSpace])
 		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
