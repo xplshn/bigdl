@@ -105,11 +105,13 @@ func update(programsToUpdate []string) error {
 		if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
 			truncatePrintf("\033[2K\rDetected a difference in %s. Updating... %s", program, leftToGoStr)
 			installMessage := truncateSprintf("\033[2K\rUpdating %s to version %s", program, binaryInfo.SHA256)
+			installUseCache = false
 			err := installCommand(program, []string{installDir}, installMessage)
 			if err != nil {
 				fmt.Printf("%s\n", err.Error())
 				continue
 			}
+			installUseCache = false
 			truncatePrintf("\033[2K\rSuccessfully updated %s. %s", program, leftToGoStr)
 			updated++
 		} else {

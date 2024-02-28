@@ -40,6 +40,8 @@ func init() {
 	}
 }
 
+var installUseCache = true
+
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
 const VERSION = "1.3"

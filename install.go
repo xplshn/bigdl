@@ -28,23 +28,26 @@ func installCommand(binaryName string, args []string, messages ...string) error 
 	installPath := filepath.Join(installDir, binaryName)
 
 	// Use ReturnCachedFile to check for a cached file
-	cachedFile, errCode := ReturnCachedFile(binaryName)
-	if errCode == 0 {
-		// If the cached file exists, use it
-		fmt.Printf("Using cached file: %s\n", cachedFile)
-		// Copy the cached file to the install path
-		if err := copyFile(cachedFile, installPath); err != nil {
-			return fmt.Errorf("Error: Could not copy cached file: %v", err)
+	if installUseCache {
+		cachedFile, errCode := ReturnCachedFile(binaryName)
+		if errCode == 0 {
+			// If the cached file exists, use it
+			fmt.Printf("Using cached file: %s\n", cachedFile)
+			// Copy the cached file to the install path
+			if err := copyFile(cachedFile, installPath); err != nil {
+				return fmt.Errorf("Error: Could not copy cached file: %v", err)
+			}
+			return nil
 		}
-	} else {
-		// If the cached file does not exist, download the binary
-		url, err := findURL(binaryName)
-		if err != nil {
-			return fmt.Errorf("Error: %v", err)
-		}
-		if err := fetchBinaryFromURL(url, installPath); err != nil {
-			return fmt.Errorf("Error: Could not install binary: %v", err)
-		}
+	}
+
+	// If the cached file does not exist, download the binary
+	url, err := findURL(binaryName)
+	if err != nil {
+		return fmt.Errorf("Error: %v", err)
+	}
+	if err := fetchBinaryFromURL(url, installPath); err != nil {
+		return fmt.Errorf("Error: Could not install binary: %v", err)
 	}
 
 	// Check if any messages are provided and print them
