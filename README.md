@@ -7,7 +7,7 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
 
 #### Features:
 
-1. **Minimal Dependencies**: BigDL prides itself on its self-sufficiency. No bloated dependencies, we like 'em slim.
+1. **Minimal Dependencies**: BigDL prides itself on its self-sufficiency. No dependencies, we like 'em slim.
 
 2. **Versatile Commands**:
    - `list`: View all available binaries across all three repos.
