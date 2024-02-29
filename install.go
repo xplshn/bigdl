@@ -32,7 +32,7 @@ func installCommand(binaryName string, args []string, messages ...string) error 
 		cachedFile, errCode := ReturnCachedFile(binaryName)
 		if errCode == 0 {
 			// If the cached file exists, use it
-			fmt.Printf("Using cached file: %s\n", cachedFile)
+			fmt.Printf("\r\033[KUsing cached file: %s\n", cachedFile)
 			// Copy the cached file to the install path
 			if err := copyFile(cachedFile, installPath); err != nil {
 				return fmt.Errorf("Error: Could not copy cached file: %v", err)
@@ -57,7 +57,7 @@ func installCommand(binaryName string, args []string, messages ...string) error 
 		}
 	} else {
 		// If no message provided, print default installation complete message
-		fmt.Printf("Installation complete: %s \n", installPath)
+		fmt.Printf("\x1b[A\033[KInstallation complete: %s \n", installPath)
 	}
 	return nil
 }

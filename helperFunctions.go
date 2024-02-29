@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/schollz/progressbar/v3"
 	"io"
 	"net/http"
 	"os"
@@ -43,6 +44,12 @@ func fetchBinaryFromURL(url, destination string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel() // Ensure the cancel function is called when the function returns
 
+	// Set up signal handling
+	interrupted, err := signalHandler(ctx, cancel)
+	if err != nil {
+		return fmt.Errorf("failed to set up signal handler: %v", err)
+	}
+
 	// Create a temporary directory if it doesn't exist
 	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
 		return fmt.Errorf("failed to create temporary directory: %v", err)
@@ -59,18 +66,13 @@ func fetchBinaryFromURL(url, destination string) error {
 	// Schedule the deletion of the temporary file
 	defer func() {
 		if err := os.Remove(tempFile); err != nil && !os.IsNotExist(err) {
-			fmt.Printf("failed to remove temporary file: %v\n", err)
+			fmt.Printf("\r\033[Kfailed to remove temporary file: %v\n", err)
 		}
 	}()
-
-	// Start spinner
-	Spin("")
 
 	// Fetch the binary from the given URL
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		// Stop the spinner before returning
-		StopSpinner()
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
@@ -83,35 +85,27 @@ func fetchBinaryFromURL(url, destination string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		// Stop the spinner before returning
-		StopSpinner()
 		return fmt.Errorf("error fetching binary from %s: %v", url, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		// Stop the spinner before returning
-		StopSpinner()
 		return fmt.Errorf("failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
 	}
 
-	// Write the binary to the temporary file
-	_, err = io.Copy(out, resp.Body)
+	// Create a progress bar
+	bar := progressbar.New(int(resp.ContentLength))
+
+	// Write the binary to the temporary file with progress bar
+	_, err = io.Copy(io.MultiWriter(out, bar), resp.Body)
 	if err != nil {
-		// Stop the spinner before returning
-		StopSpinner()
 		return fmt.Errorf("failed to write to temporary file: %v", err)
 	}
 
 	// Close the file before setting executable bit
 	if err := out.Close(); err != nil {
-		// Stop the spinner before returning
-		StopSpinner()
 		return fmt.Errorf("failed to close temporary file: %v", err)
 	}
-
-	// Stop the spinner
-	StopSpinner()
 
 	// Use copyFile to move the binary to its destination
 	if err := copyFile(tempFile, destination); err != nil {
@@ -123,6 +117,15 @@ func fetchBinaryFromURL(url, destination string) error {
 		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
+	// Check if the operation was interrupted
+	if interrupted() {
+		fmt.Println("\r\033[KDownload interrupted. Cleaning up...")
+		// Ensure the temporary file is removed if the operation was interrupted
+		if err := os.Remove(tempFile); err != nil && !os.IsNotExist(err) {
+			fmt.Printf("failed to remove temporary file: %v\n", err)
+		}
+	}
+	fmt.Println("\r\033[K")
 	return nil
 }
 
