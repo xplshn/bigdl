@@ -7,16 +7,18 @@ import (
 	"path/filepath"
 )
 
-func remove(binaryToRemove string) {
-	removeFromDir := func(dirPath string) {
-		binaryPath := filepath.Join(dirPath, binaryToRemove)
-		err := os.Remove(binaryPath)
+func remove(binariesToRemove []string) {
+	for _, binaryName := range binariesToRemove {
+		installPath := filepath.Join(InstallDir, binaryName)
+		err := os.Remove(installPath)
 		if err != nil {
-			fmt.Printf("Binary %s not found in %s\n", binaryToRemove, dirPath)
-			return
+			if os.IsNotExist(err) {
+				fmt.Fprintf(os.Stderr, "Warning: Binary %s does not exist in %s\n", binaryName, InstallDir)
+			} else {
+				fmt.Fprintf(os.Stderr, "Error: Failed to remove binary %s from %s. %v\n", binaryName, InstallDir, err)
+			}
+			continue
 		}
-		fmt.Printf("Binary %s removed from %s\n", binaryToRemove, dirPath)
+		fmt.Printf("Binary %s removed from %s\n", binaryName, InstallDir)
 	}
-
-	removeFromDir(InstallDir)
 }

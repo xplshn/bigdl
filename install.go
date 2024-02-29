@@ -6,11 +6,7 @@ import (
 	"path/filepath"
 )
 
-func installCommand(binaryName string, args []string, messages ...string) error {
-	if len(args) > 0 && args[0] != "" {
-		InstallDir = args[0]
-	}
-
+func installCommand(binaryName string, messages ...string) error {
 	installPath := filepath.Join(InstallDir, binaryName)
 
 	// Use ReturnCachedFile to check for a cached file

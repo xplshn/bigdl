@@ -102,7 +102,7 @@ func update(programsToUpdate []string) error {
 				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
 				installUseCache = false //I hate myself, this is DISGUSTING.
 				useProgressBar = false  // I hate myself, this is AWFUL.
-				err := installCommand(program, []string{InstallDir}, installMessage)
+				err := installCommand(program, installMessage)
 				if err != nil {
 					progressMutex.Lock()
 					truncatePrintf("\033[2K\rFailed to update %s: %s <%d/%d>", program, err.Error(), atomic.LoadUint32(&checked), toBeChecked)

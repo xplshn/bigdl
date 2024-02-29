@@ -18,10 +18,9 @@ var MetadataURLs []string
 var validatedArch = [3]string{}
 
 // You may hardcode the default value if need be
-var InstallDir string
+var InstallDir = os.Getenv("INSTALL_DIR")
 
 func init() {
-	InstallDir := os.Getenv("INSTALL_DIR")
 	if InstallDir == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
@@ -34,7 +33,6 @@ func init() {
 		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
 		os.Exit(1)
 	}
-
 	switch runtime.GOARCH {
 	case "amd64":
 		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
@@ -144,17 +142,17 @@ func main() {
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		err := installCommand(binaryName, []string{InstallDir}, installMessage)
+		err := installCommand(binaryName, installMessage)
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(1)
 		}
 	case "remove", "del":
-		if len(os.Args) != 3 {
+		if len(os.Args) < 3 {
 			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])
 			os.Exit(1)
 		}
-		remove(os.Args[2])
+		remove(os.Args[2:])
 	case "run":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl run [--verbose, --silent] <binary> [args...]")
