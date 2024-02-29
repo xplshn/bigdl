@@ -40,7 +40,6 @@ func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool,
 
 // fetchBinaryFromURL fetches a binary from the given URL and saves it to the specified destination.
 func fetchBinaryFromURL(url, destination string) error {
-	// Set up the signal handler at the start of the function.
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel() // Ensure the cancel function is called when the function returns
 
@@ -48,9 +47,6 @@ func fetchBinaryFromURL(url, destination string) error {
 	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
 		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
-
-	// Start spinner
-	Spin("")
 
 	// Create a temporary file to download the binary
 	tempFile := filepath.Join(TEMP_DIR, filepath.Base(destination)+".tmp")
@@ -60,54 +56,64 @@ func fetchBinaryFromURL(url, destination string) error {
 	}
 	defer out.Close()
 
+	// Schedule the deletion of the temporary file
+	defer func() {
+		if err := os.Remove(tempFile); err != nil && !os.IsNotExist(err) {
+			fmt.Printf("failed to remove temporary file: %v\n", err)
+		}
+	}()
+
+	// Start spinner
+	Spin("")
+
 	// Fetch the binary from the given URL
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
+		// Stop the spinner before returning
+		StopSpinner()
 		return fmt.Errorf("error creating request: %v", err)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	// Ensure that redirects are followed
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return nil
+		},
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
+		// Stop the spinner before returning
+		StopSpinner()
 		return fmt.Errorf("error fetching binary from %s: %v", url, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		// Stop the spinner before returning
+		StopSpinner()
 		return fmt.Errorf("failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
 	}
 
 	// Write the binary to the temporary file
-	buf := make([]byte, 32*1024) //  32KB buffer
-	for {
-		n, err := resp.Body.Read(buf)
-		if err != nil {
-			if err == io.EOF {
-				// End of file, break the loop
-				break
-			}
-			// Delete the line before printing the error
-			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
-			return fmt.Errorf("failed to read from response body: %v", err)
-		}
-
-		// Write to the temporary file
-		_, err = out.Write(buf[:n])
-		if err != nil {
-			// Delete the line before printing the error
-			fmt.Printf("\r\033[K") // Overwrite the current line with spaces
-			return fmt.Errorf("failed to write to temporary file: %v", err)
-		}
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		// Stop the spinner before returning
+		StopSpinner()
+		return fmt.Errorf("failed to write to temporary file: %v", err)
 	}
 
 	// Close the file before setting executable bit
 	if err := out.Close(); err != nil {
+		// Stop the spinner before returning
+		StopSpinner()
 		return fmt.Errorf("failed to close temporary file: %v", err)
 	}
 
 	// Stop the spinner
 	StopSpinner()
 
-	// Move the binary to its destination
+	// Use copyFile to move the binary to its destination
 	if err := copyFile(tempFile, destination); err != nil {
 		return fmt.Errorf("failed to move binary to destination: %v", err)
 	}
