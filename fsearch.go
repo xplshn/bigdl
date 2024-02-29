@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -79,17 +78,12 @@ func fSearch(searchTerm string) {
 		name := parts[0]
 		description := parts[1]
 
-		// Use INSTALL_DIR or fallback to $HOME/.local/bin
-		installDir := os.Getenv("INSTALL_DIR")
-		if installDir == "" {
-			installDir = filepath.Join(os.Getenv("HOME"), ".local", "bin")
-		}
-		installDirLocation := filepath.Join(installDir, name)
+		installPath := filepath.Join(InstallDir, name)
 
 		cachedLocation, _ := ReturnCachedFile(name)
 
 		var prefix string
-		if fileExists(installDirLocation) {
+		if fileExists(installPath) {
 			prefix = "[i]"
 		} else if cachedLocation != "" && isExecutable(cachedLocation) {
 			prefix = "[c]"

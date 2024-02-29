@@ -18,18 +18,5 @@ func remove(binaryToRemove string) {
 		fmt.Printf("Binary %s removed from %s\n", binaryToRemove, dirPath)
 	}
 
-	// Check if INSTALL_DIR environment variable is set
-	if installDir := os.Getenv("INSTALL_DIR"); installDir != "" {
-		removeFromDir(installDir)
-		return
-	}
-
-	// If INSTALL_DIR is not set, check %HOME/.local/bin
-	if homeDir, err := os.UserHomeDir(); err == nil {
-		localBinDir := filepath.Join(homeDir, ".local", "bin")
-		removeFromDir(localBinDir)
-	} else {
-		fmt.Println("Error getting user home directory:", err)
-		os.Exit(1)
-	}
+	removeFromDir(InstallDir)
 }

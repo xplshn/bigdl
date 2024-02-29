@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
@@ -16,28 +17,41 @@ var MetadataURLs []string
 // Array for storing a variable that fsearch and info use.
 var validatedArch = [3]string{}
 
+// You may hardcode the default value if need be
+var InstallDir string
+
 func init() {
+	InstallDir := os.Getenv("INSTALL_DIR")
+	if InstallDir == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+			os.Exit(1)
+		}
+		InstallDir = filepath.Join(homeDir, ".local", "bin")
+	}
+	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+		os.Exit(1)
+	}
+
 	switch runtime.GOARCH {
 	case "amd64":
-		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/")
-		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/Baseutils/")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/Baseutils/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
 	case "arm64":
-		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/")
-		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
 	default:
 		fmt.Println("Unsupported architecture:", runtime.GOARCH)
 		os.Exit(1)
 	}
+	arch := validatedArch[0]
+	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
+	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
+	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
+	// These are used for listing and fetching info about the binaries themselves
+	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
+	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
+	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
 var installUseCache = true
@@ -53,7 +67,7 @@ const (
 	// Cache size limit & handling.
 	MaxCacheSize     = 10
 	BinariesToDelete = 5
-	TEMP_DIR = "/tmp/bigdl_cached"
+	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
 func printHelp() {
@@ -123,14 +137,14 @@ func main() {
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
-		var installDir, installMessage string
+		var installMessage string
 		if len(os.Args) > 3 {
-			installDir = os.Args[3]
+			InstallDir = os.Args[3]
 		}
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		err := installCommand(binaryName, []string{installDir}, installMessage)
+		err := installCommand(binaryName, []string{InstallDir}, installMessage)
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(1)
