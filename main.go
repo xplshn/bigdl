@@ -41,6 +41,7 @@ func init() {
 }
 
 var installUseCache = true
+var useProgressBar = true
 
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"

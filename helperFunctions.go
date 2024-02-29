@@ -94,7 +94,17 @@ func fetchBinaryFromURL(url, destination string) error {
 	}
 
 	// Create a progress bar
-	bar := progressbar.New(int(resp.ContentLength))
+	var bar *progressbar.ProgressBar
+	if useProgressBar {
+		bar = progressbar.NewOptions(int(resp.ContentLength),
+			progressbar.OptionClearOnFinish(),
+		)
+	} else {
+		bar = progressbar.NewOptions(-1,
+			progressbar.OptionSetVisibility(false), // Couldn't make update.go work well enough with it.
+			progressbar.OptionSpinnerType(9),       // Type 9 spinner (Classic BSD styled spinner; "|/-\").
+		)
+	}
 
 	// Write the binary to the temporary file with progress bar
 	_, err = io.Copy(io.MultiWriter(out, bar), resp.Body)

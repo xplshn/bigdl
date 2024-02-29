@@ -1,4 +1,4 @@
-// update.go // This file holds the implementation for the "update" functionality //>
+// update.go // This file holds the implementation for the "update" functionality - (parallel) //>
 package main
 
 import (
@@ -8,26 +8,34 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
+	"sync/atomic"
 )
 
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
-	// If programsToUpdate is nil, list files from InstallDir
-	if programsToUpdate == nil {
-		validPrograms, err := listBinaries()
+	// Initialize counters
+	var skipped, updated, toBeChecked uint32
+	var checked uint32 = 1
+
+	// Define installDir at the beginning of the function
+	installDir := os.Getenv("INSTALL_DIR")
+	if installDir == "" {
+		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			return fmt.Errorf("failed to list binaries: %w", err)
+			return fmt.Errorf("failed to get user home directory: %w", err)
 		}
+		installDir = filepath.Join(homeDir, ".local", "bin")
+	}
 
-		installDir := os.Getenv("INSTALL_DIR")
-		if installDir == "" {
-			homeDir, err := os.UserHomeDir()
-			if err != nil {
-				return fmt.Errorf("failed to get user home directory: %w", err)
-			}
-			installDir = filepath.Join(homeDir, ".local", "bin")
-		}
+	// Fetch the list of binaries from the remote source once
+	remotePrograms, err := listBinaries()
+	if err != nil {
+		return fmt.Errorf("failed to list remote binaries: %w", err)
+	}
 
+	// If programsToUpdate is nil, list files from InstallDir and validate against remote
+	if programsToUpdate == nil {
 		info, err := os.Stat(installDir)
 		if err != nil || !info.IsDir() {
 			return fmt.Errorf("installation directory %s is not a directory", installDir)
@@ -40,87 +48,98 @@ func update(programsToUpdate []string) error {
 
 		programsToUpdate = make([]string, 0)
 		for _, file := range files {
-			if !file.IsDir() && contains(validPrograms, file.Name()) {
+			if !file.IsDir() && contains(remotePrograms, file.Name()) {
 				programsToUpdate = append(programsToUpdate, file.Name())
 			}
 		}
 	}
 
-	totalPrograms := len(programsToUpdate)
+	// Calculate toBeChecked
+	toBeChecked = uint32(len(programsToUpdate))
 
-	// Initialize counters
-	var skipped, updated, checked int
+	// Use a mutex for thread-safe updates to the progress
+	var progressMutex sync.Mutex
 
-	installDir := os.Getenv("INSTALL_DIR")
-	if installDir == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("failed to get user home directory: %w", err)
-		}
-		installDir = filepath.Join(homeDir, ".local", "bin")
-	}
+	// Use a wait group to wait for all programs to finish updating
+	var wg sync.WaitGroup
 
-	info, err := os.Stat(installDir)
-	if err != nil || !info.IsDir() {
-		return fmt.Errorf("installation directory %s is not a directory", installDir)
-	}
-
+	// Iterate over programsToUpdate and download/update each one concurrently
 	for _, program := range programsToUpdate {
-		checked++ // Increment the checked counter for every processed program
-		leftToGoStr := fmt.Sprintf("(%d/%d)", checked, totalPrograms)
-		localFilePath := filepath.Join(installDir, program)
-		_, err := os.Stat(localFilePath)
-		if os.IsNotExist(err) {
-			truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. %s", program, leftToGoStr)
-			fmt.Printf("\n")
-			skipped++
-			continue
-		} else if err != nil {
-			truncatePrintf("\033[2K\rWarning: Failed to access program %s. Skipping. %s", program, leftToGoStr)
-			skipped++
-			continue
-		}
+		// Increment the WaitGroup counter
+		wg.Add(1)
 
-		localSHA256, err := getLocalSHA256(localFilePath)
-		if err != nil {
-			truncatePrintf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping. %s", program, leftToGoStr)
-			skipped++
-			continue
-		}
-
-		binaryInfo, err := getBinaryInfo(program)
-		if err != nil {
-			truncatePrintf("\033[2K\rWarning: Failed to get metadata for %s. Skipping. %s", program, leftToGoStr)
-			skipped++
-			continue
-		}
-
-		// Skip if the SHA field is null
-		if binaryInfo.SHA256 == "" {
-			truncatePrintf("\033[2K\rSkipping %s because the SHA256 field is null. %s", program, leftToGoStr)
-			skipped++
-			continue
-		}
-
-		if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
-			truncatePrintf("\033[2K\rDetected a difference in %s. Updating... %s", program, leftToGoStr)
-			installMessage := truncateSprintf("\033[2K\rUpdating %s to version %s", program, binaryInfo.SHA256)
-			installUseCache = false
-			err := installCommand(program, []string{installDir}, installMessage)
-			if err != nil {
-				fmt.Printf("%s\n", err.Error())
-				continue
+		// Launch a goroutine to update the program
+		go func(program string) {
+			defer wg.Done()
+			localFilePath := filepath.Join(installDir, program)
+			_, err := os.Stat(localFilePath)
+			if os.IsNotExist(err) {
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				fmt.Printf("\n")
+				progressMutex.Unlock()
+				return
 			}
-			installUseCache = false
-			truncatePrintf("\033[2K\rSuccessfully updated %s. %s", program, leftToGoStr)
-			updated++
-		} else {
-			truncatePrintf("\033[2K\rNo updates available for %s. %s", program, leftToGoStr)
-		}
+			localSHA256, err := getLocalSHA256(localFilePath)
+			if err != nil {
+				atomic.AddUint32(&skipped, 1)
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rWarning: Failed to get SHA256 for %s. Skipping. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				progressMutex.Unlock()
+				return
+			}
+
+			binaryInfo, err := getBinaryInfo(program)
+			if err != nil {
+				atomic.AddUint32(&skipped, 1)
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rWarning: Failed to get metadata for %s. Skipping. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				progressMutex.Unlock()
+				return
+			}
+
+			// Skip if the SHA field is null
+			if binaryInfo.SHA256 == "" {
+				atomic.AddUint32(&skipped, 1)
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rSkipping %s because the SHA256 field is null. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				progressMutex.Unlock()
+				return
+			}
+
+			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
+				truncatePrintf("\033[2K\rDetected a difference in %s. Updating...", program)
+				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
+				installUseCache = false //I hate myself, this is DISGUSTING.
+				useProgressBar = false  // I hate myself, this is AWFUL.
+				err := installCommand(program, []string{installDir}, installMessage)
+				if err != nil {
+					progressMutex.Lock()
+					truncatePrintf("\033[2K\rFailed to update %s: %s <%d/%d>", program, err.Error(), atomic.LoadUint32(&checked), toBeChecked)
+					progressMutex.Unlock()
+					return
+				}
+				installUseCache = true //I hate myself, this is DISGUSTING.
+				useProgressBar = true  // I hate myself, this is AWFUL.
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rSuccessfully updated %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				progressMutex.Unlock()
+				atomic.AddUint32(&updated, 1)
+			} else {
+				progressMutex.Lock()
+				truncatePrintf("\033[2K\rNo updates available for %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
+				progressMutex.Unlock()
+			}
+			atomic.AddUint32(&checked, 1)
+		}(program)
 	}
+
+	// Wait for all goroutines to finish
+	wg.Wait()
 
 	// Print final counts
-	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", skipped, updated, checked)
+	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", atomic.LoadUint32(&skipped), atomic.LoadUint32(&updated), uint32(int(atomic.LoadUint32(&checked))-1))
+
 	return nil
 }
 
