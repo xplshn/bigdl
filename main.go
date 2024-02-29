@@ -53,8 +53,7 @@ const (
 	// Cache size limit & handling.
 	MaxCacheSize     = 10
 	BinariesToDelete = 5
-	// TMPDIR is the directory for storing temporary files.
-	TEMP_DIR = "/tmp/bigdl_cached" // TODO: Don't hardcode this value.
+	TEMP_DIR = "/tmp/bigdl_cached"
 )
 
 func printHelp() {
