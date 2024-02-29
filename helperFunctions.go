@@ -130,8 +130,6 @@ func fetchBinaryFromURL(url, destination string) error {
 func copyFile(src, dst string) error {
 	// Check if the destination file already exists
 	if fileExists(dst) {
-		// File exists, handle accordingly (e.g., overwrite or skip)
-		// For this example, we'll overwrite the file
 		if err := os.Remove(dst); err != nil {
 			return fmt.Errorf("failed to remove existing destination file: %v", err)
 		}
