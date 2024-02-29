@@ -21,7 +21,7 @@ func Spin(text string) {
 			select {
 			case <-stopSpinner:
 				// When the spinner is stopped, print spaces to clean up the output
-				fmt.Printf("\r%s\r", strings.Repeat(" ", len(text)+5+len(spinChars))) //   5 is the length of "Working...", len(spinChars) is the length of the spinner characters
+				fmt.Printf("\033[2K\r%s\r", strings.Repeat(" ", len(text)+5+len(spinChars))) //   5 is the length of "Working...", len(spinChars) is the length of the spinner characters
 				SpinCompleteFlag = true
 				// Reinitialize the stopSpinner channel to nil
 				stopSpinner = nil

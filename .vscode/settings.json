@@ -1,0 +1,11 @@
+{
+    "Codegeex.CompletionModel": "CodeGeeX Pro[Beta]",
+    "Codegeex.Privacy": true,
+    "Codegeex.CandidateNum": "2 (medium)",
+    "Codegeex.Explanation.LanguagePreference": "English",
+    "Codegeex.SidebarUI.LanguagePreference": "English",
+    "Codegeex.Comment.LanguagePreference": "English",
+    "editor.tabCompletion": "on",
+    "diffEditor.codeLens": true,
+    "MutableAI.upsell": true
+}
