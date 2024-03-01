@@ -58,6 +58,7 @@ var useProgressBar = true
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
 const VERSION = "1.3"
+const usagePage = "Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
@@ -69,7 +70,7 @@ const (
 )
 
 func printHelp() {
-	fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]")
+	fmt.Printf("%s\n", usagePage)
 	fmt.Println("\nOptions:")
 	fmt.Println("  -h, --help     Show this help message")
 	fmt.Println("  -v, --version  Show the version number")
@@ -109,7 +110,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]")
+		fmt.Printf("%s\n", usagePage)
 		os.Exit(1)
 	}
 
