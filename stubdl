@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# TODO: put an IF to get AMD64 or arm64, OR return error
+
+VERSION="1.3!"
+BIGDL="https://github.com/xplshn/bigdl/releases/download/$VERSION/bigdl_amd64"
+DEST="/tmp/._bdlstub_bigdl.bin"
+
+if [ -f "$DEST" ]; then
+	"$DEST" "$@"
+else
+	if command -v wget >/dev/null 2>&1; then
+		wget -q "$BIGDL" -O "$DEST"
+	elif command -v curl >/dev/null 2>&1; then
+		curl -qfsSL "$BIGDL" -o "$DEST"
+	fi
+	chmod +x "$DEST"
+	"$DEST" "$@"
+fi
