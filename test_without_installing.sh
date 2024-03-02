@@ -1,5 +1,5 @@
 #!/bin/sh
-curl -qfsL "https://github.com/xplshn/bigdl/releases/download/1.3!/bigdl_amd64" -o bigdl_amd64 && \
+curl -qfsL "https://github.com/xplshn/bigdl/releases/download/1.3.1/bigdl_amd64" -o bigdl_amd64 && \
  chmod +x bigdl_amd64 ; \
   command -v ./bigdl_amd64 && \
    ./bigdl_amd64 run --silent gum confirm "Do you want to test $PWD/bigdl_amd64?" --negative="No, remove it!" || \

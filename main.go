@@ -8,10 +8,14 @@ import (
 	"runtime"
 )
 
-var Repositories []string
-var MetadataURLs []string
-var validatedArch = [3]string{}
-var InstallDir = os.Getenv("INSTALL_DIR")
+var (
+	Repositories    []string
+	MetadataURLs    []string
+	validatedArch   = [3]string{}
+	InstallDir      = os.Getenv("INSTALL_DIR")
+	installUseCache = true
+	useProgressBar  = true
+)
 
 func init() {
 	if InstallDir == "" {
@@ -45,17 +49,11 @@ func init() {
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
-var installUseCache = true
-var useProgressBar = true
-
-const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
-const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
-const VERSION = "1.3"
-const usagePage = "Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]"
-
-///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
-
 const (
+	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
+	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
+	VERSION       = "1.3.1"
+	usagePage     = "Usage: bigdl [-vh] [list|install|remove|update|run|info|search|tldr] <args>"
 	// Truncation indicator
 	indicator = "...>"
 	// Cache size limit & handling.
@@ -65,29 +63,35 @@ const (
 )
 
 func printHelp() {
-	fmt.Printf("%s\n", usagePage)
-	fmt.Println("\nOptions:")
-	fmt.Println("  -h, --help     Show this help message")
-	fmt.Println("  -v, --version  Show the version number")
-	fmt.Println("\nCommands:")
-	fmt.Println("  list           List all available binaries")
-	fmt.Println("  install, add   Install a binary")
-	fmt.Println("  remove, del    Remove a binary")
-	fmt.Println("  update         Update binaries, by checking their SHA against the repo's SHA.")
-	fmt.Println("  run            Run a binary")
-	fmt.Println("  info           Show information about a specific binary")
-	fmt.Println("  search         Search for a binary - (not all binaries have metadata. Use list to see all binaries)")
-	fmt.Println("  tldr           Show a brief description & usage examples for a given program/command")
-	fmt.Println("\nExamples:")
-	fmt.Println("  bigdl install micro")
-	fmt.Println("  bigdl remove bed")
-	fmt.Println("  bigdl info jq")
-	fmt.Println("  bigdl search editor")
-	fmt.Println("  bigdl tldr gum")
-	fmt.Println("  bigdl run --verbose neofetch")
-	fmt.Println("  bigdl run --silent micro")
-	fmt.Println("  bigdl run btop")
-	fmt.Println("\nVersion:", VERSION)
+	helpMessage := usagePage + `
+	
+Options:
+ -h, --help     Show this help message
+ -v, --version Show the version number
+
+Commands:
+ list           List all available binaries
+ install, add   Install a binary
+ remove, del    Remove a binary
+ update         Update binaries, by checking their SHA against the repo's SHA.
+ run            Run a binary
+ info           Show information about a specific binary
+ search         Search for a binary - (not all binaries have metadata. Use list to see all binaries)
+ tldr           Show a brief description & usage examples for a given program/command
+
+Examples:
+ bigdl install micro
+ bigdl remove bed
+ bigdl info jq
+ bigdl search editor
+ bigdl tldr gum
+ bigdl run --verbose neofetch
+ bigdl run --silent micro
+ bigdl run btop
+
+Version: ` + VERSION
+
+	fmt.Println(helpMessage)
 }
 
 func main() {
@@ -127,7 +131,7 @@ func main() {
 		}
 	case "install", "add":
 		if len(os.Args) < 3 {
-			fmt.Printf("Usage: bigdl %s <binary> [install_dir] [install_message]\n", os.Args[1])
+			fmt.Printf("Usage: bigdl %s [binary] <install_dir> <install_message>\n", os.Args[1])
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
@@ -145,25 +149,25 @@ func main() {
 		}
 	case "remove", "del":
 		if len(os.Args) < 3 {
-			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])
+			fmt.Printf("Usage: bigdl %s [binary]\n", os.Args[1])
 			os.Exit(1)
 		}
 		remove(os.Args[2:])
 	case "run":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl run [--verbose, --silent] <binary> [args...]")
+			fmt.Println("Usage: bigdl run <--verbose, --silent> [binary] <args>")
 			os.Exit(1)
 		}
 		RunFromCache(os.Args[2], os.Args[3:])
 	case "tldr":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl tldr <page> [args...]")
+			fmt.Println("Usage: bigdl tldr <args> [page]")
 			os.Exit(1)
 		}
 		RunFromCache("tlrc", os.Args[2:])
 	case "info":
 		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl info <binary>")
+			fmt.Println("Usage: bigdl info [binary]")
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
@@ -174,9 +178,7 @@ func main() {
 		}
 
 		// Print the fields
-		if binaryInfo.Name != "" {
-			fmt.Printf("Name: %s\n", binaryInfo.Name)
-		}
+		fmt.Printf("Name: %s\n", binaryInfo.Name)
 		if binaryInfo.Description != "" {
 			fmt.Printf("Description: %s\n", binaryInfo.Description)
 		}
@@ -197,25 +199,20 @@ func main() {
 		}
 	case "search":
 		if len(os.Args) != 3 {
-			fmt.Println("Usage: bigdl search <search-term>")
+			fmt.Println("Usage: bigdl search [query]")
 			os.Exit(1)
 		}
 		searchTerm := os.Args[2]
 		fSearch(searchTerm)
 	case "update":
+		var programsToUpdate []string
 		if len(os.Args) > 2 {
 			// Bulk update with list of programs to update
-			programsToUpdate := os.Args[2:]
-			if err := update(programsToUpdate); err != nil {
-				fmt.Printf("Error updating programs: %v\n", err)
-				os.Exit(1)
-			}
-		} else {
-			// Update by listing files from InstallDir
-			if err := update(nil); err != nil {
-				fmt.Printf("Error updating programs: %v\n", err)
-				os.Exit(1)
-			}
+			programsToUpdate = os.Args[2:]
+		}
+		if err := update(programsToUpdate); err != nil {
+			fmt.Printf("Error updating programs: %v\n", err)
+			os.Exit(1)
 		}
 	default:
 		fmt.Printf("bigdl: Unknown command: %s\n", os.Args[1])

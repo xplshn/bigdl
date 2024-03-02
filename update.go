@@ -12,6 +12,8 @@ import (
 	"sync/atomic"
 )
 
+// TODO: Validation of programs could be done without a list (current bottleneck)
+
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
 	// Initialize counters
