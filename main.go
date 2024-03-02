@@ -8,16 +8,9 @@ import (
 	"runtime"
 )
 
-// Repositories contains the URLs for fetching metadata.
 var Repositories []string
-
-// MetadataURLs contains the URLs for fetching metadata.
 var MetadataURLs []string
-
-// Array for storing a variable that fsearch and info use.
 var validatedArch = [3]string{}
-
-// You may hardcode the default value if need be
 var InstallDir = os.Getenv("INSTALL_DIR")
 
 func init() {

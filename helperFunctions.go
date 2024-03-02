@@ -18,6 +18,8 @@ import (
 	"syscall"
 )
 
+var indicator string = "..>"
+
 // signalHandler sets up a channel to listen for interrupt signals and returns a function
 // that can be called to check if an interrupt has been received.
 func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
@@ -98,6 +100,15 @@ func fetchBinaryFromURL(url, destination string) error {
 	if useProgressBar {
 		bar = progressbar.NewOptions(int(resp.ContentLength),
 			progressbar.OptionClearOnFinish(),
+			progressbar.OptionFullWidth(),
+			progressbar.OptionShowBytes(true),
+			progressbar.OptionSetTheme(progressbar.Theme{
+				Saucer:        "=",
+				SaucerHead:    ">",
+				SaucerPadding: " ",
+				BarStart:      "[",
+				BarEnd:        "]",
+			}),
 		)
 	} else {
 		bar = progressbar.NewOptions(-1,
@@ -277,13 +288,13 @@ func truncateSprintf(format string, a ...interface{}) string {
 	formatted := fmt.Sprintf(format, a...)
 
 	// Determine the truncation length & truncate the formatted string if it exceeds the available space
-	availableSpace := getTerminalWidth() - 4
+	availableSpace := getTerminalWidth() - len(indicator)
 	if len(formatted) > availableSpace {
 		formatted = fmt.Sprintf("%s", formatted[:availableSpace])
 		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
 			formatted = formatted[:len(formatted)-1]
 		}
-		formatted = fmt.Sprintf("%s...>", formatted) // Add the dots.
+		formatted = fmt.Sprintf("%s%s", formatted, indicator) // Add the dots.
 	}
 
 	return formatted
