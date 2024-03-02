@@ -3,29 +3,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 )
 
-func installCommand(binaryName string, args []string, messages ...string) error {
-	installDir := os.Getenv("INSTALL_DIR")
-	if len(args) > 0 && args[0] != "" {
-		installDir = args[0]
-	}
-
-	if installDir == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("Error: Failed to get user's Home directory: %w", err)
-		}
-		installDir = filepath.Join(homeDir, ".local", "bin")
-	}
-
-	if err := os.MkdirAll(installDir, os.ModePerm); err != nil {
-		return fmt.Errorf("Error: Could not create installation directory: %v", err)
-	}
-
-	installPath := filepath.Join(installDir, binaryName)
+func installCommand(binaryName string, messages ...string) error {
+	installPath := filepath.Join(InstallDir, binaryName)
 
 	// Use ReturnCachedFile to check for a cached file
 	if installUseCache {

@@ -4,40 +4,45 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
-// Repositories contains the URLs for fetching metadata.
 var Repositories []string
-
-// MetadataURLs contains the URLs for fetching metadata.
 var MetadataURLs []string
-
-// Array for storing a variable that fsearch and info use.
 var validatedArch = [3]string{}
+var InstallDir = os.Getenv("INSTALL_DIR")
 
 func init() {
+	if InstallDir == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+			os.Exit(1)
+		}
+		InstallDir = filepath.Join(homeDir, ".local", "bin")
+	}
+	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+		os.Exit(1)
+	}
 	switch runtime.GOARCH {
 	case "amd64":
-		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/")
-		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-		Repositories = append(Repositories, "https://bin.ajam.dev/x86_64_Linux/Baseutils/")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/x86_64_Linux/Baseutils/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
 	case "arm64":
-		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/")
-		Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-		Repositories = append(Repositories, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/METADATA.json")
-		MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 		validatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
 	default:
 		fmt.Println("Unsupported architecture:", runtime.GOARCH)
 		os.Exit(1)
 	}
+	arch := validatedArch[0]
+	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
+	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
+	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
+	// These are used for listing and fetching info about the binaries themselves
+	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
+	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
+	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
 var installUseCache = true
@@ -46,18 +51,21 @@ var useProgressBar = true
 const RMetadataURL = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 const RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
 const VERSION = "1.3"
+const usagePage = "Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]"
 
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
 const (
+	// Truncation indicator
+	indicator = "...>"
 	// Cache size limit & handling.
 	MaxCacheSize     = 10
 	BinariesToDelete = 5
-	TEMP_DIR = "/tmp/bigdl_cached"
+	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
 func printHelp() {
-	fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]")
+	fmt.Printf("%s\n", usagePage)
 	fmt.Println("\nOptions:")
 	fmt.Println("  -h, --help     Show this help message")
 	fmt.Println("  -v, --version  Show the version number")
@@ -97,7 +105,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]")
+		fmt.Printf("%s\n", usagePage)
 		os.Exit(1)
 	}
 
@@ -123,24 +131,24 @@ func main() {
 			os.Exit(1)
 		}
 		binaryName := os.Args[2]
-		var installDir, installMessage string
+		var installMessage string
 		if len(os.Args) > 3 {
-			installDir = os.Args[3]
+			InstallDir = os.Args[3]
 		}
 		if len(os.Args) > 4 {
 			installMessage = os.Args[4]
 		}
-		err := installCommand(binaryName, []string{installDir}, installMessage)
+		err := installCommand(binaryName, installMessage)
 		if err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(1)
 		}
 	case "remove", "del":
-		if len(os.Args) != 3 {
+		if len(os.Args) < 3 {
 			fmt.Printf("Usage: bigdl %s <binary>\n", os.Args[1])
 			os.Exit(1)
 		}
-		remove(os.Args[2])
+		remove(os.Args[2:])
 	case "run":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: bigdl run [--verbose, --silent] <binary> [args...]")

@@ -18,16 +18,6 @@ func update(programsToUpdate []string) error {
 	var skipped, updated, toBeChecked uint32
 	var checked uint32 = 1
 
-	// Define installDir at the beginning of the function
-	installDir := os.Getenv("INSTALL_DIR")
-	if installDir == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			return fmt.Errorf("failed to get user home directory: %w", err)
-		}
-		installDir = filepath.Join(homeDir, ".local", "bin")
-	}
-
 	// Fetch the list of binaries from the remote source once
 	remotePrograms, err := listBinaries()
 	if err != nil {
@@ -36,14 +26,14 @@ func update(programsToUpdate []string) error {
 
 	// If programsToUpdate is nil, list files from InstallDir and validate against remote
 	if programsToUpdate == nil {
-		info, err := os.Stat(installDir)
+		info, err := os.Stat(InstallDir)
 		if err != nil || !info.IsDir() {
-			return fmt.Errorf("installation directory %s is not a directory", installDir)
+			return fmt.Errorf("installation directory %s is not a directory", InstallDir)
 		}
 
-		files, err := os.ReadDir(installDir)
+		files, err := os.ReadDir(InstallDir)
 		if err != nil {
-			return fmt.Errorf("failed to read directory %s: %w", installDir, err)
+			return fmt.Errorf("failed to read directory %s: %w", InstallDir, err)
 		}
 
 		programsToUpdate = make([]string, 0)
@@ -71,8 +61,8 @@ func update(programsToUpdate []string) error {
 		// Launch a goroutine to update the program
 		go func(program string) {
 			defer wg.Done()
-			localFilePath := filepath.Join(installDir, program)
-			_, err := os.Stat(localFilePath)
+			installPath := filepath.Join(InstallDir, program)
+			_, err := os.Stat(installPath)
 			if os.IsNotExist(err) {
 				progressMutex.Lock()
 				truncatePrintf("\033[2K\rWarning: Tried to update a non-existent program %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
@@ -80,7 +70,7 @@ func update(programsToUpdate []string) error {
 				progressMutex.Unlock()
 				return
 			}
-			localSHA256, err := getLocalSHA256(localFilePath)
+			localSHA256, err := getLocalSHA256(installPath)
 			if err != nil {
 				atomic.AddUint32(&skipped, 1)
 				progressMutex.Lock()
@@ -112,7 +102,7 @@ func update(programsToUpdate []string) error {
 				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
 				installUseCache = false //I hate myself, this is DISGUSTING.
 				useProgressBar = false  // I hate myself, this is AWFUL.
-				err := installCommand(program, []string{installDir}, installMessage)
+				err := installCommand(program, installMessage)
 				if err != nil {
 					progressMutex.Lock()
 					truncatePrintf("\033[2K\rFailed to update %s: %s <%d/%d>", program, err.Error(), atomic.LoadUint32(&checked), toBeChecked)
