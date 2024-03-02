@@ -56,6 +56,8 @@ const usagePage = "Usage: bigdl [-vh] {list|install|remove|update|run|info|searc
 ///// YOU MAY CHANGE THESE TO POINT TO ANOTHER PLACE.
 
 const (
+	// Truncation indicator
+	indicator = "...>"
 	// Cache size limit & handling.
 	MaxCacheSize     = 10
 	BinariesToDelete = 5

@@ -18,8 +18,6 @@ import (
 	"syscall"
 )
 
-var indicator string = "..>"
-
 // signalHandler sets up a channel to listen for interrupt signals and returns a function
 // that can be called to check if an interrupt has been received.
 func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
