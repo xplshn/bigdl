@@ -247,6 +247,24 @@ func isExecutable(filePath string) bool {
 	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
 }
 
+// listFilesInDir lists all files in a directory
+func listFilesInDir(dir string) ([]string, error) {
+	var files []string
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return files, nil
+}
+
 // GetTerminalWidth attempts to determine the width of the terminal.
 // It first tries using "stty size", then "tput cols", and finally falls back to  80 columns.
 func getTerminalWidth() int {
