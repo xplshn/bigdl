@@ -71,6 +71,7 @@ func listBinaries() ([]string, error) {
 		"robotstxt":                {},
 		"LICENSE":                  {},
 		"experimentalBinaries_dir": {},
+		"bdl.sh":                   {},
 	}
 
 	// Filter out excluded file types and file names
