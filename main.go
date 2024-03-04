@@ -116,7 +116,7 @@ func main() {
 	switch os.Args[1] {
 	case "find_url":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl find_url <binary>")
+			fmt.Println("Usage: bigdl find_url [binary]")
 			os.Exit(1)
 		}
 		findURLCommand(os.Args[2])
