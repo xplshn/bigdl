@@ -28,20 +28,17 @@ func update(programsToUpdate []string) error {
 
 	// If programsToUpdate is nil, list files from InstallDir and validate against remote
 	if programsToUpdate == nil {
-		info, err := os.Stat(InstallDir)
-		if err != nil || !info.IsDir() {
-			return fmt.Errorf("installation directory %s is not a directory", InstallDir)
-		}
-
-		files, err := os.ReadDir(InstallDir)
+		files, err := listFilesInDir(InstallDir)
 		if err != nil {
-			return fmt.Errorf("failed to read directory %s: %w", InstallDir, err)
+			return fmt.Errorf("failed to list files in InstallDir: %w", err)
 		}
 
 		programsToUpdate = make([]string, 0)
 		for _, file := range files {
-			if !file.IsDir() && contains(remotePrograms, file.Name()) {
-				programsToUpdate = append(programsToUpdate, file.Name())
+			// Extract the file name from the full path
+			fileName := filepath.Base(file)
+			if contains(remotePrograms, fileName) {
+				programsToUpdate = append(programsToUpdate, fileName)
 			}
 		}
 	}
