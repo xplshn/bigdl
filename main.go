@@ -43,15 +43,15 @@ func init() {
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-	// These are used for listing and fetching info about the binaries themselves
+	// These are used for listing the binaries themselves
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
-	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
+	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
 }
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"
+	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // This is the file from which we extract descriptions for different binaries
+	RNMetadataURL = "https://bin.ajam.dev/METADATA.json" // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
 	VERSION       = "1.3.1"
 	usagePage     = "Usage: bigdl [-vh] [list|install|remove|update|run|info|search|tldr] <args>"
 	// Truncation indicator
