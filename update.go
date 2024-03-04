@@ -17,7 +17,7 @@ import (
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
 	// Initialize counters
-	var skipped, updated, toBeChecked uint32
+	var skipped, updated, errors, toBeChecked uint32
 	var checked uint32 = 1
 
 	// Fetch the list of binaries from the remote source once
@@ -103,6 +103,7 @@ func update(programsToUpdate []string) error {
 				useProgressBar = false  // I hate myself, this is AWFUL.
 				err := installCommand(program, installMessage)
 				if err != nil {
+					atomic.AddUint32(&errors, 1)
 					progressMutex.Lock()
 					truncatePrintf("\033[2K\rFailed to update %s: %s <%d/%d>", program, err.Error(), atomic.LoadUint32(&checked), toBeChecked)
 					progressMutex.Unlock()
@@ -126,8 +127,13 @@ func update(programsToUpdate []string) error {
 	// Wait for all goroutines to finish
 	wg.Wait()
 
+	// Prepare final counts
+	finalCounts := fmt.Sprintf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d", atomic.LoadUint32(&skipped), atomic.LoadUint32(&updated), uint32(int(atomic.LoadUint32(&checked))-1))
+	if errors > 0 {
+		finalCounts += fmt.Sprintf("\tErrors: %d", atomic.LoadUint32(&errors))
+	}
 	// Print final counts
-	fmt.Printf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d\n", atomic.LoadUint32(&skipped), atomic.LoadUint32(&updated), uint32(int(atomic.LoadUint32(&checked))-1))
+	fmt.Println(finalCounts)
 
 	return nil
 }
