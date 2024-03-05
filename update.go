@@ -16,9 +16,13 @@ import (
 
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
+	// 'Configure' external functions
 	useProgressBar = false
+	installUseCache = false
+
 	// Initialize counters
 	var skipped, updated, errors, toBeChecked uint32
+	var errorMessages string
 	var checked uint32 = 1
 
 	// Fetch the list of binaries from the remote source once
@@ -100,16 +104,14 @@ func update(programsToUpdate []string) error {
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
 				truncatePrintf("\033[2K\rDetected a difference in %s. Updating...", program)
 				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
-				installUseCache = false //I hate myself, this is DISGUSTING.
 				err := installCommand(program, installMessage)
 				if err != nil {
 					atomic.AddUint32(&errors, 1)
 					progressMutex.Lock()
-					truncatePrintf("\033[2K\rFailed to update %s: %s <%d/%d>", program, err.Error(), atomic.LoadUint32(&checked), toBeChecked)
+					errorMessages += sanitizeString(fmt.Sprintf("Failed to update '%s', please check this file's properties, etc\n", program))
 					progressMutex.Unlock()
 					return
 				}
-				installUseCache = true //I hate myself, this is DISGUSTING.
 				progressMutex.Lock()
 				truncatePrintf("\033[2K\rSuccessfully updated %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
 				progressMutex.Unlock()
@@ -133,6 +135,7 @@ func update(programsToUpdate []string) error {
 	}
 	// Print final counts
 	fmt.Println(finalCounts)
+	fmt.Printf(errorMessages)
 
 	return nil
 }
