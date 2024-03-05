@@ -250,17 +250,14 @@ func isExecutable(filePath string) bool {
 // listFilesInDir lists all files in a directory
 func listFilesInDir(dir string) ([]string, error) {
 	var files []string
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			files = append(files, path)
-		}
-		return nil
-	})
+	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			files = append(files, dir+"/"+entry.Name())
+		}
 	}
 	return files, nil
 }
