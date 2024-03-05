@@ -153,7 +153,7 @@ func copyFile(src, dst string) error {
 	// Check if the destination file already exists
 	if fileExists(dst) {
 		if err := os.Remove(dst); err != nil {
-			return fmt.Errorf("failed to remove existing destination file: %v", err)
+			return fmt.Errorf("%v", err)
 		}
 	}
 
@@ -265,6 +265,24 @@ func listFilesInDir(dir string) ([]string, error) {
 	return files, nil
 }
 
+// sanitizeString removes certain punctuation from the end of the string and converts it to lower case.
+func sanitizeString(s string) string {
+	// Define the punctuation to remove
+	punctuation := []string{".", " ", ",", "!", "?"}
+
+	// Convert string to lower case
+	s = strings.ToLower(s)
+
+	// Remove specified punctuation from the end of the string
+	for _, p := range punctuation {
+		if strings.HasSuffix(s, p) {
+			s = s[:len(s)-len(p)]
+		}
+	}
+
+	return s
+}
+
 // GetTerminalWidth attempts to determine the width of the terminal.
 // It first tries using "stty size", then "tput cols", and finally falls back to  80 columns.
 func getTerminalWidth() int {
@@ -318,10 +336,7 @@ func truncateSprintf(format string, a ...interface{}) string {
 
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
-	// Call truncateSprintf to get the formatted and truncated string
 	formatted := truncateSprintf(format, a...)
-
-	// Print the possibly truncated string
 	return fmt.Print(formatted)
 }
 
