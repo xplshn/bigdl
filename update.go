@@ -16,6 +16,7 @@ import (
 
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
+	useProgressBar = false
 	// Initialize counters
 	var skipped, updated, errors, toBeChecked uint32
 	var checked uint32 = 1
@@ -100,7 +101,6 @@ func update(programsToUpdate []string) error {
 				truncatePrintf("\033[2K\rDetected a difference in %s. Updating...", program)
 				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
 				installUseCache = false //I hate myself, this is DISGUSTING.
-				useProgressBar = false  // I hate myself, this is AWFUL.
 				err := installCommand(program, installMessage)
 				if err != nil {
 					atomic.AddUint32(&errors, 1)
@@ -110,7 +110,6 @@ func update(programsToUpdate []string) error {
 					return
 				}
 				installUseCache = true //I hate myself, this is DISGUSTING.
-				useProgressBar = true  // I hate myself, this is AWFUL.
 				progressMutex.Lock()
 				truncatePrintf("\033[2K\rSuccessfully updated %s. <%d/%d>", program, atomic.LoadUint32(&checked), toBeChecked)
 				progressMutex.Unlock()
