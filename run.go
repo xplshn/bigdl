@@ -14,8 +14,7 @@ import (
 var verboseMode bool
 var silentMode bool
 
-// ReturnCachedFile retrieves the cached file location.
-// Returns an empty string and error code   1 if not found.
+// ReturnCachedFile retrieves the cached file location. Returns an empty string and error code 1 if not found.
 func ReturnCachedFile(binaryName string) (string, int) {
 	// Construct the expected cached file pattern
 	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("%s.bin", binaryName))
@@ -31,46 +30,64 @@ func ReturnCachedFile(binaryName string) (string, int) {
 
 // RunFromCache runs the binary from cache or fetches it if not found.
 func RunFromCache(binaryName string, args []string) {
-	// Check for verbose mode flag
-	if binaryName == "--verbose" {
-		// In this case, we should set binaryName to the next argument if available
-		if len(args) > 0 {
-			binaryName = args[0]
-			args = args[1:] // Remove the flag from the arguments
-			verboseMode = true
-		} else {
-			fmt.Println("Error: Binary name not provided after --verbose flag.")
+	switch binaryName {
+	case "--verbose":
+		verboseMode = true
+		// Check the next argument to ensure it's not --silent
+		if len(args) > 0 && args[0] == "--silent" {
+			fmt.Fprintln(os.Stderr, "Error: Both --verbose and --silent flags cannot be used together.")
 			os.Exit(1)
 		}
-	}
-
-	// Check for silent mode flag
-	if binaryName == "--silent" {
-		// In this case, we should set binaryName to the next argument if available
+		// If --verbose is set, ensure the next argument is the binary name
 		if len(args) > 0 {
 			binaryName = args[0]
 			args = args[1:] // Remove the flag from the arguments
-			silentMode = true
 		} else {
-			fmt.Println("Error: Binary name not provided after --silent flag.")
+			fmt.Fprintln(os.Stderr, "Error: Binary name not provided after --verbose flag.")
 			os.Exit(1)
+		}
+	case "--silent":
+		silentMode = true
+		// Check the next argument to ensure it's not --verbose
+		if len(args) > 0 && args[0] == "--verbose" {
+			fmt.Fprintln(os.Stderr, "Error: Both --verbose and --silent flags cannot be used together.")
+			os.Exit(1)
+		}
+		// If --silent is set, ensure the next argument is the binary name
+		if len(args) > 0 {
+			binaryName = args[0]
+			args = args[1:] // Remove the flag from the arguments
+		} else {
+			fmt.Fprintln(os.Stderr, "Error: Binary name not provided after --silent flag.")
+			os.Exit(1)
+		}
+	default:
+		// If neither --verbose nor --silent is set, remove the first value of binaryName
+		if verboseMode || silentMode {
+			if len(args) > 0 {
+				binaryName = args[0] // Purify binaryName
+				args = args[1:]      // Appropiately set args to exclude any of the flags
+			} else {
+				fmt.Fprintln(os.Stderr, "Error: Binary name not provided after flag.")
+				os.Exit(1)
+			}
 		}
 	}
 
 	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
-		if !silentMode { // Check if not in silent mode before printing
+		if !silentMode {
 			fmt.Printf("Running '%s' from cache...\n", binaryName)
 		}
 		runBinary(cachedFile, args, verboseMode)
 		cleanCache()
 	} else {
-		if !silentMode { // Check if not in silent mode before printing
+		if !silentMode {
 			fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", binaryName)
 		}
 		err := fetchBinary(binaryName)
 		if err != nil {
-			if !silentMode { // Check if not in silent mode before printing
+			if !silentMode {
 				fmt.Printf("Error fetching binary for '%s': %v\n", binaryName, err)
 			}
 			os.Exit(1)
@@ -90,10 +107,7 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 	if err := cmd.Run(); err != nil {
 		// Check if the error is an exit error and if the exit status is non-zero
 		if exitError, ok := err.(*exec.ExitError); ok {
-			// The program has exited with a non-zero exit status
-			// This is an error from the binary itself
 			if status, ok := exitError.Sys().(syscall.WaitStatus); ok {
-				// In verbose mode, print the error message with the program name and exit code
 				if verboseMode {
 					fmt.Printf("The program (%s) errored out with a non-zero exit code (%d).\n", binaryPath, status.ExitStatus())
 				}
@@ -101,7 +115,7 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 				os.Exit(status.ExitStatus())
 			}
 		}
-		// If we can't determine the exit code, exit with a default code
+		// Exit with a default code, in case we can't determine the binary's
 		os.Exit(1)
 	}
 
@@ -126,9 +140,7 @@ func fetchBinary(binaryName string) error {
 		return fmt.Errorf("error fetching binary for %s: %v", binaryName, err)
 	}
 
-	// Ensure the cache size does not exceed the limit
 	cleanCache()
-
 	return nil
 }
 

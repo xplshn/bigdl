@@ -17,6 +17,19 @@ var (
 	useProgressBar  = true
 )
 
+const (
+	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // This is the file from which we extract descriptions for different binaries
+	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
+	VERSION       = "1.3.1"
+	usagePage     = " [-vh] [list|install|remove|update|run|info|search|tldr] <args>"
+	// Truncation indicator
+	indicator = "...>"
+	// Cache size limit & handling.
+	MaxCacheSize     = 10
+	BinariesToDelete = 5
+	TEMP_DIR         = "/tmp/bigdl_cached"
+)
+
 func init() {
 	if InstallDir == "" {
 		homeDir, err := os.UserHomeDir()
@@ -49,21 +62,8 @@ func init() {
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
 }
 
-const (
-	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // This is the file from which we extract descriptions for different binaries
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json" // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
-	VERSION       = "1.3.1"
-	usagePage     = "Usage: bigdl [-vh] [list|install|remove|update|run|info|search|tldr] <args>"
-	// Truncation indicator
-	indicator = "...>"
-	// Cache size limit & handling.
-	MaxCacheSize     = 10
-	BinariesToDelete = 5
-	TEMP_DIR         = "/tmp/bigdl_cached"
-)
-
 func printHelp() {
-	helpMessage := usagePage + `
+	helpMessage := "Usage:\n" + usagePage + `
 	
 Options:
  -h, --help     Show this help message
@@ -80,13 +80,13 @@ Commands:
  tldr           Show a brief description & usage examples for a given program/command
 
 Examples:
+ bigdl search editor
  bigdl install micro
  bigdl remove bed
  bigdl info jq
- bigdl search editor
  bigdl tldr gum
- bigdl run --verbose neofetch
- bigdl run --silent micro
+ bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
+ bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
  bigdl run btop
 
 Version: ` + VERSION
@@ -109,7 +109,7 @@ func main() {
 
 	// If no arguments are received, show the usage text
 	if len(os.Args) < 2 {
-		fmt.Printf("%s\n", usagePage)
+		fmt.Printf(" bigdl:%s\n", usagePage)
 		os.Exit(1)
 	}
 

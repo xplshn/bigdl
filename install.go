@@ -39,7 +39,7 @@ func installCommand(binaryName string, messages ...string) error {
 		}
 	} else {
 		// If no message provided, print default installation complete message
-		fmt.Printf("\x1b[A\033[KInstallation complete: %s \n", installPath)
+		fmt.Printf("Installation complete: %s\n", installPath)
 	}
 	return nil
 }
