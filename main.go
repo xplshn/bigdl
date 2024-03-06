@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -95,127 +96,93 @@ Version: ` + VERSION
 }
 
 func main() {
-	// Check for flags directly in the main function
-	if len(os.Args) > 1 {
-		switch os.Args[1] {
-		case "--version", "-v":
-			fmt.Println("bigdl", VERSION)
-			os.Exit(0)
-		case "--help", "-h":
-			printHelp()
-			os.Exit(0)
-		}
+
+	errorOutInsufficientArgs := func() { os.Exit(errorEncoder("Error: Insufficient parameters")) }
+
+	version := flag.Bool("v", false, "Show the version number")
+	help := flag.Bool("h", false, "Show this help message")
+	flag.Parse()
+
+	if *version {
+		fmt.Println("bigdl", VERSION)
+		os.Exit(0)
 	}
 
-	// If no arguments are received, show the usage text
-	if len(os.Args) < 2 {
+	if *help {
+		printHelp()
+		os.Exit(0)
+	}
+
+	if flag.NArg() < 1 {
 		fmt.Printf(" bigdl:%s\n", usagePage)
 		os.Exit(1)
 	}
 
-	switch os.Args[1] {
+	switch flag.Arg(0) {
 	case "find_url":
-		if len(os.Args) < 3 {
+		binaryName := flag.Arg(1)
+		if binaryName == "" {
 			fmt.Println("Usage: bigdl find_url [binary]")
-			os.Exit(1)
+			errorOutInsufficientArgs()
 		}
-		findURLCommand(os.Args[2])
+		findURLCommand(binaryName)
 	case "list":
-		binaries, err := listBinaries()
-		if err != nil {
-			fmt.Println("Error listing binaries:", err)
-			os.Exit(1)
-		}
-		for _, binary := range binaries {
-			fmt.Println(binary)
-		}
+		listBinaries()
 	case "install", "add":
-		if len(os.Args) < 3 {
-			fmt.Printf("Usage: bigdl %s [binary] <install_dir> <install_message>\n", os.Args[1])
-			os.Exit(1)
+		// Assuming install requires a binary name and optionally an install directory and message
+		binaryName := flag.Arg(1)
+		if binaryName == "" {
+			fmt.Printf("Usage: bigdl %s [binary] <install_dir> <install_message>\n", flag.Arg(0))
+			errorOutInsufficientArgs()
 		}
-		binaryName := os.Args[2]
-		var installMessage string
-		if len(os.Args) > 3 {
-			InstallDir = os.Args[3]
+		var installDir, installMessage string
+		if flag.NArg() > 2 {
+			installDir = flag.Arg(2)
 		}
-		if len(os.Args) > 4 {
-			installMessage = os.Args[4]
+		if flag.NArg() > 3 {
+			installMessage = flag.Arg(3)
 		}
-		err := installCommand(binaryName, installMessage)
-		if err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(1)
-		}
+		installCommand(binaryName, installDir, installMessage)
 	case "remove", "del":
-		if len(os.Args) < 3 {
-			fmt.Printf("Usage: bigdl %s [binary]\n", os.Args[1])
-			os.Exit(1)
+		if flag.NArg() < 2 {
+			fmt.Printf("Usage: bigdl %s [binar|y|ies]\n", flag.Arg(0))
+			errorOutInsufficientArgs()
 		}
-		remove(os.Args[2:])
+		remove(flag.Args()[1:])
 	case "run":
-		if len(os.Args) < 3 {
-			fmt.Println("Usage: bigdl run <--verbose, --silent> [binary] <args>")
-			os.Exit(1)
+		if flag.NArg() < 2 {
+			fmt.Println("Usage: bigdl run <--verbose, --silent, --transparent> [binary] <args>")
+			errorOutInsufficientArgs()
 		}
-		RunFromCache(os.Args[2], os.Args[3:])
+		RunFromCache(flag.Arg(1), flag.Args()[2:])
 	case "tldr":
-		if len(os.Args) < 3 {
+		if flag.NArg() < 2 {
 			fmt.Println("Usage: bigdl tldr <args> [page]")
-			os.Exit(1)
+			errorOutInsufficientArgs()
 		}
-		RunFromCache("tlrc", os.Args[2:])
+		RunFromCache("tlrc", flag.Args()[1:])
 	case "info":
-		if len(os.Args) != 3 {
+		binaryName := flag.Arg(1)
+		if binaryName == "" {
 			fmt.Println("Usage: bigdl info [binary]")
-			os.Exit(1)
+			errorOutInsufficientArgs()
 		}
-		binaryName := os.Args[2]
-		binaryInfo, err := getBinaryInfo(binaryName)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Print the fields
-		fmt.Printf("Name: %s\n", binaryInfo.Name)
-		if binaryInfo.Description != "" {
-			fmt.Printf("Description: %s\n", binaryInfo.Description)
-		}
-		if binaryInfo.Repo != "" {
-			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
-		}
-		if binaryInfo.Size != "" {
-			fmt.Printf("Size: %s\n", binaryInfo.Size)
-		}
-		if binaryInfo.SHA256 != "" {
-			fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
-		}
-		if binaryInfo.B3SUM != "" {
-			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
-		}
-		if binaryInfo.Source != "" {
-			fmt.Printf("Source: %s\n", binaryInfo.Source)
-		}
+		getBinaryInfo(binaryName)
 	case "search":
-		if len(os.Args) != 3 {
+		query := flag.Arg(1)
+		if query == "" {
 			fmt.Println("Usage: bigdl search [query]")
-			os.Exit(1)
+			errorOutInsufficientArgs()
 		}
-		searchTerm := os.Args[2]
-		fSearch(searchTerm)
+		fSearch(query)
 	case "update":
-		var programsToUpdate []string
-		if len(os.Args) > 2 {
-			// Bulk update with list of programs to update
-			programsToUpdate = os.Args[2:]
+		if flag.NArg() < 2 {
+			fmt.Println("Usage: bigdl update [binar|y|ies]")
+			errorOutInsufficientArgs()
 		}
-		if err := update(programsToUpdate); err != nil {
-			fmt.Printf("Error updating programs: %v\n", err)
-			os.Exit(1)
-		}
+		programsToUpdate := flag.Args()[1:]
+		update(programsToUpdate)
 	default:
-		fmt.Printf("bigdl: Unknown command: %s\n", os.Args[1])
-		os.Exit(1)
+		errorOut("bigdl: Unknown command: %s\n", flag.Arg(0))
 	}
 }
