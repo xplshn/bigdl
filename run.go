@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -32,62 +33,59 @@ func ReturnCachedFile(binaryName string) (string, int) {
 
 // RunFromCache runs the binary from cache or fetches it if not found.
 func RunFromCache(binaryName string, args []string) {
-	setFlags := func() {
-		purifyVars := func() {
-			if len(args) > 0 {
-				binaryName = args[0] // Purify binaryName
-				args = args[1:]      // Appropiately set args to exclude any of the flags
-			} else {
-				errorOut("Error: Binary name not provided after flag.\n")
-			}
-		}
 
-		setTransparency := func() {
-			if binaryName == "--transparent" {
-				transparentMode = true
-				purifyVars()
-				isInPath, err := isBinaryInPath(binaryName)
-				if err != nil {
-					errorOut("Error checking if binary is in PATH: %s\n", err)
-				}
-				if isInPath {
-					if !silentMode {
-						fmt.Printf("Running '%s' from PATH...\n", binaryName)
-					}
-					runBinary(binaryName, args, verboseMode)
-				}
-			}
+	// purifyVars is a function to purify binaryName and args.
+	purifyVars := func() {
+		if len(args) > 0 {
+			binaryName = (args)[0] // Purify binaryName
+			args = (args)[1:]      // Appropriately set args to exclude any of the flags
+		} else {
+			errorOut("Error: Binary name not provided after flag.\n")
 		}
-
-		switch binaryName {
-		case "--transparent":
-			if len(args) > 0 {
-				if args[0] == "--verbose" || args[0] == "--silent" {
-					errorOut("Error: in order to use other flags, set --transparent as the last one\n")
-				}
-			}
-			setTransparency()
-		case "--verbose":
-			verboseMode = true
-			// Check the next argument to ensure it's not --silent
-			if len(args) > 0 && args[0] == "--silent" {
-				errorOut("Error: --verbose and --silent are mutually exclusive\n")
-			}
-		case "--silent":
-			silentMode = true
-			// Check the next argument to ensure it's not --verbose
-			if len(args) > 0 && args[0] == "--verbose" {
-				errorOut("Error: --silent and --verbose are mutually exclusive\n")
-			}
-		}
-
-		if verboseMode || silentMode {
-			purifyVars()
-			setTransparency() // This way the user can call ;--verbose --transparent; and have it work too.
-		}
-
 	}
-	setFlags()
+
+	// Process flags
+	verbose := flag.Bool("verbose", false, "Enable verbose mode")
+	silent := flag.Bool("silent", false, "Enable silent mode")
+	transparent := flag.Bool("transparent", false, "Enable transparent mode")
+
+	flags_AndBinaryName := append(strings.Fields(binaryName), args...)
+	flag.CommandLine.Parse(flags_AndBinaryName)
+
+	if *verbose && *silent {
+		errorOut("Error: --verbose and --silent are mutually exclusive\n")
+	}
+
+	if *verbose {
+		verboseMode = true
+		purifyVars()
+	}
+
+	if *silent {
+		silentMode = true
+		purifyVars()
+	}
+
+	if *transparent {
+		transparentMode = true
+
+		purifyVars()
+		isInPath, err := isBinaryInPath(binaryName)
+		if err != nil {
+			errorOut("Error checking if binary is in PATH: %s\n", err)
+		}
+
+		if isInPath {
+			if !silentMode {
+				fmt.Printf("Running '%s' from PATH...\n", binaryName)
+			}
+			runBinary(binaryName, args, verboseMode)
+		}
+	}
+
+	if binaryName == "" {
+		errorOut("Error: Binary name not provided\n")
+	}
 
 	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
