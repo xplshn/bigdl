@@ -281,6 +281,22 @@ func sanitizeString(s string) string {
 	return s
 }
 
+func errorEncoder(format string, args ...interface{}) int {
+	formattedErrorMessage := fmt.Sprintf(format, args...)
+
+	var sum int
+	for _, char := range formattedErrorMessage {
+		sum += int(char)
+	}
+	errorCode := sum % 256
+	fmt.Fprint(os.Stderr, formattedErrorMessage)
+	return errorCode
+}
+
+func errorOut(format string, args ...interface{}) {
+	os.Exit(errorEncoder(format, args...))
+}
+
 // GetTerminalWidth attempts to determine the width of the terminal.
 // It first tries using "stty size", then "tput cols", and finally falls back to  80 columns.
 func getTerminalWidth() int {
