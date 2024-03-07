@@ -129,20 +129,19 @@ func main() {
 	case "list":
 		listBinaries()
 	case "install", "add":
-		// Assuming install requires a binary name and optionally an install directory and message
-		binaryName := flag.Arg(1)
-		if binaryName == "" {
-			fmt.Printf("Usage: bigdl %s [binary] <install_dir> <install_message>\n", flag.Arg(0))
+		// Check if the binary name is provided
+		if flag.NArg() < 2 {
+			fmt.Printf("Usage: bigdl %s [binary] <install_message>\n", flag.Arg(0))
+			fmt.Println("Options:")
+			fmt.Println(" --fancy <--truncate> : Will replace exactly ONE '%s' with the name of the requested binary in the install message <--newline>")
+			fmt.Println(" --truncate: Truncates the message to fit into the terminal")
 			errorOutInsufficientArgs()
 		}
-		var installDir, installMessage string
-		if flag.NArg() > 2 {
-			installDir = flag.Arg(2)
-		}
-		if flag.NArg() > 3 {
-			installMessage = flag.Arg(3)
-		}
-		installCommand(binaryName, installDir, installMessage)
+
+		binaryName := os.Args[2]
+		installMessage := os.Args[3:]
+
+		installCommand(binaryName, installMessage...)
 	case "remove", "del":
 		if flag.NArg() < 2 {
 			fmt.Printf("Usage: bigdl %s [binar|y|ies]\n", flag.Arg(0))

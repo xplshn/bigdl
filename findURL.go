@@ -30,5 +30,5 @@ func findURL(binaryName string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("Binary's SOURCE_URL was not found")
+	return "", fmt.Errorf("Error: Binary's SOURCE_URL was not found")
 }
