@@ -21,13 +21,13 @@ var (
 const (
 	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // This is the file from which we extract descriptions for different binaries
 	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
-	VERSION       = "1.3.1"
-	usagePage     = " [-vh] [list|install|remove|update|run|info|search|tldr] <args>"
+	VERSION       = "1.4"
+	usagePage     = " <-v|-h|-d> [list|install|remove|update|run|info|search|tldr] {<args>}"
 	// Truncation indicator
 	indicator = "...>"
 	// Cache size limit & handling.
 	MaxCacheSize     = 10
-	BinariesToDelete = 5
+	BinariesToDelete = 5 // Once the cache is filled - The programs populate the list of binaries to be removed in order of least used.
 	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
@@ -65,29 +65,34 @@ func init() {
 
 func printHelp() {
 	helpMessage := "Usage:\n" + usagePage + `
-	
+
 Options:
- -h, --help     Show this help message
- -v, --version Show the version number
+ -h, --help       Show this help message
+ -v, --version    Show the version number
 
 Commands:
- list           List all available binaries
- install, add   Install a binary
- remove, del    Remove a binary
- update         Update binaries, by checking their SHA against the repo's SHA.
- run            Run a binary
- info           Show information about a specific binary
- search         Search for a binary - (not all binaries have metadata. Use list to see all binaries)
- tldr           Show a brief description & usage examples for a given program/command
+ list             List all available binaries
+ install, add     Install a binary
+ remove, del      Remove a binary
+ update           Update binaries, by checking their SHA against the repo's SHA.
+ run              Run a binary
+ info             Show information about a specific binary
+ search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
+ tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
 
 Examples:
  bigdl search editor
  bigdl install micro
+ bigdl install lux --fancy "%s was installed to $INSTALL_DIR." --newline
+ bigdl install bed --fancy --truncate "%s was installed to $INSTALL_DIR." --newline
+ bigdl install orbiton --truncate "installed Orbiton to $INSTALL_DIR."
  bigdl remove bed
+ bigdl remove orbiton tgpt lux
  bigdl info jq
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
  bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
+ bigdl run --transparent --silent micro .profile
  bigdl run btop
 
 Version: ` + VERSION
@@ -97,19 +102,15 @@ Version: ` + VERSION
 
 func main() {
 
-	errorOutInsufficientArgs := func() { os.Exit(errorEncoder("Error: Insufficient parameters")) }
+	errorOutInsufficientArgs := func() { os.Exit(errorEncoder("Error: Insufficient parameters\n")) }
+	var versionFlag string
+	flag.StringVar(&versionFlag, "v", "", "Show the version number")
 
-	version := flag.Bool("v", false, "Show the version number")
-	help := flag.Bool("h", false, "Show this help message")
+	flag.Usage = printHelp
 	flag.Parse()
 
-	if *version {
+	if versionFlag == "v" || versionFlag == "version" {
 		fmt.Println("bigdl", VERSION)
-		os.Exit(0)
-	}
-
-	if *help {
-		printHelp()
 		os.Exit(0)
 	}
 
@@ -175,13 +176,12 @@ func main() {
 		}
 		fSearch(query)
 	case "update":
-		if flag.NArg() < 2 {
-			fmt.Println("Usage: bigdl update [binar|y|ies]")
-			errorOutInsufficientArgs()
+		var programsToUpdate []string
+		if len(os.Args) > 2 {
+			programsToUpdate = os.Args[2:]
 		}
-		programsToUpdate := flag.Args()[1:]
 		update(programsToUpdate)
 	default:
-		errorOut("bigdl: Unknown command: %s\n", flag.Arg(0))
+		errorOut("bigdl: Unknown command.\n")
 	}
 }

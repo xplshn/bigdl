@@ -1,5 +1,4 @@
 // fsearch.go // this file implements the search option
-
 package main
 
 import (
@@ -59,7 +58,7 @@ func fSearch(searchTerm string) {
 		fmt.Printf("No matching binaries found for '%s'.\n", searchTerm)
 		return
 	} else if len(searchResultsSet) > 90 {
-		fmt.Printf("Too many matching binaries (+90. [Limit defined in fsearch.go:63:36,37]) found for '%s'.\n", searchTerm)
+		fmt.Printf("Too many matching binaries (+90. [Limit defined in fsearch.go:60,36]) found for '%s'.\n", searchTerm)
 		return
 	}
 
