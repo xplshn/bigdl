@@ -111,7 +111,7 @@ func update(programsToUpdate []string) error {
 
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
 				truncatePrintf("\033[2K\r<%d/%d> %s | Detected a difference in %s. Updating...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
-				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s to version %s", program, binaryInfo.SHA256)
+				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s", program)
 				err := installCommand(program, installMessage)
 				if err != nil {
 					atomic.AddUint32(&errors, 1)

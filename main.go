@@ -103,13 +103,13 @@ Version: ` + VERSION
 func main() {
 
 	errorOutInsufficientArgs := func() { os.Exit(errorEncoder("Error: Insufficient parameters\n")) }
-	var versionFlag string
-	flag.StringVar(&versionFlag, "v", "", "Show the version number")
+	version := flag.Bool("v", false, "Show the version number")
+	versionLong := flag.Bool("version", false, "Show the version number")
 
 	flag.Usage = printHelp
 	flag.Parse()
 
-	if versionFlag == "v" || versionFlag == "version" {
+	if *version || *versionLong {
 		fmt.Println("bigdl", VERSION)
 		os.Exit(0)
 	}
@@ -167,7 +167,29 @@ func main() {
 			fmt.Println("Usage: bigdl info [binary]")
 			errorOutInsufficientArgs()
 		}
-		getBinaryInfo(binaryName)
+		binaryInfo, err := getBinaryInfo(binaryName)
+		if err != nil {
+			errorOut("%v\n", err)
+		}
+		fmt.Printf("Name: %s\n", binaryInfo.Name)
+		if binaryInfo.Description != "" {
+			fmt.Printf("Description: %s\n", binaryInfo.Description)
+		}
+		if binaryInfo.Repo != "" {
+			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
+		}
+		if binaryInfo.Size != "" {
+			fmt.Printf("Size: %s\n", binaryInfo.Size)
+		}
+		if binaryInfo.SHA256 != "" {
+			fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
+		}
+		if binaryInfo.B3SUM != "" {
+			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
+		}
+		if binaryInfo.Source != "" {
+			fmt.Printf("Source: %s\n", binaryInfo.Source)
+		}
 	case "search":
 		query := flag.Arg(1)
 		if query == "" {
