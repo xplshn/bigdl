@@ -169,12 +169,12 @@ func copyFile(src, dst string) error {
 
 // removeDuplicates removes duplicate elements from the input slice.
 func removeDuplicates(input []string) []string {
-	seen := make(map[string]struct{})
-	var unique []string
-	for _, s := range input {
-		if _, ok := seen[s]; !ok {
-			seen[s] = struct{}{}
-			unique = append(unique, s)
+	seen := make(map[string]bool)
+	unique := []string{}
+	for _, entry := range input {
+		if _, value := seen[entry]; !value {
+			seen[entry] = true
+			unique = append(unique, entry)
 		}
 	}
 	return unique
