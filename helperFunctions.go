@@ -1,5 +1,4 @@
 // helperFunctions.go // This file contains commonly used functions //>
-// TODO: Add *PROPER* error handling in the truncate functions. Ensure escape sequences are correctly handled?
 package main
 
 import (
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"syscall"
 )
+
+// TODO: Add *PROPER* error handling in the truncate functions. Ensure escape sequences are correctly handled?
 
 // signalHandler sets up a channel to listen for interrupt signals and returns a function
 // that can be called to check if an interrupt has been received.
