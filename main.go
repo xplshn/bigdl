@@ -128,7 +128,14 @@ func main() {
 		}
 		findURLCommand(binaryName)
 	case "list":
-		listBinaries()
+		binaries, err := listBinaries()
+		if err != nil {
+			fmt.Println("Error listing binaries:", err)
+			os.Exit(1)
+		}
+		for _, binary := range binaries {
+			fmt.Println(binary)
+		}
 	case "install", "add":
 		// Check if the binary name is provided
 		if flag.NArg() < 2 {
