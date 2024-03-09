@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	Repositories    []string
-	MetadataURLs    []string
-	validatedArch   = [3]string{}
-	InstallDir      = os.Getenv("INSTALL_DIR")
-	installUseCache = true
-	useProgressBar  = true
+	Repositories      []string
+	MetadataURLs      []string
+	validatedArch     = [3]string{}
+	InstallDir        = os.Getenv("INSTALL_DIR")
+	installUseCache   = true
+	useProgressBar    = true
+	disableTruncation = false
 )
 
 const (
@@ -61,6 +62,13 @@ func init() {
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
+
+	if os.Getenv("DISABLE_TRUNCATION") == "true" || os.Getenv("DISABLE_TRUNCATION") == "1" {
+		disableTruncation = true
+	}
+	if os.Getenv("DISABLE_PRBAR") == "true" || os.Getenv("DISABLE_PRBAR") == "1" {
+		useProgressBar = false
+	}
 }
 
 func printHelp() {

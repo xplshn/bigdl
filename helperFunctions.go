@@ -350,8 +350,11 @@ func truncateSprintf(format string, a ...interface{}) string {
 
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
-	formatted := truncateSprintf(format, a...)
-	return fmt.Print(formatted)
+	if disableTruncation {
+		return fmt.Print(fmt.Sprintf(format, a...))
+	} else {
+		return fmt.Print(truncateSprintf(format, a...))
+	}
 }
 
 // NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
