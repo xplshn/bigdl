@@ -93,27 +93,7 @@ func fetchBinaryFromURL(url, destination string) error {
 		return fmt.Errorf("failed to fetch binary from %s. HTTP status code: %d", url, resp.StatusCode)
 	}
 
-	// Create a progress bar
-	var bar *progressbar.ProgressBar
-	if useProgressBar {
-		bar = progressbar.NewOptions(int(resp.ContentLength),
-			progressbar.OptionClearOnFinish(),
-			progressbar.OptionFullWidth(),
-			progressbar.OptionShowBytes(true),
-			progressbar.OptionSetTheme(progressbar.Theme{
-				Saucer:        "=",
-				SaucerHead:    ">",
-				SaucerPadding: " ",
-				BarStart:      "[",
-				BarEnd:        "]",
-			}),
-		)
-	} else {
-		bar = progressbar.NewOptions(-1,
-			progressbar.OptionSetVisibility(false), // Couldn't make update.go work well enough with it.
-			progressbar.OptionSpinnerType(9),       // Type 9 spinner (Classic BSD styled spinner; "|/-\").
-		)
-	}
+	bar := spawnProgressBar(resp.ContentLength)
 
 	// Write the binary to the temporary file with progress bar
 	_, err = io.Copy(io.MultiWriter(out, bar), resp.Body)
@@ -261,6 +241,24 @@ func listFilesInDir(dir string) ([]string, error) {
 		}
 	}
 	return files, nil
+}
+
+func spawnProgressBar(contentLength int64) *progressbar.ProgressBar {
+	if useProgressBar {
+		return progressbar.NewOptions(int(contentLength),
+			progressbar.OptionClearOnFinish(),
+			progressbar.OptionFullWidth(),
+			progressbar.OptionShowBytes(true),
+			progressbar.OptionSetTheme(progressbar.Theme{
+				Saucer:        "=",
+				SaucerHead:    ">",
+				SaucerPadding: " ",
+				BarStart:      "[",
+				BarEnd:        "]",
+			}),
+		)
+	}
+	return progressbar.NewOptions(0, progressbar.OptionClearOnFinish()) // A dummy
 }
 
 // sanitizeString removes certain punctuation from the end of the string and converts it to lower case.
