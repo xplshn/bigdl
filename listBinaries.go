@@ -1,5 +1,4 @@
 // listBinaries.go // This file implements the listBinaries function //>
-
 package main
 
 import (
@@ -37,8 +36,8 @@ func listBinaries() ([]string, error) {
 
 		// Unmarshal JSON
 		var metadata []struct {
-			Name    string `json:"name"`
-			NameAlt string `json:"Name"` // Consider both "name" and "Name" fields
+			Name    string `json:"Name"` // Consider both "name" and "Name" fields
+			NameAlt string `json:"name"`
 		}
 		if err := json.Unmarshal(body, &metadata); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal metadata JSON from %s: %v", url, err)

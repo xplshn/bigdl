@@ -4,15 +4,13 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 )
 
 // findURLCommand returns the URL for the specified binary. We do not use info.go for this because unmarshalling such big files is slower than pinging to see which exists
 func findURLCommand(binaryName string) {
 	url, err := findURL(binaryName)
 	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		os.Exit(1)
+		errorOut("Error: %v\n", err)
 	}
 
 	fmt.Println(url)
@@ -32,5 +30,5 @@ func findURL(binaryName string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("Binary's SOURCE_URL was not found")
+	return "", fmt.Errorf("Error: Binary's SOURCE_URL was not found.")
 }
