@@ -23,7 +23,7 @@ Unlike BDL which required either wget or curl, BigDL is suited for embedded syst
 #### Usage:
 
 ```
-$ Usage: bigdl [-vh] {list|install|remove|update|run|info|search|tldr} [args...]
+$ Usage: bigdl [-v,-h] {list|install|remove|update|run|info|search|tldr} [args...]
 ```
 
 #### BDL Compatibility:
