@@ -86,7 +86,7 @@ func fetchBinaryFromURL(url, destination string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("error fetching binary from %s: %v", url, err)
+		return fmt.Errorf("failed to fetch binary from %s: %v", url, err)
 	}
 	defer resp.Body.Close()
 
