@@ -22,7 +22,7 @@ var (
 const (
 	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // This is the file from which we extract descriptions for different binaries
 	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
-	VERSION       = "1.4"
+	VERSION       = "1.4.1"
 	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"
 	// Truncation indicator
 	indicator = "...>"
