@@ -67,9 +67,12 @@ func listBinaries() ([]string, error) {
 	}
 
 	excludedFileNames := map[string]struct{}{
-		"robotstxt":                {},
+		"TEST":                     {},
 		"LICENSE":                  {},
 		"experimentalBinaries_dir": {},
+		"robotstxt":                {},
+		"binfetch.cfg":             {},
+		"apk.sh":                   {},
 		"bdl.sh":                   {},
 	}
 
