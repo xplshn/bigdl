@@ -2,8 +2,8 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/goccy/go-json"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
