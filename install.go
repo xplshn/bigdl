@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 )
 
@@ -19,6 +20,12 @@ func installCommand(binaryName string, installMessage ...string) error {
 			if err := copyFile(cachedFile, installPath); err != nil {
 				return fmt.Errorf("Error: Could not copy cached file: %v", err)
 			}
+
+			// Set executable bit immediately after copying
+			if err := os.Chmod(installPath, 0755); err != nil {
+				return fmt.Errorf("failed to set executable bit: %v", err)
+			}
+
 			return nil
 		}
 	}
