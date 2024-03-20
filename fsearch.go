@@ -11,7 +11,7 @@ import (
 )
 
 // fSearch searches for binaries based on the given search term.
-func fSearch(searchTerm string) {
+func fSearch(searchTerm string, limit int) {
 	// Fetch metadata
 	response, err := http.Get(RMetadataURL)
 	if err != nil {
@@ -57,8 +57,8 @@ func fSearch(searchTerm string) {
 	if len(searchResultsSet) == 0 {
 		fmt.Printf("No matching binaries found for '%s'.\n", searchTerm)
 		return
-	} else if len(searchResultsSet) > 90 {
-		fmt.Printf("Too many matching binaries (+90. [Limit defined in fsearch.go:60,36]) found for '%s'.\n", searchTerm)
+	} else if len(searchResultsSet) > limit {
+		fmt.Printf("Too many matching binaries (+%d. [Use --limit before your query]) found for '%s'.\n", limit, searchTerm)
 		return
 	}
 

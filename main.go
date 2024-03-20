@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 )
 
 var (
@@ -82,7 +83,7 @@ Commands:
  list             List all available binaries
  install, add     Install a binary
  remove, del      Remove a binary
- update           Update binaries, by checking their SHA against the repo's SHA.
+ update           Update binaries, by checking their SHA against the repo's SHA
  run              Run a binary
  info             Show information about a specific binary
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
@@ -136,13 +137,17 @@ func main() {
 		}
 		findURLCommand(binaryName)
 	case "list":
-		binaries, err := listBinaries()
-		if err != nil {
-			fmt.Println("Error listing binaries:", err)
-			os.Exit(1)
-		}
-		for _, binary := range binaries {
-			fmt.Println(binary)
+		if len(os.Args) > 2 && os.Args[2] == "--described" || os.Args[2] == "-d" {
+			fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
+		} else {
+			binaries, err := listBinaries()
+			if err != nil {
+				fmt.Println("Error listing binaries:", err)
+				os.Exit(1)
+			}
+			for _, binary := range binaries {
+				fmt.Println(binary)
+			}
 		}
 	case "install", "add":
 		// Check if the binary name is provided
@@ -206,12 +211,29 @@ func main() {
 			fmt.Printf("Source: %s\n", binaryInfo.Source)
 		}
 	case "search":
-		query := flag.Arg(1)
-		if query == "" {
-			fmt.Println("Usage: bigdl search [query]")
-			errorOutInsufficientArgs()
+		limit := 90
+		queryIndex := 2
+
+		if len(os.Args) < queryIndex+1 {
+			fmt.Println("Usage: bigdl search <--limit||-l [int]> [query]")
+			os.Exit(1)
 		}
-		fSearch(query)
+
+		if len(os.Args) > 2 && os.Args[queryIndex] == "--limit" || os.Args[queryIndex] == "-l" {
+			if len(os.Args) > queryIndex+1 {
+				var err error
+				limit, err = strconv.Atoi(os.Args[queryIndex+1])
+				if err != nil {
+					errorOut("Error: 'limit' value is not an int.\n")
+				}
+				queryIndex += 2
+			} else {
+				errorOut("Error: Missing 'limit' value.\n")
+			}
+		}
+
+		query := os.Args[queryIndex]
+		fSearch(query, limit)
 	case "update":
 		var programsToUpdate []string
 		if len(os.Args) > 2 {
