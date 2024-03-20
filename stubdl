@@ -7,7 +7,7 @@ DEST="/tmp/._bdlstub_bigdl.bin"
 ARCH="$(uname -m)"
 if [ "$ARCH" = "x86_64" ]; then
     ARCH_SUFFIX="amd64"
-elif [ "$ARCH" = "arm64" ]; then
+elif [ "$ARCH" = "aarch64" ]; then
     ARCH_SUFFIX="arm64"
 else
     echo "Unsupported architecture: $ARCH"
