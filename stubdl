@@ -21,7 +21,7 @@ if [ "$1" = "--install" ]; then
     if [ -f "$DEST" ]; then
         "$DEST" "$@"
     else
-        mkdir -p "$DEST"
+        mkdir -p "$(dirname "$DEST")"
         if command -v wget >/dev/null 2>&1; then
             wget -q "$BIGDL" -O "$DEST"
         elif command -v curl >/dev/null 2>&1; then
