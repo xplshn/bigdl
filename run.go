@@ -95,15 +95,13 @@ func RunFromCache(binaryName string, args []string) {
 		runBinary(cachedFile, args, verboseMode)
 		cleanCache()
 	} else {
-		if !silentMode {
-			fmt.Printf("Error: cached binary for '%s' not found. Fetching a new one...\n", binaryName)
+		if verboseMode {
+			fmt.Printf("Couldn't find '%s' in the cache. Fetching a new one...\n", binaryName)
 		}
 		err := fetchBinary(binaryName)
 		if err != nil {
-			if !silentMode {
-				fmt.Fprintf(os.Stderr, "Error fetching binary for '%s'\n", binaryName)
-				errorOut("Error: %s\n", err)
-			}
+			fmt.Fprintf(os.Stderr, "Error fetching binary for '%s'\n", binaryName)
+			errorOut("Error: %s\n", err)
 		}
 		cleanCache()
 		runBinary(cachedFile, args, verboseMode)
