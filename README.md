@@ -21,11 +21,6 @@ BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to 
 $ Usage: bigdl [-v,-h] {list|install|remove|update|run|info|search|tldr} [args...]
 ```
 
-
-### Compatibility with BDL
-
-BigDL maintains compatibility with BDL commands, ensuring a smooth transition for users familiar with the original tool:
-
 ## Getting Started
 
 To begin using BigDL, simply download and install it on your Linux system. No additional setup is required.

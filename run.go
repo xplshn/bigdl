@@ -153,6 +153,10 @@ func isBinaryInPath(binaryName string) (bool, error) {
 
 // fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
+	if silentMode {
+		useProgressBar = false
+	}
+
 	url, err := findURL(binaryName)
 	if err != nil {
 		return err
