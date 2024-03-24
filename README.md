@@ -35,7 +35,7 @@ wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s
 ```
 
 ###### Expample of one use case of bigdl | Inside of a SH script
-Whenever you want to pull a specific GNU coreutil, insert a bash snippet, use a *fetch tool, etc, you can use bigdl for the job! There's also a --transparent mode, which will use the users' installed version of the program you want to run, and if it is not found in the $PATH, bigdl will fetch it and run it from /tmp/bigdl_cached.
+Whenever you want to pull a specific GNU coreutil, insert a bash snippet, use a *fetch tool, etc, you can use bigdl for the job! There's also a `--transparent` flag for `run`, which will use the users' installed version of the program you want to run, and if it is not found in the `$PATH` bigdl will fetch it and run it from `/tmp/bigdl_cached`.
 ```sh
 system_info=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo - || curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo -)
 ```
