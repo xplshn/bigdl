@@ -172,11 +172,15 @@ func copyFile(src, dst string) error {
 func removeDuplicates(input []string) []string {
 	seen := make(map[string]bool)
 	unique := []string{}
-	for _, entry := range input {
-		if _, value := seen[entry]; !value {
-			seen[entry] = true
-			unique = append(unique, entry)
+	if input != nil {
+		for _, entry := range input {
+			if _, value := seen[entry]; !value {
+				seen[entry] = true
+				unique = append(unique, entry)
+			}
 		}
+	} else {
+		unique = input
 	}
 	return unique
 }
@@ -356,6 +360,62 @@ func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 	} else {
 		return fmt.Print(truncateSprintf(format, a...))
 	}
-}
+} // NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
 
-// NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
+// validateProgramsFrom validates programs against the files in the specified directory against the remote binaries.
+// It returns the validated programs based on the last element of the received list of programs.
+func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]string, error) {
+	// Fetch the list of binaries from the remote source once
+	remotePrograms, err := listBinaries()
+	if err != nil {
+		return nil, fmt.Errorf("failed to list remote binaries: %w", err)
+	}
+
+	// List files from the specified directory
+	files, err := listFilesInDir(InstallDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list files in %s: %w", InstallDir, err)
+	}
+
+	validPrograms := make([]string, 0)
+	invalidPrograms := make([]string, 0)
+
+	programsToValidate = removeDuplicates(programsToValidate)
+
+	// If programsToValidate is nil, validate all programs in the install directory
+	if programsToValidate == nil {
+		for _, file := range files {
+			// Extract the file name from the full path
+			fileName := filepath.Base(file)
+			if contains(remotePrograms, fileName) {
+				validPrograms = append(validPrograms, fileName)
+			} else {
+				invalidPrograms = append(invalidPrograms, fileName)
+			}
+		}
+	} else {
+		// Only check the ones specified in programsToValidate
+		for _, program := range programsToValidate {
+			if contains(remotePrograms, program) {
+				validPrograms = append(validPrograms, program)
+			} else {
+				invalidPrograms = append(invalidPrograms, program)
+			}
+		}
+	}
+
+	// Handle the list of programs received based on the last element
+	// If programsToValidate is not nil, handle based on the last element
+	if len(programsToValidate) != 0 {
+		lastElement := programsToValidate[len(programsToValidate)-1]
+		switch lastElement {
+		case "_2_":
+			return invalidPrograms, nil
+		case "_3_":
+			return append(validPrograms, invalidPrograms...), nil
+		default:
+			return validPrograms, nil
+		}
+	}
+	return validPrograms, nil
+}

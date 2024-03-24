@@ -101,7 +101,7 @@ Examples:
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
  bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
- bigdl run --transparent --silent micro .profile
+ bigdl run --transparent --silent micro ~/.profile
  bigdl run btop
 
 Version: ` + VERSION
@@ -137,8 +137,10 @@ func main() {
 		}
 		findURLCommand(binaryName)
 	case "list":
-		if len(os.Args) > 2 && os.Args[2] == "--described" || os.Args[2] == "-d" {
-			fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
+		if len(os.Args) == 3 {
+			if os.Args[2] == "--described" || os.Args[2] == "-d" {
+				fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
+			}
 		} else {
 			binaries, err := listBinaries()
 			if err != nil {
