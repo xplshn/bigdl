@@ -101,7 +101,7 @@ Examples:
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
  bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
- bigdl run --transparent --silent micro .profile
+ bigdl run --transparent --silent micro ~/.profile
  bigdl run btop
 
 Version: ` + VERSION
