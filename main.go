@@ -188,7 +188,7 @@ func main() {
 		binaryName := flag.Arg(1)
 
 		if len(os.Args) > 3 {
-			fmt.Fprintln(os.Stderr, "Warning: The command contains more binaries than expected. Rest of the input unused.")
+			fmt.Fprintln(os.Stderr, "Warning: The command contains more arguments than expected. Part of the input unused.")
 		}
 
 		if len(os.Args) < 3 {
