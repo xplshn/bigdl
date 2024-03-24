@@ -12,9 +12,6 @@ import (
 	"sync/atomic"
 )
 
-// TODO: padding should be used to align the messages
-// TODO: Validation of programs could be done without a list (current bottleneck)
-
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
 	// 'Configure' external functions
@@ -29,27 +26,11 @@ func update(programsToUpdate []string) error {
 		padding                               = " "
 	)
 
-	// Fetch the list of binaries from the remote source once
-	remotePrograms, err := listBinaries()
+	// Call validateProgramsFrom with InstallDir and programsToUpdate
+	programsToUpdate, err := validateProgramsFrom(InstallDir, programsToUpdate)
 	if err != nil {
-		return fmt.Errorf("failed to list remote binaries: %w", err)
-	}
-
-	// If programsToUpdate is nil, list files from InstallDir and validate against remote
-	if programsToUpdate == nil {
-		files, err := listFilesInDir(InstallDir)
-		if err != nil {
-			return fmt.Errorf("failed to list files in InstallDir: %w", err)
-		}
-
-		programsToUpdate = make([]string, 0)
-		for _, file := range files {
-			// Extract the file name from the full path
-			fileName := filepath.Base(file)
-			if contains(remotePrograms, fileName) {
-				programsToUpdate = append(programsToUpdate, fileName)
-			}
-		}
+		fmt.Println("Error validating programs:", err)
+		return err
 	}
 
 	// Calculate toBeChecked
@@ -72,18 +53,18 @@ func update(programsToUpdate []string) error {
 
 			installPath := filepath.Join(InstallDir, program)
 			if !fileExists(installPath) {
+				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Tried to update a non-existent program %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
 			}
 			localSHA256, err := getLocalSHA256(installPath)
 			if err != nil {
+				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Failed to get SHA256 for %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -91,9 +72,9 @@ func update(programsToUpdate []string) error {
 
 			binaryInfo, err := getBinaryInfo(program)
 			if err != nil {
+				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Failed to get metadata for %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -101,9 +82,9 @@ func update(programsToUpdate []string) error {
 
 			// Skip if the SHA field is null
 			if binaryInfo.SHA256 == "" {
+				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | Skipping %s because the SHA256 field is null.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -120,14 +101,14 @@ func update(programsToUpdate []string) error {
 					progressMutex.Unlock()
 					return
 				}
+				atomic.AddUint32(&checked, 1)
+				atomic.AddUint32(&updated, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | Successfully updated %s.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
-				atomic.AddUint32(&updated, 1)
 			} else {
+				atomic.AddUint32(&checked, 1)
 				progressMutex.Lock()
-				atomic.AddUint32(&checked, 1) // Increment the checked counter
 				truncatePrintf("\033[2K\r<%d/%d> %s | No updates available for %s.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 			}
@@ -138,7 +119,7 @@ func update(programsToUpdate []string) error {
 	wg.Wait()
 
 	// Prepare final counts
-	finalCounts := fmt.Sprintf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d", atomic.LoadUint32(&skipped), atomic.LoadUint32(&updated), uint32(int(atomic.LoadUint32(&checked))-1))
+	finalCounts := fmt.Sprintf("\033[2K\rSkipped: %d\tUpdated: %d\tChecked: %d", atomic.LoadUint32(&skipped), atomic.LoadUint32(&updated), uint32(int(atomic.LoadUint32(&checked))))
 	if errors > 0 {
 		finalCounts += fmt.Sprintf("\tErrors: %d", atomic.LoadUint32(&errors))
 	}
