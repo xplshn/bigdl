@@ -53,18 +53,18 @@ func update(programsToUpdate []string) error {
 
 			installPath := filepath.Join(InstallDir, program)
 			if !fileExists(installPath) {
+				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
-				progressMutex.Lock()
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Tried to update a non-existent program %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
 			}
 			localSHA256, err := getLocalSHA256(installPath)
 			if err != nil {
+				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
-				progressMutex.Lock()
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Failed to get SHA256 for %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -72,9 +72,9 @@ func update(programsToUpdate []string) error {
 
 			binaryInfo, err := getBinaryInfo(program)
 			if err != nil {
+				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
-				progressMutex.Lock()
 				truncatePrintf("\033[2K\r<%d/%d> %s | Warning: Failed to get metadata for %s. Skipping.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -82,9 +82,9 @@ func update(programsToUpdate []string) error {
 
 			// Skip if the SHA field is null
 			if binaryInfo.SHA256 == "" {
+				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&skipped, 1)
-				progressMutex.Lock()
 				truncatePrintf("\033[2K\r<%d/%d> %s | Skipping %s because the SHA256 field is null.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 				return
@@ -95,20 +95,20 @@ func update(programsToUpdate []string) error {
 				installMessage := truncateSprintf("\x1b[A\033[KUpdating %s", program)
 				err := installCommand(program, installMessage)
 				if err != nil {
-					atomic.AddUint32(&errors, 1)
 					progressMutex.Lock()
+					atomic.AddUint32(&errors, 1)
 					errorMessages += sanitizeString(fmt.Sprintf("Failed to update '%s', please check this file's properties, etc\n", program))
 					progressMutex.Unlock()
 					return
 				}
+				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)
 				atomic.AddUint32(&updated, 1)
-				progressMutex.Lock()
 				truncatePrintf("\033[2K\r<%d/%d> %s | Successfully updated %s.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 			} else {
-				atomic.AddUint32(&checked, 1)
 				progressMutex.Lock()
+				atomic.AddUint32(&checked, 1)
 				truncatePrintf("\033[2K\r<%d/%d> %s | No updates available for %s.", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				progressMutex.Unlock()
 			}
