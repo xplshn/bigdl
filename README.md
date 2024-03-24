@@ -1,54 +1,49 @@
-### BigDL: A (static)Binary manager
+# BigDL: Advanced Binary Management Tool
 
-BigDL, the sizzling hot Golang rewrite of BDL! 🔥
+BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to enhance the management and downloading of static binaries with minimal effort. This tool is engineered to operate seamlessly on Linux systems, showcasing its independence by eliminating the need for external dependencies such as wget or curl. BigDL is particularly well-suited for embedded systems, requiring a minimum of 8MB RAM and storage, with support for Amd64/Aarch64 architectures.
 
-BigDL is your sleek and efficient companion for managing and downloading static binaries effortlessly. It flaunts its independence, requiring nothing but a Linux system.
-Unlike BDL which required either wget or curl, BigDL is suited for embedded systems (minimum needed: 8MBs of RAM and storage. Amd64/Aarch64).
+## Features
 
-#### Features:
+- **Minimal Dependencies**: BigDL is designed with simplicity and efficiency in mind, boasting a slim dependency footprint.
+- **Versatile Commands**:
+ - `list`: Browse through all available binaries across repositories.
+ - `install`: Effortlessly add your desired programs to your system.
+ - `remove`: Uninstall programs that are no longer needed.
+ - `update`: Keep your system up-to-date with new features or updates for selected programs.
+ - `run`: Execute programs directly without the need for installation.
+ - `info`: Obtain detailed information about specific programs.
+ - `search`: Locate the perfect program to meet your requirements.
+ - `tldr`: Access a quick reference guide without installing any additional software.
 
-1. **Minimal Dependencies**: BigDL prides itself on its self-sufficiency. No dependencies, we like 'em slim.
-
-2. **Versatile Commands**:
-   - `list`: View all available binaries across all three repos.
-   - `install`: Seamlessly add your desired program to your system.
-   - `remove`: Say goodbye to programs you no longer need.
-   - `update`: Get new features. Update all, or a select list of programs in an instant.
-   - `run`: Execute programs instantly, without the hassle of installing.
-   - `info`: Get detailed information about a specific program.
-   - `search`: Find the perfect program to suit your needs.
-   - `tldr`: Show a <abbr title="Details: its just an alias to 'bigdl run tlrc'">tldr</abbr> page (without installing any 'TLDR' client)
-
-
-#### Usage:
+### Usage
 
 ```
 $ Usage: bigdl [-v,-h] {list|install|remove|update|run|info|search|tldr} [args...]
 ```
 
-#### BDL Compatibility:
 
-Don't worry if you're accustomed to the old ways. BigDL maintains compatibility with BDL commands for a smooth transition:
+### Compatibility with BDL
+
+BigDL maintains compatibility with BDL commands, ensuring a smooth transition for users familiar with the original tool:
+
+## Getting Started
+
+To begin using BigDL, simply download and install it on your Linux system. No additional setup is required.
 
 ```
-$ Usage: bdl {list|install|remove|run|info|search|tldr} [args...]
+wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- --install "$HOME/.local/bin/bigdl"
 ```
-See? Same syntax!
 
-#### So why wait?
+###### Expample of one use case of bigdl | Inside of a SH script
+Whenever you want to pull a specific GNU coreutil, insert a bash snippet, use a *fetch tool, etc, you can use bigdl for the job! There's also a --transparent mode, which will use the users' installed version of the program you want to run, and if it is not found in the $PATH, bigdl will fetch it and run it from /tmp/bigdl_cached.
+```sh
+system_info=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo - || curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo -)
+```
 
-Get your hands on BigDL now and experience your binaries like never before. It's time to turn up the heat on your command line experience! 🚀
+## Contributing
 
-### Contribute:
+Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and user-friendly.
 
-Found a bug? Have a feature request? We welcome contributions of all kinds! Fork the repository, make your changes, and submit a pull request. Let's make BigDL even sexier together. 😏
+## License
 
-### License:
-
-BigDL is licensed under the [New BSD License](LICENSE), so feel free to use, modify, and distribute it as you please. Enjoy responsibly! 🍸
-
-### Disclaimer:
-
-BigDL is designed for those who like their command line experiences spicy. Use responsibly and at your own risk. We are not liable for any overheating systems or heart palpitations caused by the sheer awesomeness of BigDL. 😎
-
-###### Special thanks to ChatGPT for the awesome (And very stupid) Readme
+BigDL is licensed under the New BSD License. This allows for the use, modification, and distribution of the software under certain conditions. For more details, please refer to the [LICENSE](LICENSE) file.
