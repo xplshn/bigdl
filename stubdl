@@ -18,19 +18,20 @@ BIGDL="https://github.com/xplshn/bigdl/releases/download/$VERSION/bigdl_${ARCH_S
 
 if [ "$1" = "--install" ]; then
     DEST="$2"
-    if [ -f "$DEST" ]; then
-        "$DEST" "$@"
+fi
+
+if [ -f "$DEST" ]; then
+    "$DEST" "$@"
+else
+    mkdir -p "$(dirname "$DEST")"
+    if command -v wget >/dev/null 2>&1; then
+        wget -q "$BIGDL" -O "$DEST"
+    elif command -v curl >/dev/null 2>&1; then
+        curl -qfsSL "$BIGDL" -o "$DEST"
     else
-        mkdir -p "$(dirname "$DEST")"
-        if command -v wget >/dev/null 2>&1; then
-            wget -q "$BIGDL" -O "$DEST"
-        elif command -v curl >/dev/null 2>&1; then
-            curl -qfsSL "$BIGDL" -o "$DEST"
-        else
-            echo "Neither wget nor curl is available."
-            exit 1
-        fi
-        chmod +x "$DEST"
-        [ "$1" = "--install" ] || "$DEST" "$@"
+        echo "Neither wget nor curl is available."
+        exit 1
     fi
+    chmod +x "$DEST"
+    [ "$1" = "--install" ] || "$DEST" "$@"
 fi
