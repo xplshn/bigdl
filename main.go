@@ -141,16 +141,7 @@ func main() {
 			if os.Args[2] == "--described" || os.Args[2] == "-d" {
 				fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
 			}
-			if os.Args[2] == "--installed" || os.Args[2] == "info" {
-				installedPrograms, err := validateProgramsFrom(InstallDir, nil)
-				if err != nil {
-					fmt.Println("Error validating programs:", err)
-					return
-				}
-				for _, program := range installedPrograms {
-					fmt.Println(program)
-				}
-			}
+			errorOut("bigdl: Unknown command.\n")
 		} else {
 			binaries, err := listBinaries()
 			if err != nil {
@@ -195,32 +186,45 @@ func main() {
 		RunFromCache("tlrc", flag.Args()[1:])
 	case "info":
 		binaryName := flag.Arg(1)
-		if binaryName == "" {
-			fmt.Println("Usage: bigdl info [binary]")
-			errorOutInsufficientArgs()
+
+		if len(os.Args) > 3 {
+			fmt.Fprintln(os.Stderr, "Warning: The command contains more binaries than expected. Rest of the input unused.")
 		}
-		binaryInfo, err := getBinaryInfo(binaryName)
-		if err != nil {
-			errorOut("%v\n", err)
-		}
-		fmt.Printf("Name: %s\n", binaryInfo.Name)
-		if binaryInfo.Description != "" {
-			fmt.Printf("Description: %s\n", binaryInfo.Description)
-		}
-		if binaryInfo.Repo != "" {
-			fmt.Printf("Repo: %s\n", binaryInfo.Repo)
-		}
-		if binaryInfo.Size != "" {
-			fmt.Printf("Size: %s\n", binaryInfo.Size)
-		}
-		if binaryInfo.SHA256 != "" {
-			fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
-		}
-		if binaryInfo.B3SUM != "" {
-			fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
-		}
-		if binaryInfo.Source != "" {
-			fmt.Printf("Source: %s\n", binaryInfo.Source)
+
+		if len(os.Args) < 3 {
+			installedPrograms, err := validateProgramsFrom(InstallDir, nil)
+			if err != nil {
+				fmt.Println("Error validating programs:", err)
+				return
+			}
+			for _, program := range installedPrograms {
+				fmt.Println(program)
+			}
+		} else {
+
+			binaryInfo, err := getBinaryInfo(binaryName)
+			if err != nil {
+				errorOut("%v\n", err)
+			}
+			fmt.Printf("Name: %s\n", binaryInfo.Name)
+			if binaryInfo.Description != "" {
+				fmt.Printf("Description: %s\n", binaryInfo.Description)
+			}
+			if binaryInfo.Repo != "" {
+				fmt.Printf("Repo: %s\n", binaryInfo.Repo)
+			}
+			if binaryInfo.Size != "" {
+				fmt.Printf("Size: %s\n", binaryInfo.Size)
+			}
+			if binaryInfo.SHA256 != "" {
+				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
+			}
+			if binaryInfo.B3SUM != "" {
+				fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
+			}
+			if binaryInfo.Source != "" {
+				fmt.Printf("Source: %s\n", binaryInfo.Source)
+			}
 		}
 	case "search":
 		limit := 90
