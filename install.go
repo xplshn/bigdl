@@ -54,7 +54,10 @@ func installCommand(binaryName string, installMessage ...string) error {
 			if installMessage[0] == "--truncate" {
 				fmt.Println(truncateSprintf("%s", installMessage[1]))
 			} else {
-				fmt.Println(installMessage[0])
+				if installMessage[0] == "--silent" {
+				} else {
+					fmt.Println(installMessage[0])
+				}
 			}
 		}
 	} else {
