@@ -40,8 +40,7 @@ func fSearch(searchTerm string, limit int) {
 	// Unmarshal the description as an RMetadata object
 	var rMetadata RMetadata
 	if err := json.Unmarshal(body, &rMetadata); err != nil {
-		fmt.Println("Failed to decode metadata.")
-		return
+		errorOut("Error while decoding metadata from %s: %v\n", RMetadataURL, err)
 	}
 
 	// Filter binaries based on the search term and architecture
