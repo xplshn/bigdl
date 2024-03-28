@@ -21,7 +21,7 @@ var (
 )
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json" // This is the file from which we extract descriptions for different binaries //"https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
+	RMetadataURL  = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json" // This is the file from which we extract descriptions for different binaries //unreliable mirror: "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
 	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                           // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
 	VERSION       = "1.5.1"
 	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"
