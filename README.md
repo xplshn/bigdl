@@ -41,4 +41,4 @@ Contributions are welcome! Whether you've found a bug, have a feature request, o
 
 ## License
 
-BigDL is licensed under the ABRMS License. This allows for the use, modification, and distribution of the software under certain conditions. For more details, please refer to the [LICENSE](LICENSE) file. This license is equivalent to the New BSD License but with one new condition.
+BigDL is licensed under the RABRMS License. This allows for the use, modification, and distribution of the software under certain conditions. For more details, please refer to the [LICENSE](LICENSE) file. This license is equivalent to the New or Revised BSD License.
