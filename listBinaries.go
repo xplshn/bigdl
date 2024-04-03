@@ -54,28 +54,6 @@ func listBinaries() ([]string, error) {
 		}
 	}
 
-	// Exclude specified file types and file names
-	excludedFileTypes := map[string]struct{}{
-		".7z":   {},
-		".bz2":  {},
-		".json": {},
-		".gz":   {},
-		".md":   {},
-		".txt":  {},
-		".tar":  {},
-		".zip":  {},
-	}
-
-	excludedFileNames := map[string]struct{}{
-		"TEST":                     {},
-		"LICENSE":                  {},
-		"experimentalBinaries_dir": {},
-		"robotstxt":                {},
-		"binfetch.cfg":             {},
-		"apk.sh":                   {},
-		"bdl.sh":                   {},
-	}
-
 	// Filter out excluded file types and file names
 	var filteredBinaries []string
 	for _, binary := range allBinaries {

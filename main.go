@@ -33,6 +33,29 @@ const (
 	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
+// Exclude specified file types and file names
+var excludedFileTypes = map[string]struct{}{
+	".7z":   {},
+	".bz2":  {},
+	".json": {},
+	".gz":   {},
+	".md":   {},
+	".txt":  {},
+	".tar":  {},
+	".zip":  {},
+	".exe":  {},
+	".cfg":  {},
+}
+
+var excludedFileNames = map[string]struct{}{
+	"TEST":                     {},
+	"LICENSE":                  {},
+	"experimentalBinaries_dir": {},
+	"robotstxt":                {},
+	"binfetch.cfg":             {},
+	"bdl.sh":                   {},
+}
+
 func init() {
 	if InstallDir == "" {
 		homeDir, err := os.UserHomeDir()

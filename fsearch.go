@@ -47,8 +47,15 @@ func fSearch(searchTerm string, limit int) {
 	searchResultsSet := make(map[string]struct{}) // Use a set to keep track of unique entries
 	for _, binary := range rMetadata.Binaries {
 		if strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
-			entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
-			searchResultsSet[entry] = struct{}{} // Add the entry to the set
+			// Filter out excluded file types and file names
+			ext := strings.ToLower(filepath.Ext(binary.Name))
+			base := filepath.Base(binary.Name)
+			if _, excluded := excludedFileTypes[ext]; !excluded {
+				if _, excludedName := excludedFileNames[base]; !excludedName {
+					entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
+					searchResultsSet[entry] = struct{}{} // Add the entry to the set
+				}
+			}
 		}
 	}
 
