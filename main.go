@@ -52,7 +52,6 @@ var excludedFileNames = map[string]struct{}{
 	"LICENSE":                  {},
 	"experimentalBinaries_dir": {},
 	"robotstxt":                {},
-	"binfetch.cfg":             {},
 	"bdl.sh":                   {},
 	"u-root":                   {},
 	"uroot-busybox":            {},
