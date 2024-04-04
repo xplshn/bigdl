@@ -54,6 +54,9 @@ var excludedFileNames = map[string]struct{}{
 	"robotstxt":                {},
 	"binfetch.cfg":             {},
 	"bdl.sh":                   {},
+	"u-root":                   {},
+	"uroot-busybox":            {},
+	"gobusybox":                {},
 }
 
 func init() {
