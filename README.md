@@ -1,6 +1,9 @@
 # BigDL: Advanced Binary Management Tool
 
-BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to enhance the management and downloading of static binaries with minimal effort. This tool is made to operate on Linux systems, BigDL is particularly well-suited for embedded systems, requiring a minimum of 8MB RAM and storage, with support for both Amd64 AND Aarch64 architectures.
+BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to enhance the management and downloading of static binaries with minimal effort. This tool is made to operate on Linux systems, BigDL is particularly well-suited for embedded systems, with support for both Amd64 AND Aarch64 architectures.
+
+##### Why?
+ > “I tend to think the drawbacks of dynamic linking outweigh the advantages for many (most?) applications.” – John Carmack
 
 ## Features
 
