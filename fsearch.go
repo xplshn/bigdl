@@ -91,10 +91,18 @@ func fSearch(searchTerm string, limit int) {
 		var prefix string
 		if fileExists(installPath) {
 			prefix = "[i]"
-		} else if cachedLocation != "" && isExecutable(cachedLocation) {
-			prefix = "[c]"
 		} else {
-			prefix = "[-]"
+			isInPath, err := isBinaryInPath(name) // Assuming name is the binary name
+			if err != nil {
+				fmt.Printf("Error checking if %s is in $PATH\n", name)
+				errorOut("Error checking the existence of a binary in the user's $PATH\n")
+			} else if isInPath {
+				prefix = "[I]"
+			} else if cachedLocation != "" && isExecutable(cachedLocation) {
+				prefix = "[c]"
+			} else {
+				prefix = "[-]"
+			}
 		}
 
 		truncatePrintf("%s %s - %s ", prefix, name, description)

@@ -136,19 +136,6 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 	}
 }
 
-// isBinaryInPath checks if the binary is in the user's PATH, and it returns the path to it if so
-func isBinaryInPath(binaryName string) (bool, error) {
-	pathEnv := os.Getenv("PATH")
-	paths := strings.Split(pathEnv, string(os.PathListSeparator))
-	for _, path := range paths {
-		binaryPath := filepath.Join(path, binaryName)
-		if fileExists(binaryPath) && isExecutable(binaryPath) {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
 // fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
 	if silentMode {
