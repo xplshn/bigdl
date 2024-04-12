@@ -8,7 +8,6 @@ BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to 
 ## Features
 
 - **Minimal Dependencies**: BigDL is designed with simplicity and efficiency in mind, boasting a slim dependency footprint.
-- **Versatile Commands**:
  - `list`: Browse through all available binaries across repositories.
  - `install`: Effortlessly add your desired programs to your system.
  - `remove`: Uninstall programs that are no longer needed.
