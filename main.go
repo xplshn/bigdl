@@ -33,7 +33,7 @@ const (
 	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
-// Exclude specified file types and file names
+// Exclude specified file types and file names, these shall not appear in Lists nor in the Search Results
 var excludedFileTypes = map[string]struct{}{
 	".7z":   {},
 	".bz2":  {},
@@ -53,9 +53,11 @@ var excludedFileNames = map[string]struct{}{
 	"experimentalBinaries_dir": {},
 	"robotstxt":                {},
 	"bdl.sh":                   {},
-	"u-root":                   {},
-	"uroot-busybox":            {},
-	"gobusybox":                {},
+	// Because the repo contains duplicated files. And I do not manage the repo:
+	"u-root":            {},
+	"uroot-busybox":     {},
+	"gobusybox":         {},
+	"sysinfo-collector": {},
 }
 
 func init() {
