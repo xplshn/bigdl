@@ -108,32 +108,53 @@ func RunFromCache(binaryName string, args []string) {
 	}
 }
 
-// runBinary executes the binary with the given arguments.
+// runBinary executes the binary with the given arguments, handling .bin files as needed.
 func runBinary(binaryPath string, args []string, verboseMode bool) {
-	cmd := exec.Command(binaryPath, args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Stdin = os.Stdin
-
-	if err := cmd.Run(); err != nil {
-		// Check if the error is an exit error and if the exit status is non-zero
-		if exitError, ok := err.(*exec.ExitError); ok {
-			if status, ok := exitError.Sys().(syscall.WaitStatus); ok {
-				if verboseMode {
-					fmt.Printf("The program (%s) errored out with a non-zero exit code (%d).\n", binaryPath, status.ExitStatus())
+	var programExitCode int = 1
+	executeBinary := func(rbinaryPath string, args []string, verboseMode bool) {
+		cmd := exec.Command(rbinaryPath, args...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+		if err := cmd.Run(); err != nil {
+			if exitError, ok := err.(*exec.ExitError); ok {
+				if status, ok := exitError.Sys().(syscall.WaitStatus); ok {
+					if verboseMode {
+						fmt.Printf("The program (%s) errored out with a non-zero exit code (%d).\n", binaryPath, status.ExitStatus())
+					}
+					programExitCode = status.ExitStatus()
 				}
-				// Exit with the same exit code as the binary
-				os.Exit(status.ExitStatus())
+			} else {
+				programExitCode = 1
 			}
+		} else {
+			programExitCode = 0
 		}
-		// Exit with a default code, in case we can't determine the binary's
-		os.Exit(1)
+	}
+	// If the file ends with .bin, remove the suffix and proceed to run it, afterwards, set the same suffix again.
+	if strings.HasSuffix(binaryPath, ".bin") {
+		tempFile := filepath.Join(filepath.Dir(binaryPath), strings.TrimSuffix(filepath.Base(binaryPath), ".bin"))
+		if err := copyFile(binaryPath, tempFile); err != nil {
+			fmt.Printf("failed to move binary to temporary location: %v\n", err)
+			return
+		}
+		if err := os.Chmod(tempFile, 0755); err != nil {
+			fmt.Printf("failed to set executable bit: %v\n", err)
+			return
+		}
+
+		// Execute the temporary binary
+		executeBinary(tempFile, args, verboseMode)
+
+		// Move the temporary binary back to its original name
+		if err := os.Rename(tempFile, binaryPath); err != nil {
+			fmt.Printf("failed to move temporary binary back to original name: %v\n", err)
+			return
+		}
 	}
 
-	// If the command executed successfully, exit with its exit code
-	if status, ok := cmd.ProcessState.Sys().(syscall.WaitStatus); ok {
-		os.Exit(status.ExitStatus())
-	}
+	// Exit the program with the exit code from the executed binary
+	os.Exit(programExitCode)
 }
 
 // fetchBinary downloads the binary and caches it.

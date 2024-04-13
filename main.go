@@ -69,10 +69,15 @@ func init() {
 		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
-	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
-		os.Exit(1)
+
+	if os.Getenv("DISABLE_TRUNCATION") == "true" || os.Getenv("DISABLE_TRUNCATION") == "1" {
+		disableTruncation = true
 	}
+
+	if os.Getenv("DISABLE_PRBAR") == "true" || os.Getenv("DISABLE_PRBAR") == "1" {
+		useProgressBar = false
+	}
+
 	switch runtime.GOARCH {
 	case "amd64":
 		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
@@ -90,13 +95,6 @@ func init() {
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
-
-	if os.Getenv("DISABLE_TRUNCATION") == "true" || os.Getenv("DISABLE_TRUNCATION") == "1" {
-		disableTruncation = true
-	}
-	if os.Getenv("DISABLE_PRBAR") == "true" || os.Getenv("DISABLE_PRBAR") == "1" {
-		useProgressBar = false
-	}
 }
 
 func printHelp() {
@@ -137,8 +135,7 @@ Version: ` + VERSION
 }
 
 func main() {
-
-	errorOutInsufficientArgs := func() { os.Exit(errorEncoder("Error: Insufficient parameters\n")) }
+	errorOutInsufficientArgs := func() { errorOut("Error: Insufficient parameters\n") }
 	version := flag.Bool("v", false, "Show the version number")
 	versionLong := flag.Bool("version", false, "Show the version number")
 
@@ -146,12 +143,16 @@ func main() {
 	flag.Parse()
 
 	if *version || *versionLong {
-		fmt.Println("bigdl", VERSION)
-		os.Exit(0)
+		errorOut("bigdl %s\n", VERSION)
 	}
 
 	if flag.NArg() < 1 {
-		fmt.Printf(" bigdl:%s\n", usagePage)
+		errorOut(" bigdl:%s\n", usagePage)
+	}
+
+	// From now on, things happen.
+	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
 		os.Exit(1)
 	}
 
