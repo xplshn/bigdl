@@ -143,17 +143,14 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 			return
 		}
 
-		// Execute the temporary binary
 		executeBinary(tempFile, args, verboseMode)
-
-		// Move the temporary binary back to its original name
 		if err := os.Rename(tempFile, binaryPath); err != nil {
 			fmt.Printf("failed to move temporary binary back to original name: %v\n", err)
 			return
 		}
 	}
 
-	// Exit the program with the exit code from the executed binary
+	// Exit the program with the exit code from the executed binary or 1 if we couldn't even get to the execution
 	os.Exit(programExitCode)
 }
 
