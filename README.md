@@ -11,7 +11,7 @@ BigDL is a sophisticated, Golang-based rewrite of the original BDL, designed to 
  - `install`: Effortlessly add your desired programs to your system.
  - `remove`: Uninstall programs that are no longer needed.
  - `update`: Keep your system up-to-date with new features or updates for selected programs.
- - `run`: Execute programs directly without the need for installation.
+ - `run`: Execute programs directly without the need for installation. It will also exit using the SAME exit code as the program you try to run, that along with the --silent/--verbose/--transparent flags allow for using bigdl inside of scripts (check out stubdl).
  - `info`: Obtain detailed information about specific programs.
  - `search`: Locate the perfect program to meet your requirements.
  - `tldr`: Access a quick reference guide without installing any additional software.
