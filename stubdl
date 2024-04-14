@@ -18,7 +18,7 @@ if [ "$1" = "--install" ]; then
         DEST="$2"
 fi
 
-if [ -f "$DEST" ] && [ ! "$1" = "--install" ]; then
+if [ -e "$DEST" ] && [ ! "$1" = "--install" ]; then
         "$DEST" "$@"
 else
         mkdir -p "$(dirname "$DEST")"
