@@ -4,32 +4,34 @@ DEST="/tmp/._bdlstub_bigdl.bin"
 
 ARCH="$(uname -m)"
 if [ "$ARCH" = "x86_64" ]; then
-    ARCH_SUFFIX="amd64"
+        ARCH_SUFFIX="amd64"
 elif [ "$ARCH" = "aarch64" ]; then
-    ARCH_SUFFIX="arm64"
+        ARCH_SUFFIX="arm64"
 else
-    echo "Unsupported architecture: $ARCH"
-    exit 1
+        echo "Unsupported architecture: $ARCH"
+        exit 1
 fi
 
-BIGDL="https://github.com/xplshn/bigdl/releases/latest/download/bigdl_${ARCH_SUFFIX}"
+BIGDL="https://github.com/xplshn/bigdl/releases/latest/download/bigdl_fast_${ARCH_SUFFIX}"
 
 if [ "$1" = "--install" ]; then
-    DEST="$2"
+        DEST="$2"
 fi
 
-if [ -f "$DEST" ]; then
-    "$DEST" "$@"
+if [ -f "$DEST" ] && [ ! "$1" = "--install" ]; then
+        "$DEST" "$@"
 else
-    mkdir -p "$(dirname "$DEST")"
-    if command -v wget >/dev/null 2>&1; then
-        wget -q "$BIGDL" -O "$DEST"
-    elif command -v curl >/dev/null 2>&1; then
-        curl -qfsSL "$BIGDL" -o "$DEST"
-    else
-        echo "Neither wget nor curl is available."
-        exit 1
-    fi
-    chmod +x "$DEST"
-    [ "$1" = "--install" ] || "$DEST" "$@"
+        mkdir -p "$(dirname "$DEST")"
+        if command -v wget >/dev/null 2>&1; then
+                wget -q "$BIGDL" -O "$DEST"
+        elif command -v curl >/dev/null 2>&1; then
+                curl -qfsSL "$BIGDL" -o "$DEST"
+        else
+                echo "Neither wget nor curl is available."
+                exit 1
+        fi
+
+        [ -e "$DEST" ] && [ "$1" = "--install" ] && echo "BIGDL IS NOW AVAILABLE. ($DEST)"
+        chmod +x "$DEST"
+        [ ! "$1" = "--install" ] && "$DEST" "$@"
 fi
