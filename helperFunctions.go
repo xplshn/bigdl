@@ -421,14 +421,14 @@ func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]str
 }
 
 // isBinaryInPath checks if the binary is in the user's PATH, and it returns the path to it if so
-func isBinaryInPath(binaryName string) (bool, error) {
+func isBinaryInPath(binaryName string) (string, error) {
 	pathEnv := os.Getenv("PATH")
 	paths := strings.Split(pathEnv, string(os.PathListSeparator))
 	for _, path := range paths {
 		binaryPath := filepath.Join(path, binaryName)
 		if fileExists(binaryPath) && isExecutable(binaryPath) {
-			return true, nil
+			return binaryPath, nil // Return the path to the binary if found
 		}
 	}
-	return false, nil
+	return "", nil // Return an empty string and no error if the binary is not found
 }

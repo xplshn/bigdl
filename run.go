@@ -70,16 +70,16 @@ func RunFromCache(binaryName string, args []string) {
 		transparentMode = true
 
 		purifyVars()
-		isInPath, err := isBinaryInPath(binaryName)
+		binaryPath, err := isBinaryInPath(binaryName)
 		if err != nil {
 			errorOut("Error checking if binary is in PATH: %s\n", err)
 		}
 
-		if isInPath {
+		if binaryPath != "" {
 			if !silentMode {
 				fmt.Printf("Running '%s' from PATH...\n", binaryName)
 			}
-			runBinary(binaryName, args, verboseMode)
+			runBinary(binaryPath, args, verboseMode)
 		}
 	}
 
@@ -148,8 +148,9 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 			fmt.Printf("failed to move temporary binary back to original name: %v\n", err)
 			return
 		}
+	} else {
+		executeBinary(binaryPath, args, verboseMode)
 	}
-
 	// Exit the program with the exit code from the executed binary or 1 if we couldn't even get to the execution
 	os.Exit(programExitCode)
 }
