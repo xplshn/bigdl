@@ -125,8 +125,7 @@ func fetchBinaryFromURL(url, destination string) error {
 			fmt.Printf("failed to remove temporary file: %v\n", err)
 		}
 	}
-
-	//fmt.Printf("\033[A")
+	fmt.Print("\033[2K\r") // Clean the line
 	return nil
 }
 
