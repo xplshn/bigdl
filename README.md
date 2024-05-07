@@ -36,9 +36,21 @@ Whenever you want to pull a specific GNU coreutil, insert a bash snippet, use a 
 system_info=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo - || curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo -)
 ```
 
+### Where do these binaries come from?
+- https://github.com/Azathothas/Toolpacks [https://bin.ajam.dev]
+- https://github.com/Azathothas/Static-Binaries [https://bin.ajam.dev/*/Baseutils/]
+- https://github.com/xplshn/Handyscripts
+>Hmm, can I add my own repos?
+
+Yes! Absolutely. The repo's URL's are declared in main.go, simply add another one if your repo is hosted at Github or your endpoint follows the same JSON format that Github's endpoint provides. You can also provide a repo URL in the same format that the [Toolpacks](https://github.com/Azathothas/Toolpacks) repo uses.
+
+>Good to hear, now... What about the so-called MetadataURLs?
+
+MetadataURLs provide info about the binaries, which is used to `search` and update `binaries`, also for the functionality of `info` in both of its use-cases(showing the binaries which were installed to $INSTALL_DIR from the [Toolpacks](https://github.com/Azathothas/Toolpacks) repo).
+
 ## Contributing
 
-Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and user-friendly.
+Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and user-friendly. If you can provide repos that meet the requirements to add them to `bigdl`, I'd be grateful.
 
 ## License
 
