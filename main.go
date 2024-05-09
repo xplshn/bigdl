@@ -54,11 +54,11 @@ var excludedFileNames = map[string]struct{}{
 	"robotstxt":                {},
 	"bdl.sh":                   {},
 	// Because the repo contains duplicated files. And I do not manage the repo:
-	"uroot":                    {},
-	"uroot-busybox":            {},
-	"gobusybox":                {},
-	"sysinfo-collector":        {},
-	"neofetch":                 {},
+	"uroot":             {},
+	"uroot-busybox":     {},
+	"gobusybox":         {},
+	"sysinfo-collector": {},
+	"neofetch":          {},
 }
 
 func init() {
