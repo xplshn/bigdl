@@ -1,4 +1,3 @@
-// main.go // This is the main entrypoint, which calls all the different functions //>
 package main
 
 import (
