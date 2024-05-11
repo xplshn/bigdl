@@ -53,12 +53,12 @@ func fetchBinaryFromURL(url, destination string) error {
 	}
 
 	// Create a temporary directory if it doesn't exist
-	if err := os.MkdirAll(TEMPDIR, 0o755); err != nil {
+	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
 		return fmt.Errorf("failed to create temporary directory: %v", err)
 	}
 
 	// Create a temporary file to download the binary
-	tempFile := filepath.Join(TEMPDIR, filepath.Base(destination)+".tmp")
+	tempFile := filepath.Join(TEMP_DIR, filepath.Base(destination)+".tmp")
 	out, err := os.Create(tempFile)
 	if err != nil {
 		return fmt.Errorf("failed to create temporary file: %v", err)
@@ -114,7 +114,7 @@ func fetchBinaryFromURL(url, destination string) error {
 	}
 
 	// Set executable bit immediately after copying
-	if err := os.Chmod(destination, 0o755); err != nil {
+	if err := os.Chmod(destination, 0755); err != nil {
 		return fmt.Errorf("failed to set executable bit: %v", err)
 	}
 
@@ -199,7 +199,7 @@ func fileExists(filePath string) bool {
 
 // appendLineToFile appends a line to the end of a file.
 func appendLineToFile(filePath, line string) error {
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
@@ -230,7 +230,7 @@ func isExecutable(filePath string) bool {
 	if err != nil {
 		return false
 	}
-	return info.Mode().IsRegular() && (info.Mode().Perm()&0o111) != 0
+	return info.Mode().IsRegular() && (info.Mode().Perm()&0111) != 0
 }
 
 // listFilesInDir lists all files in a directory

@@ -10,12 +10,9 @@ import (
 )
 
 var (
-	// Repositories contains all available repos - This variable is used by findURL.go
-	Repositories []string
-	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
-	MetadataURLs  []string
-	validatedArch = [3]string{}
-	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
+	Repositories      []string
+	MetadataURLs      []string
+	validatedArch     = [3]string{}
 	InstallDir        = os.Getenv("INSTALL_DIR")
 	installUseCache   = true
 	useProgressBar    = true
@@ -23,18 +20,16 @@ var (
 )
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // RMetadataURL is the file from which we extract descriptions, etc, for different binaries
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
-	VERSION       = "1.6.2"                                                                     // VERSION to be displayed
-	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"       // usagePage to be shown
+	RMetadataURL  = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json" // This is the file from which we extract descriptions for different binaries //unreliable mirror: "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
+	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                           // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
+	VERSION       = "1.6"
+	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"
 	// Truncation indicator
 	indicator = "...>"
-	// MaxCacheSize is the limit of binaries which can be stored at TEMP_DIR
-	MaxCacheSize = 10
-	// BinariesToDelete - Once the cache is filled - The programs populate the list of binaries to be removed in order of least used. This variable sets the amount of binaries that should be deleted
-	BinariesToDelete = 5
-	// TEMPDIR will be used by the `run` functionality. See run.go
-	TEMPDIR = "/tmp/bigdl_cached"
+	// Cache size limit & handling.
+	MaxCacheSize     = 10
+	BinariesToDelete = 5 // Once the cache is filled - The programs populate the list of binaries to be removed in order of least used.
+	TEMP_DIR         = "/tmp/bigdl_cached"
 )
 
 // Exclude specified file types and file names, these shall not appear in Lists nor in the Search Results
@@ -96,7 +91,7 @@ func init() {
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
+	// These are used for listing the binaries themselves
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
@@ -114,8 +109,8 @@ Commands:
  install, add     Install a binary
  remove, del      Remove a binary
  update           Update binaries, by checking their SHA against the repo's SHA
- run              Run a specified binary from cache
- info             Show information about a specific binary OR display installed binaries
+ run              Run a binary
+ info             Show information about a specific binary
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
  tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
 
@@ -213,8 +208,11 @@ func main() {
 		}
 		RunFromCache(flag.Arg(1), flag.Args()[2:])
 	case "tldr":
-		args := append([]string{"--verbose", "--transparent", "tlrc"}, flag.Args()[1:]...) // UGLY!
-		RunFromCache(args[0], args[1:])
+		if flag.NArg() < 2 {
+			fmt.Println("Usage: bigdl tldr <args> [page]")
+			errorOutInsufficientArgs()
+		}
+		RunFromCache("tlrc", flag.Args()[1:])
 	case "info":
 		binaryName := flag.Arg(1)
 
@@ -253,14 +251,14 @@ func main() {
 			if binaryInfo.Size != "" {
 				fmt.Printf("Size: %s\n", binaryInfo.Size)
 			}
-			if binaryInfo.Source != "" {
-				fmt.Printf("Source: %s\n", binaryInfo.Source)
-			}
 			if binaryInfo.SHA256 != "" {
 				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
 			}
 			if binaryInfo.B3SUM != "" {
 				fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
+			}
+			if binaryInfo.Source != "" {
+				fmt.Printf("Source: %s\n", binaryInfo.Source)
 			}
 		}
 	case "search":

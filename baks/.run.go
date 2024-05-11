@@ -13,16 +13,14 @@ import (
 	"time"
 )
 
-var (
-	verboseMode     bool
-	silentMode      bool
-	transparentMode bool
-)
+var verboseMode bool
+var silentMode bool
+var transparentMode bool
 
 // ReturnCachedFile retrieves the cached file location. Returns an empty string and error code 1 if not found.
 func ReturnCachedFile(binaryName string) (string, int) {
 	// Construct the expected cached file pattern
-	expectedCachedFile := filepath.Join(TEMPDIR, fmt.Sprintf("%s.bin", binaryName))
+	expectedCachedFile := filepath.Join(TEMP_DIR, fmt.Sprintf("%s.bin", binaryName))
 
 	// Check if the file exists using the fileExists function
 	if fileExists(expectedCachedFile) {
@@ -35,6 +33,7 @@ func ReturnCachedFile(binaryName string) (string, int) {
 
 // RunFromCache runs the binary from cache or fetches it if not found.
 func RunFromCache(binaryName string, args []string) {
+
 	// purifyVars is a function to purify binaryName and args.
 	purifyVars := func() {
 		if len(args) > 0 {
@@ -50,8 +49,8 @@ func RunFromCache(binaryName string, args []string) {
 	silent := flag.Bool("silent", false, "Enable silent mode")
 	transparent := flag.Bool("transparent", false, "Enable transparent mode")
 
-	flagsAndBinaryName := append(strings.Fields(binaryName), args...)
-	flag.CommandLine.Parse(flagsAndBinaryName)
+	flags_AndBinaryName := append(strings.Fields(binaryName), args...)
+	flag.CommandLine.Parse(flags_AndBinaryName)
 
 	if *verbose && *silent {
 		errorOut("Error: --verbose and --silent are mutually exclusive\n")
@@ -88,7 +87,7 @@ func RunFromCache(binaryName string, args []string) {
 		errorOut("Error: Binary name not provided\n")
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
 		if !silentMode {
 			fmt.Printf("Running '%s' from cache...\n", binaryName)
@@ -111,7 +110,7 @@ func RunFromCache(binaryName string, args []string) {
 
 // runBinary executes the binary with the given arguments, handling .bin files as needed.
 func runBinary(binaryPath string, args []string, verboseMode bool) {
-	programExitCode := 1
+	var programExitCode = 1
 	executeBinary := func(rbinaryPath string, args []string, verboseMode bool) {
 		cmd := exec.Command(rbinaryPath, args...)
 		cmd.Stdout = os.Stdout
@@ -139,7 +138,7 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 			fmt.Printf("failed to move binary to temporary location: %v\n", err)
 			return
 		}
-		if err := os.Chmod(tempFile, 0o755); err != nil {
+		if err := os.Chmod(tempFile, 0755); err != nil {
 			fmt.Printf("failed to set executable bit: %v\n", err)
 			return
 		}
@@ -167,7 +166,7 @@ func fetchBinary(binaryName string) error {
 		return err
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	cachedFile := filepath.Join(TEMP_DIR, binaryName+".bin")
 
 	// Fetch the binary from the internet and save it to the cache
 	err = fetchBinaryFromURL(url, cachedFile)
@@ -182,7 +181,7 @@ func fetchBinary(binaryName string) error {
 // cleanCache removes the oldest binaries when the cache size exceeds MaxCacheSize.
 func cleanCache() {
 	// Get a list of all binaries in the cache directory
-	files, err := os.ReadDir(TEMPDIR)
+	files, err := os.ReadDir(TEMP_DIR)
 	if err != nil {
 		fmt.Printf("Error reading cache directory: %v\n", err)
 		return
@@ -210,7 +209,7 @@ func cleanCache() {
 
 		// Use syscall to get atime
 		var stat syscall.Stat_t
-		err = syscall.Stat(filepath.Join(TEMPDIR, entry.Name()), &stat)
+		err = syscall.Stat(filepath.Join(TEMP_DIR, entry.Name()), &stat)
 		if err != nil {
 			fmt.Printf("Error getting file stat: %v\n", err)
 			continue
@@ -227,7 +226,7 @@ func cleanCache() {
 
 	// Delete the oldest binaries
 	for i := 0; i < BinariesToDelete; i++ {
-		err := os.Remove(filepath.Join(TEMPDIR, filesWithAtime[i].info.Name()))
+		err := os.Remove(filepath.Join(TEMP_DIR, filesWithAtime[i].info.Name()))
 		if err != nil {
 			if !silentMode { // Check if not in silent mode before printing
 				fmt.Printf("Error removing file: %v\n", err)
