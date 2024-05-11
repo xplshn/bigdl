@@ -10,9 +10,12 @@ import (
 )
 
 var (
-	Repositories      []string
-	MetadataURLs      []string
-	validatedArch     = [3]string{}
+	// Repositories contains all available repos - This variable is used by findURL.go
+	Repositories []string
+	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
+	MetadataURLs  []string
+	validatedArch = [3]string{}
+	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
 	InstallDir        = os.Getenv("INSTALL_DIR")
 	installUseCache   = true
 	useProgressBar    = true
@@ -20,16 +23,18 @@ var (
 )
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/metis-os/hysp-pkgs/main/data/metadata.json" // This is the file from which we extract descriptions for different binaries //unreliable mirror: "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json"
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                           // This is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums.
-	VERSION       = "1.6"
-	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"
+	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // RMetadataURL is the file from which we extract descriptions, etc, for different binaries
+	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
+	VERSION       = "1.6.2"                                                                     // VERSION to be displayed
+	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"       // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
-	// Cache size limit & handling.
-	MaxCacheSize     = 10
-	BinariesToDelete = 5 // Once the cache is filled - The programs populate the list of binaries to be removed in order of least used.
-	TEMP_DIR         = "/tmp/bigdl_cached"
+	// MaxCacheSize is the limit of binaries which can be stored at TEMP_DIR
+	MaxCacheSize = 10
+	// BinariesToDelete - Once the cache is filled - The programs populate the list of binaries to be removed in order of least used. This variable sets the amount of binaries that should be deleted
+	BinariesToDelete = 5
+	// TEMPDIR will be used by the `run` functionality. See run.go
+	TEMPDIR = "/tmp/bigdl_cached"
 )
 
 // Exclude specified file types and file names, these shall not appear in Lists nor in the Search Results
@@ -91,7 +96,7 @@ func init() {
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
-	// These are used for listing the binaries themselves
+	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
@@ -242,17 +247,23 @@ func main() {
 			if binaryInfo.Repo != "" {
 				fmt.Printf("Repo: %s\n", binaryInfo.Repo)
 			}
+			if binaryInfo.Updated != "" {
+				fmt.Printf("Updated: %s\n", binaryInfo.Updated)
+			}
+			if binaryInfo.Version != "" {
+				fmt.Printf("Version: %s\n", binaryInfo.Version)
+			}
 			if binaryInfo.Size != "" {
 				fmt.Printf("Size: %s\n", binaryInfo.Size)
+			}
+			if binaryInfo.Source != "" {
+				fmt.Printf("Source: %s\n", binaryInfo.Source)
 			}
 			if binaryInfo.SHA256 != "" {
 				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
 			}
 			if binaryInfo.B3SUM != "" {
 				fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
-			}
-			if binaryInfo.Source != "" {
-				fmt.Printf("Source: %s\n", binaryInfo.Source)
 			}
 		}
 	case "search":

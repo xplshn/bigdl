@@ -22,7 +22,7 @@ func installCommand(binaryName string, installMessage ...string) error {
 			}
 
 			// Set executable bit immediately after copying
-			if err := os.Chmod(installPath, 0755); err != nil {
+			if err := os.Chmod(installPath, 0o755); err != nil {
 				return fmt.Errorf("failed to set executable bit: %v", err)
 			}
 
@@ -54,8 +54,7 @@ func installCommand(binaryName string, installMessage ...string) error {
 			if installMessage[0] == "--truncate" {
 				fmt.Println(truncateSprintf("%s", installMessage[1]))
 			} else {
-				if installMessage[0] == "--silent" {
-				} else {
+				if installMessage[0] != "--silent" {
 					fmt.Println(installMessage[0])
 				}
 			}
