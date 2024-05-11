@@ -23,7 +23,40 @@ BigDL is a sophisticated, Golang-based rewrite of the original BDL, it is like a
 ### Usage
 
 ```
-$ Usage: bigdl [-v,-h] {list|install|remove|update|run|info|search|tldr} [args...]
+$ bigdl --help
+Usage:
+ [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>
+
+Options:
+ -h, --help       Show this help message
+ -v, --version    Show the version number
+
+Commands:
+ list             List all available binaries
+ install, add     Install a binary to $INSTALL_DIR
+ remove, del      Remove a binary from the $INSTALL_DIR
+ update           Update binaries, by checking their SHA against the repo's SHA
+ run              Run a binary from cache
+ info             Show information about a specific binary OR display installed binaries
+ search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
+ tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
+```
+
+### Examples
+```
+ bigdl search editor
+ bigdl install micro
+ bigdl install lux --fancy "%s was installed to $INSTALL_DIR." --newline
+ bigdl install bed --fancy --truncate "%s was installed to $INSTALL_DIR." --newline
+ bigdl install orbiton --truncate "installed Orbiton to $INSTALL_DIR."
+ bigdl remove bed
+ bigdl remove orbiton tgpt lux
+ bigdl info jq
+ bigdl tldr gum
+ bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
+ bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
+ bigdl run --transparent --silent micro ~/.profile
+ bigdl run btop
 ```
 
 ## Getting Started
