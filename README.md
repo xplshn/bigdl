@@ -86,8 +86,8 @@ B3SUM: f4f456f3a1a9a0dbcd9b0c2a77e29d14bc1f8bb036db4f6ff06d8c76a99e5ef2
 
 ## Getting Started
 
-To begin using BigDL, simply download and install it on your Linux system. No additional setup is required.
-###### Use without installing:
+To begin using BigDL, simply run one of these commands on your Linux system. No additional setup is required. You may also build the project using `go build or go install`
+###### Use without installing
 ```
 wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- --help
 ```
