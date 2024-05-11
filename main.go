@@ -213,11 +213,8 @@ func main() {
 		}
 		RunFromCache(flag.Arg(1), flag.Args()[2:])
 	case "tldr":
-		if flag.NArg() < 2 {
-			fmt.Println("Usage: bigdl tldr <args> [page]")
-			errorOutInsufficientArgs()
-		}
-		RunFromCache("tlrc", flag.Args()[1:])
+		args := append([]string{"--verbose", "--transparent", "tlrc"}, flag.Args()[1:]...) // UGLY!
+		RunFromCache(args[0], args[1:])
 	case "info":
 		binaryName := flag.Arg(1)
 
