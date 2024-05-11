@@ -114,8 +114,8 @@ Commands:
  install, add     Install a binary
  remove, del      Remove a binary
  update           Update binaries, by checking their SHA against the repo's SHA
- run              Run a binary
- info             Show information about a specific binary
+ run              Run a specified binary from cache
+ info             Show information about a specific binary OR display installed binaries
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
  tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
 
