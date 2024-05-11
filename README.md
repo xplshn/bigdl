@@ -10,17 +10,6 @@ BigDL is a sophisticated, Golang-based rewrite of the original BDL, it is like a
  > “I tend to think the drawbacks of dynamic linking outweigh the advantages for many (most?) applications.” – John Carmack
 
 ## Features
-**Minimal Dependencies**: BigDL is designed with simplicity and efficiency in mind, boasting a slim dependency footprint.
- - `list`: Browse through all available binaries across repositories.
- - `install`: Effortlessly add your desired programs to your system.
- - `remove`: Uninstall programs that are no longer needed.
- - `update`: Keep your system up-to-date with new features or updates for selected programs.
- - `run`: Execute programs directly without the need for installation. It will also exit using the SAME exit code as the program you try to run, that along with the --silent/--verbose/--transparent flags allow for using bigdl inside of scripts (check out stubdl).
- - `info`: Obtain detailed information about specific programs.
- - `search`: Locate the perfect program to meet your requirements.
- - `tldr`: Access a quick reference guide without installing any additional software.
-
-### Usage
 
 ```
 $ bigdl --help
@@ -71,6 +60,8 @@ Install accepts three optional flags too. These affect the install message that 
  4. `--fancy "Text, but without the --newline, for some reason."`
  5. `--truncate "This will truncate text when it overflows the terminal's size. --new-line is assumed."`
 `--silent` will work the same as `run`'s `--silent` option
+##### `Update` arguments:
+Update can receive an optional list of specific binaries to update OR no arguments at all. When `update` receives no arguments it updates everything that is both found in the repos and in your `$INSTALL_DIR`.
 ###### NOTE: I may remove this at some point and instead make the `install`/`add` functionality be able to install multiple binaries at the same time.
 ##### Arguments of `info`
 When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "B3SUM" fields may not match your local installation.
@@ -87,6 +78,11 @@ Source: https://bin.ajam.dev/x86_64_Linux/jq
 SHA256: 5942c9b0934e510ee61eb3e30273f1b3fe2590df93933a93d7c58b81d19c8ff5
 B3SUM: f4f456f3a1a9a0dbcd9b0c2a77e29d14bc1f8bb036db4f6ff06d8c76a99e5ef2
 ```
+##### Arguments of `list`
+`list` can receive the optional argument `--described`/`-d`. It will display all binaries that have a description in their metadata.
+##### Arguments of `search`
+`search` can only receive ONE search term, if the name of a binary or a description of a binary contains the term, it is shown as a search result.
+`search` can optionally receive a `--limit` argument, which changes the limit on how many search results can be displayed (default is 90).
 
 ## Getting Started
 
