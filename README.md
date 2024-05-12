@@ -64,7 +64,7 @@ Install accepts three optional flags too. These affect the install message that 
 Update can receive an optional list of specific binaries to update OR no arguments at all. When `update` receives no arguments it updates everything that is both found in the repos and in your `$INSTALL_DIR`.
 ###### NOTE: I may remove this at some point and instead make the `install`/`add` functionality be able to install multiple binaries at the same time.
 ##### Arguments of `info`
-When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "B3SUM" fields may not match your local installation.
+When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "B3SUM" fields may not match your local installation if the binary wasn't provided by `bigdl` or it isn't updated.
 ###### Example:
 ```
 $ bigdl info jq
