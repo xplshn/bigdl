@@ -117,7 +117,7 @@ Commands:
  run              Run a specified binary from cache
  info             Show information about a specific binary OR display installed binaries
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
- tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
+ tldr             Equivalent to "run --transparent --verbose tlrc" as argument.
 
 Examples:
  bigdl search editor
@@ -213,7 +213,7 @@ func main() {
 		}
 		RunFromCache(flag.Arg(1), flag.Args()[2:])
 	case "tldr":
-		args := append([]string{"--verbose", "--transparent", "tlrc"}, flag.Args()[1:]...) // UGLY!
+		args := append([]string{"--transparent", "--verbose", "tlrc"}, flag.Args()[1:]...) // UGLY!
 		RunFromCache(args[0], args[1:])
 	case "info":
 		binaryName := flag.Arg(1)
