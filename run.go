@@ -88,7 +88,10 @@ func RunFromCache(binaryName string, args []string) {
 		errorOut("Error: Binary name not provided\n")
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	// Use the base name of binaryName for constructing the cachedFile path // This way we can support requests like: toybox/wget
+	baseName := filepath.Base(binaryName)
+	cachedFile := filepath.Join(TEMPDIR, fmt.Sprintf("%s.bin", baseName))
+
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
 		if !silentMode {
 			fmt.Printf("Running '%s' from cache...\n", binaryName)
@@ -157,6 +160,7 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 }
 
 // fetchBinary downloads the binary and caches it.
+// fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
 	if silentMode {
 		useProgressBar = false
@@ -167,9 +171,13 @@ func fetchBinary(binaryName string) error {
 		return err
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	// Extract the base name from the binaryName to use for the cached file name
+	baseName := filepath.Base(binaryName)
 
-	// Fetch the binary from the internet and save it to the cache
+	// Construct the cachedFile path using the base name
+	cachedFile := filepath.Join(TEMPDIR, baseName+".bin")
+
+	// Fetch the binary from the repos and save it to the cache
 	err = fetchBinaryFromURL(url, cachedFile)
 	if err != nil {
 		return fmt.Errorf("error fetching binary for %s: %v", binaryName, err)
