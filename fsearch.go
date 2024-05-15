@@ -31,7 +31,6 @@ func fSearch(searchTerm string, limit int) {
 		Architecture string `json:"architecture"`
 		Name         string `json:"name"`
 		Description  string `json:"description"`
-		// Include other fields if needed
 	}
 
 	type RMetadata struct {
