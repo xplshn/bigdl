@@ -8,7 +8,11 @@ import (
 )
 
 func installCommand(binaryName string, installMessage ...string) error {
-	installPath := filepath.Join(InstallDir, binaryName)
+	// Extract the last part of the binaryName to use as the filename
+	fileName := filepath.Base(binaryName)
+
+	// Construct the installPath using the extracted filename
+	installPath := filepath.Join(InstallDir, fileName)
 
 	// Use ReturnCachedFile to check for a cached file
 	if installUseCache {
