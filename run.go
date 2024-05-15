@@ -14,9 +14,8 @@ import (
 )
 
 var (
-	verboseMode     bool
-	silentMode      bool
-	transparentMode bool
+	verboseMode bool
+	silentMode  bool
 )
 
 // ReturnCachedFile retrieves the cached file location. Returns an empty string and error code 1 if not found.
@@ -54,7 +53,7 @@ func RunFromCache(binaryName string, args []string) {
 	flag.CommandLine.Parse(flagsAndBinaryName)
 
 	if *verbose && *silent {
-		errorOut("Error: --verbose and --silent are mutually exclusive\n")
+		errorOut("error: --verbose and --silent are mutually exclusive\n")
 	}
 
 	if *verbose {
@@ -68,12 +67,10 @@ func RunFromCache(binaryName string, args []string) {
 	}
 
 	if *transparent {
-		transparentMode = true
-
 		purifyVars()
 		binaryPath, err := isBinaryInPath(binaryName)
 		if err != nil {
-			errorOut("Error checking if binary is in PATH: %s\n", err)
+			errorOut("error checking if binary is in PATH: %s\n", err)
 		}
 
 		if binaryPath != "" {

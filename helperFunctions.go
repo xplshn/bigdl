@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -177,7 +176,7 @@ func fetchJSON(url string, v interface{}) error {
 	}
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return fmt.Errorf("error reading from %s: %v", url, err)
 	}
@@ -216,33 +215,6 @@ func sortBinaries(binaries []string) []string {
 func fileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !os.IsNotExist(err)
-}
-
-// appendLineToFile appends a line to the end of a file.
-func appendLineToFile(filePath, line string) error {
-	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = fmt.Fprintln(file, line)
-	return err
-}
-
-// fileSize returns the size of the file at the specified path.
-func fileSize(filePath string) int64 {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return 0
-	}
-	defer file.Close()
-
-	stat, err := file.Stat()
-	if err != nil {
-		return 0
-	}
-
-	return stat.Size()
 }
 
 // isExecutable checks if the file at the specified path is executable.
@@ -297,12 +269,20 @@ func sanitizeString(s string) string {
 
 	// Remove specified punctuation from the end of the string
 	for _, p := range punctuation {
-		if strings.HasSuffix(s, p) {
-			s = s[:len(s)-len(p)]
-		}
+		s = s[:len(s)-len(p)]
 	}
 
 	return s
+}
+
+// contanins will return true if the provided slice of []strings contains the word str
+func contains(slice []string, str string) bool {
+	for _, v := range slice {
+		if v == str {
+			return true
+		}
+	}
+	return false
 }
 
 // errorEncoder generates a unique error code based on the sum of ASCII values of the error message.
@@ -334,10 +314,8 @@ func getTerminalWidth() int {
 		// stty size returns rows and columns
 		parts := strings.Split(strings.TrimSpace(string(out)), " ")
 		if len(parts) == 2 {
-			width, err := strconv.Atoi(parts[1])
-			if err == nil {
-				return width
-			}
+			width, _ := strconv.Atoi(parts[1])
+			return width
 		}
 	}
 
@@ -346,10 +324,8 @@ func getTerminalWidth() int {
 	cmd.Stdin = os.Stdin
 	out, err = cmd.Output()
 	if err == nil {
-		width, err := strconv.Atoi(strings.TrimSpace(string(out)))
-		if err == nil {
-			return width
-		}
+		width, _ := strconv.Atoi(strings.TrimSpace(string(out)))
+		return width
 	}
 
 	// Fallback to  80 columns

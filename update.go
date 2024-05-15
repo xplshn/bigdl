@@ -125,18 +125,9 @@ func update(programsToUpdate []string) error {
 	}
 	// Print final counts
 	fmt.Println(finalCounts)
-	fmt.Printf(errorMessages)
+	fmt.Print(errorMessages)
 
 	return nil
-}
-
-func contains(slice []string, str string) bool {
-	for _, v := range slice {
-		if v == str {
-			return true
-		}
-	}
-	return false
 }
 
 // getLocalSHA256 calculates the SHA256 checksum of the local file.

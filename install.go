@@ -22,7 +22,7 @@ func installCommand(binaryName string, installMessage ...string) error {
 			fmt.Printf("\r\033[KUsing cached file: %s\n", cachedFile)
 			// Copy the cached file to the install path
 			if err := copyFile(cachedFile, installPath); err != nil {
-				return fmt.Errorf("Error: Could not copy cached file: %v", err)
+				return fmt.Errorf("error: Could not copy cached file: %v", err)
 			}
 
 			// Set executable bit immediately after copying
@@ -40,7 +40,7 @@ func installCommand(binaryName string, installMessage ...string) error {
 		errorOut("%v\n", err)
 	}
 	if err := fetchBinaryFromURL(url, installPath); err != nil {
-		return fmt.Errorf("Error: Could not install binary: %v", err)
+		return fmt.Errorf("error: Could not install binary: %v", err)
 	}
 
 	// Check if the user provided a custom installMessage and If so, print it as per his requirements.
