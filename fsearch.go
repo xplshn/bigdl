@@ -28,8 +28,9 @@ func fSearch(searchTerm string, limit int) {
 
 	// Define a struct to match the JSON structure from RMetadataURL
 	type Binary struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
+		Architecture string `json:"architecture"`
+		Name         string `json:"name"`
+		Description  string `json:"description"`
 		// Include other fields if needed
 	}
 
@@ -46,7 +47,7 @@ func fSearch(searchTerm string, limit int) {
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{})
 	for _, binary := range rMetadata.Binaries {
-		if strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
+		if binary.Architecture == ValidatedArch[1] && strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
 			ext := strings.ToLower(filepath.Ext(binary.Name))
 			base := filepath.Base(binary.Name)
 			if _, excluded := excludedFileTypes[ext]; excluded {

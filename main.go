@@ -13,8 +13,9 @@ var (
 	// Repositories contains all available repos - This variable is used by findURL.go
 	Repositories []string
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
-	MetadataURLs  []string
-	validatedArch = [3]string{}
+	MetadataURLs []string
+	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
+	ValidatedArch = [2]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
 	InstallDir        = os.Getenv("INSTALL_DIR")
 	installUseCache   = true
@@ -47,8 +48,9 @@ var excludedFileTypes = map[string]struct{}{
 	".txt":  {},
 	".tar":  {},
 	".zip":  {},
-	".exe":  {},
 	".cfg":  {},
+	".dir":  {},
+	".test": {},
 }
 
 var excludedFileNames = map[string]struct{}{
@@ -83,16 +85,22 @@ func init() {
 		useProgressBar = false
 	}
 
-	switch runtime.GOARCH {
-	case "amd64":
-		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
-	case "arm64":
-		validatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
+	// The repos are a mess. So we need to do this. Sorry
+	arch := runtime.GOARCH + "_" + runtime.GOOS
+	switch arch {
+	case "amd64_linux":
+		ValidatedArch = [2]string{"x86_64_Linux", "x86_64"}
+	case "arm64_linux":
+		ValidatedArch = [2]string{"aarch64_arm64_Linux", "aarch64_arm64"}
+	case "arm64_android":
+		ValidatedArch = [2]string{"arm64_v8a_Android", "arm64_v8a_Android"}
+	case "amd64_windows":
+		ValidatedArch = [2]string{"x64_Windows", "x64_Windows"}
 	default:
-		fmt.Println("Unsupported architecture:", runtime.GOARCH)
+		fmt.Println("Unsupported architecture:", arch)
 		os.Exit(1)
 	}
-	arch := validatedArch[0]
+	arch = ValidatedArch[0]
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
@@ -217,11 +225,6 @@ func main() {
 		RunFromCache(args[0], args[1:])
 	case "info":
 		binaryName := flag.Arg(1)
-
-		if len(os.Args) > 3 {
-			fmt.Fprintln(os.Stderr, "Warning: The command contains more arguments than expected. Part of the input unused.")
-		}
-
 		if len(os.Args) < 3 {
 			installedPrograms, err := validateProgramsFrom(InstallDir, nil)
 			if err != nil {
@@ -232,7 +235,6 @@ func main() {
 				fmt.Println(program)
 			}
 		} else {
-
 			binaryInfo, err := getBinaryInfo(binaryName)
 			if err != nil {
 				errorOut("%v\n", err)
