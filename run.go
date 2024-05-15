@@ -160,7 +160,6 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 }
 
 // fetchBinary downloads the binary and caches it.
-// fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
 	if silentMode {
 		useProgressBar = false
