@@ -15,7 +15,7 @@ var (
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
 	MetadataURLs []string
 	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
-	ValidatedArch = [2]string{}
+	ValidatedArch = [3]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
 	InstallDir        = os.Getenv("INSTALL_DIR")
 	installUseCache   = true
@@ -89,13 +89,13 @@ func init() {
 	arch := runtime.GOARCH + "_" + runtime.GOOS
 	switch arch {
 	case "amd64_linux":
-		ValidatedArch = [2]string{"x86_64_Linux", "x86_64"}
+		ValidatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
 	case "arm64_linux":
-		ValidatedArch = [2]string{"aarch64_arm64_Linux", "aarch64_arm64"}
+		ValidatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
 	case "arm64_android":
-		ValidatedArch = [2]string{"arm64_v8a_Android", "arm64_v8a_Android"}
+		ValidatedArch = [3]string{"arm64_v8a_Android", "arm64_v8a_Android", "arm64-v8a-Android"}
 	case "amd64_windows":
-		ValidatedArch = [2]string{"x64_Windows", "x64_Windows"}
+		ValidatedArch = [3]string{"x64_Windows", "x64_Windows", "AMD64-Windows_NT"}
 	default:
 		fmt.Println("Unsupported architecture:", arch)
 		os.Exit(1)

@@ -44,7 +44,7 @@ func fetchJSON(url string, v interface{}) error {
 func findBinaryInfo(metadata [][]map[string]interface{}, binaryName string) (BinaryInfo, bool) {
 	for _, hostInfoArray := range metadata {
 		for _, hostInfo := range hostInfoArray {
-			if hostInfo["host"].(string) == ValidatedArch[1] {
+			if hostInfo["host"].(string) == ValidatedArch[2] {
 				mainBins, ok := hostInfo["Main"].([]interface{})
 				if !ok {
 					continue
@@ -80,7 +80,7 @@ func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
 
 	binInfo, found := findBinaryInfo(metadata, binaryName)
 	if !found {
-		return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json file for architecture '%s'", binaryName, ValidatedArch[1])
+		return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json file for architecture '%s'", binaryName, ValidatedArch[2])
 	}
 
 	var rMetadata map[string][]BinaryInfo
