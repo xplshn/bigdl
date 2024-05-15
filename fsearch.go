@@ -2,51 +2,34 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"path/filepath"
 	"strings"
 )
 
 // fSearch searches for binaries based on the given search term.
 func fSearch(searchTerm string, limit int) {
-	// Fetch metadata
-	response, err := http.Get(RMetadataURL)
-	if err != nil {
-		fmt.Println("Failed to fetch binary information.")
-		return
-	}
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("Failed to read metadata.")
-		return
-	}
-
-	// Define a struct to match the JSON structure from RMetadataURL
-	type Binary struct {
+	type tBinary struct {
 		Architecture string `json:"architecture"`
 		Name         string `json:"name"`
 		Description  string `json:"description"`
-		// Include other fields if needed
 	}
 
-	type RMetadata struct {
-		Binaries []Binary `json:"packages"`
+	type tprogramMetadata struct {
+		Binaries []tBinary `json:"packages"`
 	}
 
-	// Unmarshal the description as an RMetadata object
-	var rMetadata RMetadata
-	if err := json.Unmarshal(body, &rMetadata); err != nil {
-		errorOut("Error while decoding metadata from %s: %v\n", RMetadataURL, err)
+	var programMetadata tprogramMetadata
+	// Fetch metadata
+	err := fetchJSON(RMetadataURL, &programMetadata)
+	if err != nil {
+		fmt.Println("Failed to fetch and decode binary information:", err)
+		return
 	}
 
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{})
-	for _, binary := range rMetadata.Binaries {
+	for _, binary := range programMetadata.Binaries {
 		if binary.Architecture == ValidatedArch[1] && strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
 			ext := strings.ToLower(filepath.Ext(binary.Name))
 			base := filepath.Base(binary.Name)

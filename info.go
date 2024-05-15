@@ -2,10 +2,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 )
 
 // BinaryInfo struct holds binary metadata used in main.go for the `info`, `update`, `list` functionality
@@ -20,25 +17,6 @@ type BinaryInfo struct {
 	SHA256      string `json:"SHA256"`
 	B3SUM       string `json:"B3SUM"`
 	Source      string `json:"Source"`
-}
-
-func fetchJSON(url string, v interface{}) error {
-	response, err := http.Get(url)
-	if err != nil {
-		return fmt.Errorf("error fetching from %s: %v", url, err)
-	}
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("error reading from %s: %v", url, err)
-	}
-
-	if err := json.Unmarshal(body, v); err != nil {
-		return fmt.Errorf("error decoding from %s: %v", url, err)
-	}
-
-	return nil
 }
 
 func findBinaryInfo(metadata [][]map[string]interface{}, binaryName string) (BinaryInfo, bool) {

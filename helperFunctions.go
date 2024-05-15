@@ -3,8 +3,10 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -163,6 +165,25 @@ func copyFile(src, dst string) error {
 	// Remove the temporary file after copying
 	if err := os.Remove(src); err != nil {
 		return fmt.Errorf("failed to remove source file: %v", err)
+	}
+
+	return nil
+}
+
+func fetchJSON(url string, v interface{}) error {
+	response, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("error fetching from %s: %v", url, err)
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return fmt.Errorf("error reading from %s: %v", url, err)
+	}
+
+	if err := json.Unmarshal(body, v); err != nil {
+		return fmt.Errorf("error decoding from %s: %v", url, err)
 	}
 
 	return nil
