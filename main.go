@@ -17,7 +17,10 @@ var (
 	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
 	ValidatedArch = [3]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
-	InstallDir        = os.Getenv("INSTALL_DIR")
+	InstallDir = os.Getenv("INSTALL_DIR")
+	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
+	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
+	// misc options
 	installUseCache   = true
 	useProgressBar    = true
 	disableTruncation = false
@@ -26,7 +29,7 @@ var (
 const (
 	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // RMetadataURL is the file from which we extract descriptions, etc, for different binaries
 	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
-	VERSION       = "1.6.4p"                                                                    // VERSION to be displayed
+	VERSION       = "1.6.5p"                                                                    // VERSION to be displayed
 	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->"       // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
@@ -34,8 +37,6 @@ const (
 	MaxCacheSize = 10
 	// BinariesToDelete - Once the cache is filled - The programs populate the list of binaries to be removed in order of least used. This variable sets the amount of binaries that should be deleted
 	BinariesToDelete = 5
-	// TEMPDIR will be used by the `run` functionality. See run.go
-	TEMPDIR = "/tmp/bigdl_cached"
 )
 
 // Exclude specified file types and file names, these shall not appear in Lists nor in the Search Results
@@ -71,17 +72,26 @@ func init() {
 	if InstallDir == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+			errorOut("error: Failed to get user's Home directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
 			os.Exit(1)
 		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
 
-	if os.Getenv("DISABLE_TRUNCATION") == "true" || os.Getenv("DISABLE_TRUNCATION") == "1" {
+	if TEMPDIR == "" {
+		cacheDir, err := os.UserCacheDir()
+		if err != nil {
+			errorOut("error: Failed to get user's Cache directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
+			os.Exit(1)
+		}
+		TEMPDIR = filepath.Join(cacheDir, "bigdl_cache")
+	}
+
+	if os.Getenv("BIGDL_TRUNCATION") == "0" {
 		disableTruncation = true
 	}
 
-	if os.Getenv("DISABLE_PRBAR") == "true" || os.Getenv("DISABLE_PRBAR") == "1" {
+	if os.Getenv("BIGDL_PRBAR") == "0" {
 		useProgressBar = false
 	}
 
@@ -125,7 +135,13 @@ Commands:
  run              Run a specified binary from cache
  info             Show information about a specific binary OR display installed binaries
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
- tldr             Equivalent to "run --transparent --verbose tlrc" as argument.
+ tldr             Equivalent to "run --transparent --verbose tlrc" as argument
+
+Variables:
+ BIGDL_PRBAR      If present, and set to ZERO (0), the download progressbar will be disabled
+ BIGDL_TRUNCATION If present, and set to ZERO (0), string truncation will be disabled
+ BIGDL_CACHEDIR   If present, it must contain a valid directory
+ INSTALL_DIR      If present, it must contain a valid directory
 
 Examples:
  bigdl search editor
