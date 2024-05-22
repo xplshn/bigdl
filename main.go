@@ -21,9 +21,9 @@ var (
 	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
 	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
 	// misc options
-	installUseCache   = true
-	useProgressBar    = true
-	disableTruncation = false
+	InstallUseCache   = true
+	UseProgressBar    = true
+	DisableTruncation = false
 )
 
 const (
@@ -88,11 +88,11 @@ func init() {
 	}
 
 	if os.Getenv("BIGDL_TRUNCATION") == "0" {
-		disableTruncation = true
+		DisableTruncation = true
 	}
 
 	if os.Getenv("BIGDL_PRBAR") == "0" {
-		useProgressBar = false
+		UseProgressBar = false
 	}
 
 	// The repos are a mess. So we need to do this. Sorry

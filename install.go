@@ -15,7 +15,7 @@ func installCommand(binaryName string, installMessage ...string) error {
 	installPath := filepath.Join(InstallDir, fileName)
 
 	// Use ReturnCachedFile to check for a cached file
-	if installUseCache {
+	if InstallUseCache {
 		cachedFile, err := ReturnCachedFile(binaryName)
 		if err == 0 {
 			// If the cached file exists, use it

@@ -15,8 +15,8 @@ import (
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
 	// 'Configure' external functions
-	useProgressBar = false
-	installUseCache = false
+	UseProgressBar = false
+	InstallUseCache = false
 
 	// Initialize counters
 	var (

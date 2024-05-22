@@ -77,10 +77,8 @@ func fSearch(searchTerm string, limit int) {
 		if fileExists(installPath) {
 			prefix = "[i]"
 		} else {
-			binaryPath, err := exec.LookPath(name)
-			if err != nil {
-				errorOut("Error checking the existence of a binary in the user's $PATH\n")
-			} else if binaryPath != "" {
+			binaryPath, _ := exec.LookPath(name) // is it okay to ignore the err channel of LookPath?
+			if binaryPath != "" {
 				prefix = "[I]"
 			} else if cachedLocation != "" && isExecutable(cachedLocation) {
 				prefix = "[c]"

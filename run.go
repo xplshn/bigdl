@@ -63,15 +63,13 @@ func RunFromCache(binaryName string, args []string) {
 
 	if *silent {
 		silentMode = true
+		UseProgressBar = false
 		purifyVars()
 	}
 
 	if *transparent {
 		purifyVars()
-		binaryPath, err := exec.LookPath(binaryName)
-		if err != nil {
-			errorOut("error checking if binary is in PATH: %s\n", err)
-		}
+		binaryPath, _ := exec.LookPath(binaryName) // is it okay to ignore the err channel of LookPath?
 
 		if binaryPath != "" {
 			if !silentMode {
@@ -158,10 +156,6 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 
 // fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
-	if silentMode {
-		useProgressBar = false
-	}
-
 	url, err := findURL(binaryName)
 	if err != nil {
 		return err

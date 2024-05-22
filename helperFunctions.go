@@ -242,7 +242,7 @@ func listFilesInDir(dir string) ([]string, error) {
 }
 
 func spawnProgressBar(contentLength int64) *progressbar.ProgressBar {
-	if useProgressBar {
+	if UseProgressBar {
 		return progressbar.NewOptions(int(contentLength),
 			progressbar.OptionClearOnFinish(),
 			progressbar.OptionFullWidth(),
@@ -256,7 +256,10 @@ func spawnProgressBar(contentLength int64) *progressbar.ProgressBar {
 			}),
 		)
 	}
-	return progressbar.NewOptions(0, progressbar.OptionClearOnFinish()) // A dummy
+	return progressbar.NewOptions(
+		-1,
+		progressbar.OptionSetWriter(io.Discard),
+	)
 }
 
 // sanitizeString removes certain punctuation from the end of the string and converts it to lower case.
@@ -352,7 +355,7 @@ func truncateSprintf(format string, a ...interface{}) string {
 
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
-	if disableTruncation {
+	if DisableTruncation {
 		return fmt.Print(fmt.Sprintf(format, a...))
 	}
 	return fmt.Print(truncateSprintf(format, a...))
