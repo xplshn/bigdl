@@ -22,7 +22,7 @@ func fSearch(searchTerm string, limit int) {
 
 	var programMetadata tprogramMetadata
 	// Fetch metadata
-	err := fetchJSON(RMetadataURL, &programMetadata)
+	err := fetchJSON(RNMetadataURL, &programMetadata)
 	if err != nil {
 		fmt.Println("Failed to fetch and decode binary information:", err)
 		return

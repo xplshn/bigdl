@@ -92,8 +92,7 @@ func update(programsToUpdate []string) error {
 
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
 				truncatePrintf("\033[2K\r<%d/%d> %s | Detected a difference in %s. Updating...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
-				installMessage := "--silent"
-				err := installCommand(program, installMessage)
+				err := installCommand(true, program)
 				if err != nil {
 					progressMutex.Lock()
 					atomic.AddUint32(&errors, 1)

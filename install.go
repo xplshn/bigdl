@@ -5,66 +5,52 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-func installCommand(binaryName string, installMessage ...string) error {
-	// Extract the last part of the binaryName to use as the filename
-	fileName := filepath.Base(binaryName)
+func installCommand(silent bool, binaryNames string) error {
+	binaries := strings.Fields(binaryNames)
+	for _, binaryName := range binaries {
+		// Extract the last part of the binaryName to use as the filename
+		fileName := filepath.Base(binaryName)
 
-	// Construct the installPath using the extracted filename
-	installPath := filepath.Join(InstallDir, fileName)
+		// Construct the installPath using the extracted filename
+		installPath := filepath.Join(InstallDir, fileName)
 
-	// Use ReturnCachedFile to check for a cached file
-	if InstallUseCache {
-		cachedFile, err := ReturnCachedFile(binaryName)
-		if err == 0 {
-			// If the cached file exists, use it
-			fmt.Printf("\r\033[KUsing cached file: %s\n", cachedFile)
-			// Copy the cached file to the install path
-			if err := copyFile(cachedFile, installPath); err != nil {
-				return fmt.Errorf("error: Could not copy cached file: %v", err)
-			}
-
-			// Set executable bit immediately after copying
-			if err := os.Chmod(installPath, 0o755); err != nil {
-				return fmt.Errorf("failed to set executable bit: %v", err)
-			}
-
-			return nil
-		}
-	}
-
-	// If the cached file does not exist, download the binary
-	url, err := findURL(binaryName)
-	if err != nil {
-		errorOut("%v\n", err)
-	}
-	if err := fetchBinaryFromURL(url, installPath); err != nil {
-		return fmt.Errorf("error: Could not install binary: %v", err)
-	}
-
-	// Check if the user provided a custom installMessage and If so, print it as per his requirements.
-	if len(installMessage) != 0 {
-		if installMessage[0] == "--fancy" {
-			if installMessage[1] == "--truncate" {
-				truncatePrintf(installMessage[2], binaryName)
-			} else {
-				fmt.Printf(installMessage[1], binaryName)
-			}
-			if len(installMessage) > 2 && installMessage[2] == "--newline" || len(installMessage) > 3 && installMessage[3] == "--newline" {
-				fmt.Println()
-			}
-		} else {
-			if installMessage[0] == "--truncate" {
-				fmt.Println(truncateSprintf("%s", installMessage[1]))
-			} else {
-				if installMessage[0] != "--silent" {
-					fmt.Println(installMessage[0])
+		// Use ReturnCachedFile to check for a cached file
+		if InstallUseCache {
+			cachedFile, err := ReturnCachedFile(binaryName)
+			if err == 0 {
+				// If the cached file exists, use it
+				if !silent {
+					fmt.Printf("Using cached file: %s\n", cachedFile)
 				}
+				// Copy the cached file to the install path
+				if err := copyFile(cachedFile, installPath); err != nil {
+					return fmt.Errorf("error: Could not copy cached file: %v", err)
+				}
+
+				// Set executable bit immediately after copying
+				if err := os.Chmod(installPath, 0o755); err != nil {
+					return fmt.Errorf("failed to set executable bit: %v", err)
+				}
+
+				continue
 			}
 		}
-	} else {
-		fmt.Printf("Installation complete: %s\n", installPath)
+
+		// If the cached file does not exist, download the binary
+		url, err := findURL(binaryName)
+		if err != nil {
+			errorOut("%v\n", err)
+		}
+		if err := fetchBinaryFromURL(url, installPath); err != nil {
+			return fmt.Errorf("error: Could not install binary: %v", err)
+		}
+
+		if !silent {
+			fmt.Printf("Installation complete: %s\n", installPath)
+		}
 	}
 	return nil
 }

@@ -7,13 +7,15 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 var (
 	// Repositories contains all available repos - This variable is used by findURL.go
 	Repositories []string
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
-	MetadataURLs []string
+	MetadataURLs  []string
+	RNMetadataURL string
 	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
 	ValidatedArch = [3]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
@@ -27,10 +29,8 @@ var (
 )
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // RMetadataURL is the file from which we extract descriptions, etc, for different binaries
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
-	VERSION       = "1.6.5p"                                                                    // VERSION to be displayed
-	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->"       // usagePage to be shown
+	VERSION   = "1.6.5p"                                                              // VERSION to be displayed
+	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
 	// MaxCacheSize is the limit of binaries which can be stored at TEMP_DIR
@@ -115,6 +115,7 @@ func init() {
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
+	RNMetadataURL = "https://bin.ajam.dev/" + arch + "/METADATA.json" // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
@@ -211,19 +212,25 @@ func main() {
 			}
 		}
 	case "install", "add":
-		// Check if the binary name is provided
 		if flag.NArg() < 2 {
-			fmt.Printf("Usage: bigdl %s [binary] <install_message>\n", flag.Arg(0))
-			fmt.Println("Options:")
-			fmt.Println(" --fancy <--truncate> : Will replace exactly ONE '%s' with the name of the requested binary in the install message <--newline>")
-			fmt.Println(" --truncate: Truncates the message to fit into the terminal")
-			errorOutInsufficientArgs()
+			fmt.Printf("Usage: bigdl %s <--silent> [binar|y|ies]\n", flag.Arg(0))
+			os.Exit(1)
 		}
 
-		binaryName := os.Args[2]
-		installMessage := os.Args[3:]
+		// Join the binary names into a single string separated by spaces
+		binaries := strings.Join(flag.Args()[1:], " ")
+		silent := false
+		if flag.Arg(1) == "--silent" {
+			silent = true
+			// Skip the "--silent" flag when joining the binary names
+			binaries = strings.Join(flag.Args()[2:], " ")
+		}
 
-		installCommand(binaryName, installMessage...)
+		err := installCommand(silent, binaries)
+		if err != nil {
+			fmt.Printf("Installation failed: %v\n", err)
+			os.Exit(1)
+		}
 	case "remove", "del":
 		if flag.NArg() < 2 {
 			fmt.Printf("Usage: bigdl %s [binar|y|ies]\n", flag.Arg(0))
@@ -276,9 +283,6 @@ func main() {
 			}
 			if binaryInfo.SHA256 != "" {
 				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
-			}
-			if binaryInfo.B3SUM != "" {
-				fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
 			}
 		}
 	case "search":
