@@ -16,13 +16,9 @@ func fSearch(searchTerm string, limit int) {
 		Description  string `json:"description"`
 	}
 
-	type tprogramMetadata struct {
-		Binaries []tBinary `json:"packages"`
-	}
-
-	var programMetadata tprogramMetadata
 	// Fetch metadata
-	err := fetchJSON(RNMetadataURL, &programMetadata)
+	var binaries []tBinary
+	err := fetchJSON(RNMetadataURL, &binaries)
 	if err != nil {
 		fmt.Println("Failed to fetch and decode binary information:", err)
 		return
@@ -30,8 +26,8 @@ func fSearch(searchTerm string, limit int) {
 
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{})
-	for _, binary := range programMetadata.Binaries {
-		if binary.Architecture == ValidatedArch[1] && strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
+	for _, binary := range binaries {
+		if strings.Contains(strings.ToLower(binary.Name), strings.ToLower(searchTerm)) || strings.Contains(strings.ToLower(binary.Description), strings.ToLower(searchTerm)) {
 			ext := strings.ToLower(filepath.Ext(binary.Name))
 			base := filepath.Base(binary.Name)
 			if _, excluded := excludedFileTypes[ext]; excluded {
