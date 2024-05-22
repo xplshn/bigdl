@@ -117,7 +117,7 @@ func init() {
 	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
-	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
+	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
 func printHelp() {

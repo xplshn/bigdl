@@ -68,7 +68,7 @@ func RunFromCache(binaryName string, args []string) {
 
 	if *transparent {
 		purifyVars()
-		binaryPath, err := isBinaryInPath(binaryName)
+		binaryPath, err := exec.LookPath(binaryName)
 		if err != nil {
 			errorOut("error checking if binary is in PATH: %s\n", err)
 		}

@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -76,7 +77,7 @@ func fSearch(searchTerm string, limit int) {
 		if fileExists(installPath) {
 			prefix = "[i]"
 		} else {
-			binaryPath, err := isBinaryInPath(name) // Capture both the path and error
+			binaryPath, err := exec.LookPath(name)
 			if err != nil {
 				errorOut("Error checking the existence of a binary in the user's $PATH\n")
 			} else if binaryPath != "" {
