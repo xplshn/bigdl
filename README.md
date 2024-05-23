@@ -53,13 +53,7 @@ Commands:
 In the case of `--transparent`, it runs the program from $PATH and if it isn't available in the user's $PATH it will pull the binary from `bigdl`'s repos and run it from cache.
 In the case of `--silent`, it simply hides the progressbar and all optional messages (warnings) that `bigdl` can show, as oppossed to `--verbose`, which will always report if the binary is found on cache + the return code of the binary to be ran if it differs from 0.
 ##### Flags that correspond to the `install` functionality
-Install accepts three optional flags too. These affect the install message that will be displayed.
- 1. `"You can put a custom installation complete message just after the name of the binary, --newline will be assumed"`
- 2. `--fancy "This one allows exactly ONE formatting parameter (%s), which will be replaced with installation path, it MUST be used." --newline`
- 3. `--fancy --truncate "Same as before, but will be truncated once the text wraps around" --newline`
- 4. `--fancy "Text, but without the --newline, for some reason."`
- 5. `--truncate "This will truncate text when it overflows the terminal's size. --new-line is assumed."`
-`--silent` will work the same as `run`'s `--silent` option
+`--silent`
 ##### `Update` arguments:
 Update can receive an optional list of specific binaries to update OR no arguments at all. When `update` receives no arguments it updates everything that is both found in the repos and in your `$INSTALL_DIR`.
 ###### NOTE: I may remove this at some point and instead make the `install`/`add` functionality be able to install multiple binaries at the same time.
@@ -67,16 +61,15 @@ Update can receive an optional list of specific binaries to update OR no argumen
 When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "B3SUM" fields may not match your local installation if the binary wasn't provided by `bigdl` or it isn't updated.
 ###### Example:
 ```
-$ bigdl info jq
-Name: jq
-Description: Command-line JSON processor
-Repo: https://github.com/jqlang/jq
-Updated: 2023-12-13T19:56:17Z
-Version: jq-1.7.1
-Size: 2.32 MB
-Source: https://bin.ajam.dev/x86_64_Linux/jq
-SHA256: 5942c9b0934e510ee61eb3e30273f1b3fe2590df93933a93d7c58b81d19c8ff5
-B3SUM: f4f456f3a1a9a0dbcd9b0c2a77e29d14bc1f8bb036db4f6ff06d8c76a99e5ef2
+$ bigdl info micro
+Name: micro
+Description: A modern and intuitive terminal-based text editor
+Repo: https://github.com/zyedidia/micro
+Updated: 2024-05-22T20:21:10Z
+Version: v2.0.13
+Size: 11.81 MB
+Source: https://bin.ajam.dev/x86_64_Linux/micro
+SHA256: 697fb918c800071c4d1a853d515331a9a3f245bb8a7da1c6d3653737d17ce3c4
 ```
 ##### Arguments of `list`
 `list` can receive the optional argument `--described`/`-d`. It will display all binaries that have a description in their metadata.
