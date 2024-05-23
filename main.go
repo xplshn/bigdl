@@ -14,7 +14,8 @@ var (
 	// Repositories contains all available repos - This variable is used by findURL.go
 	Repositories []string
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
-	MetadataURLs  []string
+	MetadataURLs []string
+	// RNMetadataURL should contain the JSON that describes available binaries for your architecture
 	RNMetadataURL string
 	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
 	ValidatedArch = [3]string{}
@@ -22,9 +23,11 @@ var (
 	InstallDir = os.Getenv("INSTALL_DIR")
 	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
 	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
-	// misc options
-	InstallUseCache   = true
-	UseProgressBar    = true
+	// InstallUseCache determines if cached files should be used when requesting an install
+	InstallUseCache = true
+	// UseProgressBar determines if the progressbar is shown or not
+	UseProgressBar = true
+	// DisableTruncation determines if update.go, fsearch.go, etc, truncate their messages or not
 	DisableTruncation = false
 )
 
