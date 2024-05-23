@@ -75,7 +75,7 @@ func fSearch(searchTerm string, limit int) {
 		} else {
 			binaryPath, _ := exec.LookPath(name) // is it okay to ignore the err channel of LookPath?
 			if binaryPath != "" {
-				prefix = "[I]"
+				prefix = "[\033[4mI\033[0m]" // Print [I], I is underlined.
 			} else if cachedLocation != "" && isExecutable(cachedLocation) {
 				prefix = "[c]"
 			} else {

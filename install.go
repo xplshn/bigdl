@@ -9,6 +9,10 @@ import (
 )
 
 func installCommand(silent bool, binaryNames string) error {
+	// Disable the progressbar if the installation is to be performed silently
+	if silent {
+		UseProgressBar = false
+	}
 	binaries := strings.Fields(binaryNames)
 	for _, binaryName := range binaries {
 		// Extract the last part of the binaryName to use as the filename
@@ -44,12 +48,13 @@ func installCommand(silent bool, binaryNames string) error {
 		if err != nil {
 			errorOut("%v\n", err)
 		}
+
 		if err := fetchBinaryFromURL(url, installPath); err != nil {
 			return fmt.Errorf("error: Could not install binary: %v", err)
 		}
 
 		if !silent {
-			fmt.Printf("Installation complete: %s\n", installPath)
+			fmt.Printf("Installed: %s\n", installPath)
 		}
 	}
 	return nil
