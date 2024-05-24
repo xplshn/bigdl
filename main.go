@@ -89,11 +89,9 @@ func init() {
 		}
 		TEMPDIR = filepath.Join(cacheDir, "bigdl_cache")
 	}
-
 	if os.Getenv("BIGDL_TRUNCATION") == "0" {
 		DisableTruncation = true
 	}
-
 	if os.Getenv("BIGDL_PRBAR") == "0" {
 		UseProgressBar = false
 	}

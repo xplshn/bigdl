@@ -1,0 +1,12 @@
+#!/bin/sh
+D="/tmp/._bdlstub_bigdl.bin" ; A=$(uname -m) ; B="https://github.com/xplshn/bigdl/releases/latest/download/bigdl_fast_$AS"
+[ "$A" != "aarch64" ] && [ "$A" != "x86_64" ] && { echo "Unsupported architecture: $A"; exit 1; }
+AS="x86_64" && [ "$A" != "x86_64" ] && AS="arm64"
+[ "$1" = "--install" ] && D="$2"
+[ -e "$D" ] && [ "$1" != "--install" ] && exec "$D" "$@"
+mkdir -p "$(dirname "$D")" && \
+ wget -q "$B" -O "$D" 2>/dev/null || \
+ curl -qfsSL "$B" -o "$D" 2>/dev/null || \
+ { echo "Neither wget nor curl is available."; exit 1; }
+[ -e "$D" ] && [ "$1" = "--install" ] && echo "BIGDL IS NOW AVAILABLE. ($D)" && chmod +x "$D"
+[ "$1" != "--install" ] && exec "$D" "$@"
