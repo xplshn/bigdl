@@ -10,7 +10,7 @@ import (
 func findURLCommand(binaryName string) {
 	url, err := findURL(binaryName)
 	if err != nil {
-		errorOut("Error: %v\n", err)
+		errorOut("error: %v\n", err)
 	}
 
 	fmt.Println(url)
@@ -30,5 +30,5 @@ func findURL(binaryName string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("Binary's SOURCE_URL was not found")
+	return "", fmt.Errorf("binary's SOURCE_URL was not found")
 }

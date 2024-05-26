@@ -7,34 +7,39 @@ import (
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 var (
 	// Repositories contains all available repos - This variable is used by findURL.go
 	Repositories []string
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
-	MetadataURLs  []string
-	validatedArch = [3]string{}
+	MetadataURLs []string
+	// RNMetadataURL should contain the JSON that describes available binaries for your architecture
+	RNMetadataURL string
+	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
+	ValidatedArch = [3]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
-	InstallDir        = os.Getenv("INSTALL_DIR")
-	installUseCache   = true
-	useProgressBar    = true
-	disableTruncation = false
+	InstallDir = os.Getenv("INSTALL_DIR")
+	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
+	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
+	// InstallUseCache determines if cached files should be used when requesting an install
+	InstallUseCache = true
+	// UseProgressBar determines if the progressbar is shown or not
+	UseProgressBar = true
+	// DisableTruncation determines if update.go, fsearch.go, etc, truncate their messages or not
+	DisableTruncation = false
 )
 
 const (
-	RMetadataURL  = "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/metadata.json" // RMetadataURL is the file from which we extract descriptions, etc, for different binaries
-	RNMetadataURL = "https://bin.ajam.dev/METADATA.json"                                        // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
-	VERSION       = "1.6.2"                                                                     // VERSION to be displayed
-	usagePage     = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <{args}>"       // usagePage to be shown
+	VERSION   = "1.6.7p"                                                              // VERSION to be displayed
+	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
 	// MaxCacheSize is the limit of binaries which can be stored at TEMP_DIR
 	MaxCacheSize = 10
 	// BinariesToDelete - Once the cache is filled - The programs populate the list of binaries to be removed in order of least used. This variable sets the amount of binaries that should be deleted
 	BinariesToDelete = 5
-	// TEMPDIR will be used by the `run` functionality. See run.go
-	TEMPDIR = "/tmp/bigdl_cached"
 )
 
 // Exclude specified file types and file names, these shall not appear in Lists nor in the Search Results
@@ -47,8 +52,9 @@ var excludedFileTypes = map[string]struct{}{
 	".txt":  {},
 	".tar":  {},
 	".zip":  {},
-	".exe":  {},
 	".cfg":  {},
+	".dir":  {},
+	".test": {},
 }
 
 var excludedFileNames = map[string]struct{}{
@@ -69,37 +75,51 @@ func init() {
 	if InstallDir == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+			errorOut("error: Failed to get user's Home directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
 			os.Exit(1)
 		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
 
-	if os.Getenv("DISABLE_TRUNCATION") == "true" || os.Getenv("DISABLE_TRUNCATION") == "1" {
-		disableTruncation = true
+	if TEMPDIR == "" {
+		cacheDir, err := os.UserCacheDir()
+		if err != nil {
+			errorOut("error: Failed to get user's Cache directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
+			os.Exit(1)
+		}
+		TEMPDIR = filepath.Join(cacheDir, "bigdl_cache")
+	}
+	if os.Getenv("BIGDL_TRUNCATION") == "0" {
+		DisableTruncation = true
+	}
+	if os.Getenv("BIGDL_PRBAR") == "0" {
+		UseProgressBar = false
 	}
 
-	if os.Getenv("DISABLE_PRBAR") == "true" || os.Getenv("DISABLE_PRBAR") == "1" {
-		useProgressBar = false
-	}
-
-	switch runtime.GOARCH {
-	case "amd64":
-		validatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
-	case "arm64":
-		validatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
+	// The repos are a mess. So we need to do this. Sorry
+	arch := runtime.GOARCH + "_" + runtime.GOOS
+	switch arch {
+	case "amd64_linux":
+		ValidatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
+	case "arm64_linux":
+		ValidatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
+	case "arm64_android":
+		ValidatedArch = [3]string{"arm64_v8a_Android", "arm64_v8a_Android", "arm64-v8a-Android"}
+	case "amd64_windows":
+		ValidatedArch = [3]string{"x64_Windows", "x64_Windows", "AMD64-Windows_NT"}
 	default:
-		fmt.Println("Unsupported architecture:", runtime.GOARCH)
+		fmt.Println("Unsupported architecture:", arch)
 		os.Exit(1)
 	}
-	arch := validatedArch[0]
+	arch = ValidatedArch[0]
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
 	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
+	RNMetadataURL = "https://bin.ajam.dev/" + arch + "/METADATA.json" // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
-	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents") // You may add other repos if need be? bigdl is customizable, feel free to open a PR, ask questions, etc.
+	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
 func printHelp() {
@@ -117,7 +137,13 @@ Commands:
  run              Run a specified binary from cache
  info             Show information about a specific binary OR display installed binaries
  search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
- tldr             Equivalent to "run --transparent --verbose tlrc" as argument.
+ tldr             Equivalent to "run --transparent --verbose tlrc" as argument
+
+Variables:
+ BIGDL_PRBAR      If present, and set to ZERO (0), the download progressbar will be disabled
+ BIGDL_TRUNCATION If present, and set to ZERO (0), string truncation will be disabled
+ BIGDL_CACHEDIR   If present, it must contain a valid directory
+ INSTALL_DIR      If present, it must contain a valid directory
 
 Examples:
  bigdl search editor
@@ -187,19 +213,25 @@ func main() {
 			}
 		}
 	case "install", "add":
-		// Check if the binary name is provided
 		if flag.NArg() < 2 {
-			fmt.Printf("Usage: bigdl %s [binary] <install_message>\n", flag.Arg(0))
-			fmt.Println("Options:")
-			fmt.Println(" --fancy <--truncate> : Will replace exactly ONE '%s' with the name of the requested binary in the install message <--newline>")
-			fmt.Println(" --truncate: Truncates the message to fit into the terminal")
-			errorOutInsufficientArgs()
+			fmt.Printf("Usage: bigdl %s <--silent> [binar|y|ies]\n", flag.Arg(0))
+			os.Exit(1)
 		}
 
-		binaryName := os.Args[2]
-		installMessage := os.Args[3:]
+		// Join the binary names into a single string separated by spaces
+		binaries := strings.Join(flag.Args()[1:], " ")
+		silent := false
+		if flag.Arg(1) == "--silent" {
+			silent = true
+			// Skip the "--silent" flag when joining the binary names
+			binaries = strings.Join(flag.Args()[2:], " ")
+		}
 
-		installCommand(binaryName, installMessage...)
+		err := installCommand(silent, binaries)
+		if err != nil {
+			fmt.Printf("Installation failed: %v\n", err)
+			os.Exit(1)
+		}
 	case "remove", "del":
 		if flag.NArg() < 2 {
 			fmt.Printf("Usage: bigdl %s [binar|y|ies]\n", flag.Arg(0))
@@ -217,11 +249,6 @@ func main() {
 		RunFromCache(args[0], args[1:])
 	case "info":
 		binaryName := flag.Arg(1)
-
-		if len(os.Args) > 3 {
-			fmt.Fprintln(os.Stderr, "Warning: The command contains more arguments than expected. Part of the input unused.")
-		}
-
 		if len(os.Args) < 3 {
 			installedPrograms, err := validateProgramsFrom(InstallDir, nil)
 			if err != nil {
@@ -232,7 +259,6 @@ func main() {
 				fmt.Println(program)
 			}
 		} else {
-
 			binaryInfo, err := getBinaryInfo(binaryName)
 			if err != nil {
 				errorOut("%v\n", err)
@@ -258,9 +284,6 @@ func main() {
 			}
 			if binaryInfo.SHA256 != "" {
 				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
-			}
-			if binaryInfo.B3SUM != "" {
-				fmt.Printf("B3SUM: %s\n", binaryInfo.B3SUM)
 			}
 		}
 	case "search":

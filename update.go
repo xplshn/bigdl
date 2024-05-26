@@ -15,8 +15,8 @@ import (
 // update checks for updates to the valid programs and installs any that have changed.
 func update(programsToUpdate []string) error {
 	// 'Configure' external functions
-	useProgressBar = false
-	installUseCache = false
+	UseProgressBar = false
+	InstallUseCache = false
 
 	// Initialize counters
 	var (
@@ -92,8 +92,7 @@ func update(programsToUpdate []string) error {
 
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
 				truncatePrintf("\033[2K\r<%d/%d> %s | Detected a difference in %s. Updating...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
-				installMessage := "--silent"
-				err := installCommand(program, installMessage)
+				err := installCommand(true, program)
 				if err != nil {
 					progressMutex.Lock()
 					atomic.AddUint32(&errors, 1)
@@ -125,18 +124,9 @@ func update(programsToUpdate []string) error {
 	}
 	// Print final counts
 	fmt.Println(finalCounts)
-	fmt.Printf(errorMessages)
+	fmt.Print(errorMessages)
 
 	return nil
-}
-
-func contains(slice []string, str string) bool {
-	for _, v := range slice {
-		if v == str {
-			return true
-		}
-	}
-	return false
 }
 
 // getLocalSHA256 calculates the SHA256 checksum of the local file.

@@ -1,119 +1,61 @@
+// info.go // This file implements binInfo, which `info` and `update` use //>
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 )
 
 // BinaryInfo struct holds binary metadata used in main.go for the `info`, `update`, `list` functionality
 type BinaryInfo struct {
-	Name        string `json:"Name"`
-	Description string `json:"Description"`
-	Repo        string `json:"Repo"`
-	ModTime     string `json:"ModTime"`
-	Version     string `json:"Version"`
-	Updated     string `json:"Updated"`
-	Size        string `json:"Size"`
-	SHA256      string `json:"SHA256"`
-	B3SUM       string `json:"B3SUM"`
-	Source      string `json:"Source"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Repo        string `json:"repo_url"`
+	ModTime     string `json:"build_date"`
+	Version     string `json:"repo_version"`
+	Updated     string `json:"repo_updated"`
+	Size        string `json:"size"`
+	SHA256      string `json:"sha256"`
+	Source      string `json:"download_url"`
 }
 
-func fetchJSON(url string, v interface{}) error {
-	response, err := http.Get(url)
-	if err != nil {
-		return fmt.Errorf("error fetching from %s: %v", url, err)
-	}
-	defer response.Body.Close()
+func findBinaryInfo(metadata []map[string]interface{}, binaryName string) (BinaryInfo, bool) {
+	for _, binMap := range metadata {
+		if name, ok := binMap["name"].(string); ok && name == binaryName {
+			description, _ := binMap["description"].(string)
+			repo, _ := binMap["repo_url"].(string)
+			build_date, _ := binMap["build_date"].(string)
+			version, _ := binMap["repo_version"].(string)
+			updated, _ := binMap["repo_updated"].(string)
+			size, _ := binMap["size"].(string)
+			sha256, _ := binMap["sha256"].(string)
+			source, _ := binMap["download_url"].(string)
 
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return fmt.Errorf("error reading from %s: %v", url, err)
-	}
-
-	if err := json.Unmarshal(body, v); err != nil {
-		return fmt.Errorf("error decoding from %s: %v", url, err)
-	}
-
-	return nil
-}
-
-func findBinaryInfo(metadata [][]map[string]interface{}, binaryName string) (BinaryInfo, bool) {
-	for _, hostInfoArray := range metadata {
-		for _, hostInfo := range hostInfoArray {
-			if hostInfo["host"].(string) == validatedArch[2] {
-				mainBins, ok := hostInfo["Main"].([]interface{})
-				if !ok {
-					continue
-				}
-				for _, bin := range mainBins {
-					binMap, ok := bin.(map[string]interface{})
-					if !ok {
-						continue
-					}
-					if binMap["Name"].(string) == binaryName {
-						return BinaryInfo{
-							Name:    binMap["Name"].(string),
-							Size:    binMap["Size"].(string),
-							ModTime: binMap["ModTime"].(string),
-							Source:  binMap["Source"].(string),
-							B3SUM:   binMap["B3SUM"].(string),
-							SHA256:  binMap["SHA256"].(string),
-							Repo:    binMap["Repo"].(string),
-						}, true
-					}
-				}
-			}
+			return BinaryInfo{
+				Name:        name,
+				Description: description,
+				Repo:        repo,
+				ModTime:     build_date,
+				Version:     version,
+				Updated:     updated,
+				Size:        size,
+				SHA256:      sha256,
+				Source:      source,
+			}, true
 		}
 	}
 	return BinaryInfo{}, false
 }
 
 func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
-	var metadata [][]map[string]interface{}
+	var metadata []map[string]interface{}
 	if err := fetchJSON(RNMetadataURL, &metadata); err != nil {
 		return nil, err
 	}
 
 	binInfo, found := findBinaryInfo(metadata, binaryName)
 	if !found {
-		return nil, fmt.Errorf("info for the requested binary ('%s') not found in the metadata.json file for architecture '%s'", binaryName, validatedArch[2])
+		return nil, fmt.Errorf("error: info for the requested binary ('%s') not found in the metadata.json file", binaryName)
 	}
 
-	var rMetadata map[string][]BinaryInfo
-	if err := fetchJSON(RMetadataURL, &rMetadata); err != nil {
-		return nil, err
-	}
-
-	binaries, exists := rMetadata["packages"]
-	if !exists {
-		return nil, fmt.Errorf("invalid description metadata format. No 'packages' field found")
-	}
-
-	var description, updated, version string
-	for _, binInfo := range binaries {
-		if binInfo.Name == binaryName {
-			description = binInfo.Description
-			updated = binInfo.Updated
-			version = binInfo.Version
-			break
-		}
-	}
-
-	combinedInfo := BinaryInfo{
-		Name:        binInfo.Name,
-		Description: description,
-		Repo:        binInfo.Repo,
-		ModTime:     binInfo.ModTime,
-		Version:     version,
-		Updated:     updated,
-		Size:        binInfo.Size,
-		SHA256:      binInfo.SHA256,
-		B3SUM:       binInfo.B3SUM,
-		Source:      binInfo.Source,
-	}
-
-	return &combinedInfo, nil
+	return &binInfo, nil
 }

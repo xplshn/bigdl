@@ -9,16 +9,18 @@ import (
 
 func remove(binariesToRemove []string) {
 	for _, binaryName := range binariesToRemove {
-		installPath := filepath.Join(InstallDir, binaryName)
+		// Use the base name of binaryName for constructing the cachedFile path
+		baseName := filepath.Base(binaryName)
+		installPath := filepath.Join(InstallDir, baseName)
 		err := os.Remove(installPath)
 		if err != nil {
 			if os.IsNotExist(err) {
-				fmt.Fprintf(os.Stderr, "Warning: '%s' does not exist in %s\n", binaryName, InstallDir)
+				fmt.Fprintf(os.Stderr, "Warning: '%s' does not exist in %s\n", baseName, InstallDir)
 			} else {
-				fmt.Fprintf(os.Stderr, "Error: Failed to remove '%s' from %s. %v\n", binaryName, InstallDir, err)
+				fmt.Fprintf(os.Stderr, "Error: Failed to remove '%s' from %s. %v\n", baseName, InstallDir, err)
 			}
 			continue
 		}
-		fmt.Printf("'%s' removed from %s\n", binaryName, InstallDir)
+		fmt.Printf("'%s' removed from %s\n", baseName, InstallDir)
 	}
 }

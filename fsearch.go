@@ -2,51 +2,32 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
 
 // fSearch searches for binaries based on the given search term.
 func fSearch(searchTerm string, limit int) {
+	type tBinary struct {
+		Architecture string `json:"architecture"`
+		Name         string `json:"name"`
+		Description  string `json:"description"`
+	}
+
 	// Fetch metadata
-	response, err := http.Get(RMetadataURL)
+	var binaries []tBinary
+	err := fetchJSON(RNMetadataURL, &binaries)
 	if err != nil {
-		fmt.Println("Failed to fetch binary information.")
+		fmt.Println("Failed to fetch and decode binary information:", err)
 		return
-	}
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("Failed to read metadata.")
-		return
-	}
-
-	// Define a struct to match the JSON structure from RMetadataURL
-	type Binary struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		// Include other fields if needed
-	}
-
-	type RMetadata struct {
-		Binaries []Binary `json:"packages"`
-	}
-
-	// Unmarshal the description as an RMetadata object
-	var rMetadata RMetadata
-	if err := json.Unmarshal(body, &rMetadata); err != nil {
-		errorOut("Error while decoding metadata from %s: %v\n", RMetadataURL, err)
 	}
 
 	// Filter binaries based on the search term and architecture
 	searchResultsSet := make(map[string]struct{})
-	for _, binary := range rMetadata.Binaries {
-		if strings.Contains(strings.ToLower(binary.Name+binary.Description), strings.ToLower(searchTerm)) {
+	for _, binary := range binaries {
+		if strings.Contains(strings.ToLower(binary.Name), strings.ToLower(searchTerm)) || strings.Contains(strings.ToLower(binary.Description), strings.ToLower(searchTerm)) {
 			ext := strings.ToLower(filepath.Ext(binary.Name))
 			base := filepath.Base(binary.Name)
 			if _, excluded := excludedFileTypes[ext]; excluded {
@@ -92,11 +73,9 @@ func fSearch(searchTerm string, limit int) {
 		if fileExists(installPath) {
 			prefix = "[i]"
 		} else {
-			binaryPath, err := isBinaryInPath(name) // Capture both the path and error
-			if err != nil {
-				errorOut("Error checking the existence of a binary in the user's $PATH\n")
-			} else if binaryPath != "" {
-				prefix = "[I]"
+			binaryPath, _ := exec.LookPath(name) // is it okay to ignore the err channel of LookPath?
+			if binaryPath != "" {
+				prefix = "[\033[4mi\033[0m]" // Print [i], I is underlined.
 			} else if cachedLocation != "" && isExecutable(cachedLocation) {
 				prefix = "[c]"
 			} else {

@@ -14,9 +14,8 @@ import (
 )
 
 var (
-	verboseMode     bool
-	silentMode      bool
-	transparentMode bool
+	verboseMode bool
+	silentMode  bool
 )
 
 // ReturnCachedFile retrieves the cached file location. Returns an empty string and error code 1 if not found.
@@ -54,7 +53,7 @@ func RunFromCache(binaryName string, args []string) {
 	flag.CommandLine.Parse(flagsAndBinaryName)
 
 	if *verbose && *silent {
-		errorOut("Error: --verbose and --silent are mutually exclusive\n")
+		errorOut("error: --verbose and --silent are mutually exclusive\n")
 	}
 
 	if *verbose {
@@ -64,17 +63,13 @@ func RunFromCache(binaryName string, args []string) {
 
 	if *silent {
 		silentMode = true
+		UseProgressBar = false
 		purifyVars()
 	}
 
 	if *transparent {
-		transparentMode = true
-
 		purifyVars()
-		binaryPath, err := isBinaryInPath(binaryName)
-		if err != nil {
-			errorOut("Error checking if binary is in PATH: %s\n", err)
-		}
+		binaryPath, _ := exec.LookPath(binaryName) // is it okay to ignore the err channel of LookPath?
 
 		if binaryPath != "" {
 			if !silentMode {
@@ -88,7 +83,10 @@ func RunFromCache(binaryName string, args []string) {
 		errorOut("Error: Binary name not provided\n")
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	// Use the base name of binaryName for constructing the cachedFile path // This way we can support requests like: toybox/wget
+	baseName := filepath.Base(binaryName)
+	cachedFile := filepath.Join(TEMPDIR, fmt.Sprintf("%s.bin", baseName))
+
 	if fileExists(cachedFile) && isExecutable(cachedFile) {
 		if !silentMode {
 			fmt.Printf("Running '%s' from cache...\n", binaryName)
@@ -158,18 +156,18 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 
 // fetchBinary downloads the binary and caches it.
 func fetchBinary(binaryName string) error {
-	if silentMode {
-		useProgressBar = false
-	}
-
 	url, err := findURL(binaryName)
 	if err != nil {
 		return err
 	}
 
-	cachedFile := filepath.Join(TEMPDIR, binaryName+".bin")
+	// Extract the base name from the binaryName to use for the cached file name
+	baseName := filepath.Base(binaryName)
 
-	// Fetch the binary from the internet and save it to the cache
+	// Construct the cachedFile path using the base name
+	cachedFile := filepath.Join(TEMPDIR, baseName+".bin")
+
+	// Fetch the binary from the repos and save it to the cache
 	err = fetchBinaryFromURL(url, cachedFile)
 	if err != nil {
 		return fmt.Errorf("error fetching binary for %s: %v", binaryName, err)
