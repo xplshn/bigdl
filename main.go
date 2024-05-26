@@ -32,7 +32,7 @@ var (
 )
 
 const (
-	VERSION   = "1.6.6p"                                                              // VERSION to be displayed
+	VERSION   = "1.6.7p"                                                              // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
