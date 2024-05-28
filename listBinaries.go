@@ -2,45 +2,26 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"path/filepath"
 	"sort"
 	"strings"
 )
 
-// listBinariesCommand fetches and lists binary names from the given URL.
+// listBinaries fetches and lists binary names from the given URL.
 func listBinaries() ([]string, error) {
 	var allBinaries []string
 
 	// Fetch binaries from each metadata URL
 	for _, url := range MetadataURLs {
-		// Fetch metadata from the given URL
-		resp, err := http.Get(url)
-		if err != nil {
-			return nil, fmt.Errorf("error fetching metadata from %s: %v", url, err)
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode != http.StatusOK {
-			return nil, fmt.Errorf("failed to fetch metadata from %s. HTTP status code: %d", url, resp.StatusCode)
-		}
-
-		// Read response body
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read response body: %v", err)
-		}
-
-		// Unmarshal JSON
 		var metadata []struct {
 			Name    string `json:"Name"` // Consider both "name" and "Name" fields
 			NameAlt string `json:"name"`
 		}
-		if err := json.Unmarshal(body, &metadata); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal metadata JSON from %s: %v", url, err)
+
+		// Use fetchJSON to fetch and unmarshal the JSON data
+		if err := fetchJSON(url, &metadata); err != nil {
+			return nil, fmt.Errorf("failed to fetch metadata from %s: %v", url, err)
 		}
 
 		// Extract binary names

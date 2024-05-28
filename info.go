@@ -23,7 +23,7 @@ func findBinaryInfo(metadata []map[string]interface{}, binaryName string) (Binar
 		if name, ok := binMap["name"].(string); ok && name == binaryName {
 			description, _ := binMap["description"].(string)
 			repo, _ := binMap["repo_url"].(string)
-			build_date, _ := binMap["build_date"].(string)
+			buildDate, _ := binMap["build_date"].(string)
 			version, _ := binMap["repo_version"].(string)
 			updated, _ := binMap["repo_updated"].(string)
 			size, _ := binMap["size"].(string)
@@ -34,7 +34,7 @@ func findBinaryInfo(metadata []map[string]interface{}, binaryName string) (Binar
 				Name:        name,
 				Description: description,
 				Repo:        repo,
-				ModTime:     build_date,
+				ModTime:     buildDate,
 				Version:     version,
 				Updated:     updated,
 				Size:        size,

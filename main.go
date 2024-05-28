@@ -32,7 +32,7 @@ var (
 )
 
 const (
-	VERSION   = "1.6.7"                                                               // VERSION to be displayed
+	VERSION   = "1.6.8"                                                               // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
@@ -80,7 +80,6 @@ func init() {
 		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
-
 	if TEMPDIR == "" {
 		cacheDir, err := os.UserCacheDir()
 		if err != nil {
@@ -181,7 +180,6 @@ func main() {
 		errorOut(" bigdl:%s\n", usagePage)
 	}
 
-	// From now on, things happen.
 	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
 		os.Exit(1)
@@ -198,7 +196,8 @@ func main() {
 	case "list":
 		if len(os.Args) == 3 {
 			if os.Args[2] == "--described" || os.Args[2] == "-d" {
-				fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
+				// Call fSearch with an empty query and a large limit to list all described binaries
+				fSearch("", 99999)
 			} else {
 				errorOut("bigdl: Unknown command.\n")
 			}

@@ -19,10 +19,7 @@ import (
 	"github.com/schollz/progressbar/v3"
 )
 
-// TODO: Add *PROPER* error handling in the truncate functions. Ensure escape sequences are correctly handled?
-
-// signalHandler sets up a channel to listen for interrupt signals and returns a function
-// that can be called to check if an interrupt has been received.
+// signalHandler sets up a channel to listen for interrupt signals and returns a function that can be called to check if an interrupt has been received.
 func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
@@ -343,7 +340,7 @@ func truncateSprintf(format string, a ...interface{}) string {
 	// Determine the truncation length & truncate the formatted string if it exceeds the available space
 	availableSpace := getTerminalWidth() - len(indicator)
 	if len(formatted) > availableSpace {
-		formatted = fmt.Sprintf("%s", formatted[:availableSpace])
+		formatted = formatted[:availableSpace]
 		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
 			formatted = formatted[:len(formatted)-1]
 		}
@@ -355,11 +352,12 @@ func truncateSprintf(format string, a ...interface{}) string {
 
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
+	// NOTE: \n will always get cut off, this may also happen to other formatting
 	if DisableTruncation {
-		return fmt.Print(fmt.Sprintf(format, a...))
+		return fmt.Printf(format, a...)
 	}
 	return fmt.Print(truncateSprintf(format, a...))
-} // NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
+}
 
 // validateProgramsFrom validates programs against the files in the specified directory against the remote binaries.
 // It returns the validated programs based on the last element of the received list of programs.
