@@ -50,11 +50,15 @@ func installCommand(silent bool, binaryNames string) error {
 		}
 
 		if err := fetchBinaryFromURL(url, installPath); err != nil {
-			return fmt.Errorf("error: Could not install binary: %v", err)
+			return fmt.Errorf("%v", err)
 		}
 
 		if !silent {
-			fmt.Printf("Installed: %s\n", installPath)
+			if InstallMessage != "disabled" {
+				fmt.Print(InstallMessage)
+			} else {
+				fmt.Printf("Succesfully created %s\n", installPath)
+			}
 		}
 	}
 	return nil

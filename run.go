@@ -76,7 +76,7 @@ func RunFromCache(binaryName string, args []string) {
 	}
 
 	if binaryName == "" {
-		errorOut("Error: Binary name not provided\n")
+		errorOut("error: Binary name not provided\n")
 	}
 
 	// Use the base name of binaryName to construc the cachedFile path. This way requests like toybox/wget are supported
@@ -92,10 +92,10 @@ func RunFromCache(binaryName string, args []string) {
 		if verboseMode {
 			fmt.Printf("Couldn't find '%s' in the cache. Fetching a new one...\n", binaryName)
 		}
-		err := fetchBinary(binaryName)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error fetching binary for '%s'\n", binaryName)
-			errorOut("Error: %s\n", err)
+		InstallDir = TEMPDIR
+		InstallMessage = ""
+		if err := installCommand(silentMode, binaryName); err != nil {
+			errorOut("%v\n", err)
 		}
 		cleanCache()
 		runBinary(cachedFile, args, verboseMode)
@@ -118,26 +118,6 @@ func runBinary(binaryPath string, args []string, verboseMode bool) {
 	}
 
 	os.Exit(exitCode)
-}
-
-// fetchBinary downloads the binary and caches it.
-func fetchBinary(binaryName string) error {
-	url, err := findURL(binaryName)
-	if err != nil {
-		return err
-	}
-
-	// Construct the cachedFile path using the basename of binaryName variable
-	cachedFile := filepath.Join(TEMPDIR, filepath.Base(binaryName))
-
-	// Fetch the binary from the repos and save it to the cache
-	err = fetchBinaryFromURL(url, cachedFile)
-	if err != nil {
-		return fmt.Errorf("error fetching binary for %s: %v", binaryName, err)
-	}
-
-	cleanCache()
-	return nil
 }
 
 // cleanCache removes the oldest binaries when the cache size exceeds MaxCacheSize.

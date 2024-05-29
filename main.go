@@ -22,7 +22,9 @@ var (
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
 	InstallDir = os.Getenv("INSTALL_DIR")
 	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
-	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
+	TEMPDIR = os.Getenv("BIGDL_CACHEDIR")
+	// InstallMessage will be printed when installCommand() succeeds
+	InstallMessage = "disabled"
 	// InstallUseCache determines if cached files should be used when requesting an install
 	InstallUseCache = true
 	// UseProgressBar determines if the progressbar is shown or not
