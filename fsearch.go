@@ -36,8 +36,10 @@ func fSearch(searchTerm string, limit int) {
 			if _, excludedName := excludedFileNames[base]; excludedName {
 				continue // Skip this binary if its name is excluded
 			}
-			entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
-			searchResultsSet[entry] = struct{}{}
+			if binary.Description != "" {
+				entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
+				searchResultsSet[entry] = struct{}{}
+			}
 		}
 	}
 
