@@ -12,7 +12,7 @@ else
         exit 1
 fi
 
-BIGDL="https://github.com/xplshn/bigdl/releases/latest/download/bigdl_fast_${ARCH_SUFFIX}"
+BIGDL="https://github.com/xplshn/bigdl/releases/latest/download/bigdl_${ARCH_SUFFIX}_upx"
 
 if [ "$1" = "--install" ]; then
         DEST="$2"
