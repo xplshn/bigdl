@@ -8,7 +8,7 @@ BigDL is a sophisticated, Golang-based rewrite of the original [BDL](https://git
 
 ### I've seen lots of package manager projects. A "package manager" without "packages" is useless.
 I know! That's why we have lots of STATICALLY LINKED BINARIES in our repos:
-![Current amount of binaries in the repos! x86_64](https://github.com/xplshn/bigdl/raw/master/counter.svg)
+![Current amount of binaries in the repos! x86_64](https://raw.githubusercontent.com/xplshn/bigdl/master/counter.svg)
 
 
 ##### Why?
