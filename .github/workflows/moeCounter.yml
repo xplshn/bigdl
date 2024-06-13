@@ -27,6 +27,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .github/counter.gif
-          git commit -m "Update MoeCounter image"
+          git add .assets/counter.gif
+          git commit -m "[WEEKLY] Update MoeCounter image"
           git push
