@@ -253,9 +253,10 @@ func spawnProgressBar(contentLength int64) *progressbar.ProgressBar {
 			}),
 		)
 	}
-	return progressbar.NewOptions(
-		-1,
+	return progressbar.NewOptions(-1,
 		progressbar.OptionSetWriter(io.Discard),
+		progressbar.OptionSetVisibility(false),
+		progressbar.OptionShowBytes(false),
 	)
 }
 
