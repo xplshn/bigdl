@@ -1,0 +1,32 @@
+name: Update MoeCounter
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  update-counter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      
+      - name: Get binary count
+        id: binary-count
+        run: |
+          LISTC=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- list | wc -l)
+          echo "::set-output name=count::$LISTC"
+      
+      - name: Download MoeCounter image
+        run: |
+          LISTC=${{ steps.binary-count.outputs.count }}
+          wget -O .github/counter.gif "https://api.sefinek.net/api/v2/moecounter?number=6&length=$LISTC&theme=gelbooru&pixelated=true"
+      
+      - name: Commit and push updated counter image
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .github/counter.gif
+          git commit -m "Update MoeCounter image"
+          git push
