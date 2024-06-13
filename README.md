@@ -4,7 +4,7 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/xplshn/bigdl?include_prereleases)](https://github.com/xplshn/bigdl/releases/latest)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/xplshn/bigdl)
 
-BigDL is a sophisticated, Golang-based rewrite of the original [BDL](https://github.com/xplshn/Handyscripts/blob/master/bdl), it is like a package manager, but without the hassle of dependencies nor the bloat, every binary provided is statically linked. This tool is made to operate on Linux systems, BigDL is particularly well-suited for embedded systems, with support for both Amd64 AND Aarch64.
+BigDL is a sophisticated, Golang-based rewrite of the original [BDL](https://github.com/xplshn/Handyscripts/blob/master/bdl), it is like a package manager, but without the hassle of dependencies nor the bloat, every binary provided is statically linked. This tool is made to operate on Linux systems, BigDL is particularly well-suited for embedded systems, with support for both Amd64 AND Aarch64. Optionally, it works under Android too, but you'll have to set $INSTALL_DIR and $BIGDL_CACHE if you aren't running it under Termux, since depending the Android version and the ROM used, directories vary and the user's permission to modify them too.
 
 ##### Why?
  > “I tend to think the drawbacks of dynamic linking outweigh the advantages for many (most?) applications.” – John Carmack
@@ -53,12 +53,11 @@ Commands:
 In the case of `--transparent`, it runs the program from $PATH and if it isn't available in the user's $PATH it will pull the binary from `bigdl`'s repos and run it from cache.
 In the case of `--silent`, it simply hides the progressbar and all optional messages (warnings) that `bigdl` can show, as oppossed to `--verbose`, which will always report if the binary is found on cache + the return code of the binary to be ran if it differs from 0.
 ##### Flags that correspond to the `install` functionality
-`--silent`
+`--silent`, it hides the progressbar and doesn't print the installation message
 ##### `Update` arguments:
 Update can receive an optional list of specific binaries to update OR no arguments at all. When `update` receives no arguments it updates everything that is both found in the repos and in your `$INSTALL_DIR`.
-###### NOTE: I may remove this at some point and instead make the `install`/`add` functionality be able to install multiple binaries at the same time.
 ##### Arguments of `info`
-When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "B3SUM" fields may not match your local installation if the binary wasn't provided by `bigdl` or it isn't updated.
+When `info` is called with no arguments, it displays binaries which are part of the `list` and are also found on your `$INSTALL_DIR`. If `info` is called with a binary's name as argument, `info` will display as much information of it as is available. The "Size", "SHA256", "Version" fields may not match your local installation if the binary wasn't provided by `bigdl` or if it isn't up-to-date.
 ###### Example:
 ```
 $ bigdl info micro
@@ -109,7 +108,7 @@ MetadataURLs provide info about the binaries, which is used to `search` and upda
 
 ## Contributing
 
-Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and user-friendly. If you can provide repos that meet the requirements to add them to `bigdl`, I'd be grateful.
+Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and simpler. If you can provide repos that meet the requirements to add them to `bigdl`, I'd be grateful.
 
 ## License
 
