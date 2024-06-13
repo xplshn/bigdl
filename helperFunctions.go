@@ -350,9 +350,9 @@ func truncateSprintf(format string, a ...interface{}) string {
 	return formatted
 }
 
+// NOTE: \n will always get cut off when using a truncate function, this may also happen to other formatting options
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
-	// NOTE: \n will always get cut off, this may also happen to other formatting
 	if DisableTruncation {
 		return fmt.Printf(format, a...)
 	}
@@ -360,7 +360,6 @@ func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 }
 
 // validateProgramsFrom validates programs against the files in the specified directory against the remote binaries.
-// It returns the validated programs based on the last element of the received list of programs.
 func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]string, error) {
 	// Fetch the list of binaries from the remote source once
 	remotePrograms, err := listBinaries()
@@ -403,16 +402,5 @@ func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]str
 
 	// Handle the list of programs received based on the last element
 	// If programsToValidate is not nil, handle based on the last element
-	if len(programsToValidate) != 0 {
-		lastElement := programsToValidate[len(programsToValidate)-1]
-		switch lastElement {
-		case "_2_":
-			return invalidPrograms, nil
-		case "_3_":
-			return append(validPrograms, invalidPrograms...), nil
-		default:
-			return validPrograms, nil
-		}
-	}
 	return validPrograms, nil
 }
