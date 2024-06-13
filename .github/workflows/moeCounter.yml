@@ -21,6 +21,7 @@ jobs:
       - name: Download MoeCounter image
         run: |
           LISTC=$LISTC
+          mkdir -p .assets  # Create the directory if it doesn't exist
           wget -O .assets/counter.gif "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=10&theme=gelbooru&pixelated=true"
       
       - name: Upload MoeCounter image artifact
