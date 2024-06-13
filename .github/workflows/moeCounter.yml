@@ -23,10 +23,8 @@ jobs:
           LISTC=$LISTC
           wget -O .assets/counter.gif "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=10&theme=gelbooru&pixelated=true"
       
-      - name: Commit and push updated counter image
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .assets/counter.gif
-          git commit -m "[WEEKLY] Update MoeCounter image"
-          git push
+      - name: Upload MoeCounter image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: moecounter-image
+          path: .assets/counter.gif
