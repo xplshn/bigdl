@@ -279,10 +279,10 @@ func main() {
 			}
 			if binaryInfo.Size != "" {
 				fmt.Printf("Size: %s\n", binaryInfo.Size)
-			} // - This is not yet ready... When it is, I'll add this;
+			}
 			if binaryInfo.Source != "" { // if binaryInfo.Extras != "" {
-				fmt.Printf("Source: %s\n", binaryInfo.Source) //	fmt.Printf("Extras: %s\n", binaryInfo.Extras)
-			} // }
+				fmt.Printf("Source: %s\n", binaryInfo.Source)
+			}
 			if binaryInfo.SHA256 != "" {
 				fmt.Printf("SHA256: %s\n", binaryInfo.SHA256)
 			}
