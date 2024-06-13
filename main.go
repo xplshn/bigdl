@@ -22,7 +22,9 @@ var (
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
 	InstallDir = os.Getenv("INSTALL_DIR")
 	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
-	TEMPDIR = os.Getenv("BIGDL_CACHEDIR") // Will default to "/tmp/bigdl_cached" if $TMPDIR is not set
+	TEMPDIR = os.Getenv("BIGDL_CACHEDIR")
+	// InstallMessage will be printed when installCommand() succeeds
+	InstallMessage = "disabled"
 	// InstallUseCache determines if cached files should be used when requesting an install
 	InstallUseCache = true
 	// UseProgressBar determines if the progressbar is shown or not
@@ -32,7 +34,7 @@ var (
 )
 
 const (
-	VERSION   = "1.6.7"                                                               // VERSION to be displayed
+	VERSION   = "1.6.8"                                                               // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
@@ -80,7 +82,6 @@ func init() {
 		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
-
 	if TEMPDIR == "" {
 		cacheDir, err := os.UserCacheDir()
 		if err != nil {
@@ -181,7 +182,6 @@ func main() {
 		errorOut(" bigdl:%s\n", usagePage)
 	}
 
-	// From now on, things happen.
 	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
 		os.Exit(1)
@@ -198,7 +198,8 @@ func main() {
 	case "list":
 		if len(os.Args) == 3 {
 			if os.Args[2] == "--described" || os.Args[2] == "-d" {
-				fSearch("", 99999) // Call fSearch with an empty query and a large limit to list all described binaries
+				// Call fSearch with an empty query and a large limit to list all described binaries
+				fSearch("", 99999)
 			} else {
 				errorOut("bigdl: Unknown command.\n")
 			}
@@ -279,7 +280,7 @@ func main() {
 			if binaryInfo.Size != "" {
 				fmt.Printf("Size: %s\n", binaryInfo.Size)
 			}
-			if binaryInfo.Source != "" {
+			if binaryInfo.Source != "" { // if binaryInfo.Extras != "" {
 				fmt.Printf("Source: %s\n", binaryInfo.Source)
 			}
 			if binaryInfo.SHA256 != "" {

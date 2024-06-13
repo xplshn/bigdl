@@ -36,8 +36,10 @@ func fSearch(searchTerm string, limit int) {
 			if _, excludedName := excludedFileNames[base]; excludedName {
 				continue // Skip this binary if its name is excluded
 			}
-			entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
-			searchResultsSet[entry] = struct{}{}
+			if binary.Description != "" {
+				entry := fmt.Sprintf("%s - %s", binary.Name, binary.Description)
+				searchResultsSet[entry] = struct{}{}
+			}
 		}
 	}
 
@@ -66,21 +68,15 @@ func fSearch(searchTerm string, limit int) {
 		description := parts[1]
 
 		installPath := filepath.Join(InstallDir, name)
-
 		cachedLocation, _ := ReturnCachedFile(name)
 
-		var prefix string
+		prefix := "[-]"
 		if fileExists(installPath) {
 			prefix = "[i]"
-		} else {
-			binaryPath, _ := exec.LookPath(name) // is it okay to ignore the err channel of LookPath?
-			if binaryPath != "" {
-				prefix = "[\033[4mi\033[0m]" // Print [i], I is underlined.
-			} else if cachedLocation != "" && isExecutable(cachedLocation) {
-				prefix = "[c]"
-			} else {
-				prefix = "[-]"
-			}
+		} else if path, err := exec.LookPath(name); err == nil && path != "" {
+			prefix = "[\033[4mi\033[0m]" // Print [i],'i' is underlined
+		} else if cachedLocation != "" && isExecutable(cachedLocation) {
+			prefix = "[c]"
 		}
 
 		truncatePrintf("%s %s - %s ", prefix, name, description)

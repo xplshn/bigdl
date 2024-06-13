@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,13 +15,11 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/goccy/go-json"
 	"github.com/schollz/progressbar/v3"
 )
 
-// TODO: Add *PROPER* error handling in the truncate functions. Ensure escape sequences are correctly handled?
-
-// signalHandler sets up a channel to listen for interrupt signals and returns a function
-// that can be called to check if an interrupt has been received.
+// signalHandler sets up a channel to listen for interrupt signals and returns a function that can be called to check if an interrupt has been received.
 func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool, error) {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
@@ -256,9 +253,10 @@ func spawnProgressBar(contentLength int64) *progressbar.ProgressBar {
 			}),
 		)
 	}
-	return progressbar.NewOptions(
-		-1,
+	return progressbar.NewOptions(-1,
 		progressbar.OptionSetWriter(io.Discard),
+		progressbar.OptionSetVisibility(false),
+		progressbar.OptionShowBytes(false),
 	)
 }
 
@@ -343,7 +341,7 @@ func truncateSprintf(format string, a ...interface{}) string {
 	// Determine the truncation length & truncate the formatted string if it exceeds the available space
 	availableSpace := getTerminalWidth() - len(indicator)
 	if len(formatted) > availableSpace {
-		formatted = fmt.Sprintf("%s", formatted[:availableSpace])
+		formatted = formatted[:availableSpace]
 		for strings.HasSuffix(formatted, ",") || strings.HasSuffix(formatted, ".") || strings.HasSuffix(formatted, " ") {
 			formatted = formatted[:len(formatted)-1]
 		}
@@ -353,16 +351,16 @@ func truncateSprintf(format string, a ...interface{}) string {
 	return formatted
 }
 
+// NOTE: \n will always get cut off when using a truncate function, this may also happen to other formatting options
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 	if DisableTruncation {
-		return fmt.Print(fmt.Sprintf(format, a...))
+		return fmt.Printf(format, a...)
 	}
 	return fmt.Print(truncateSprintf(format, a...))
-} // NOTE: Both truncate functions will remove the escape sequences of truncated lines, and sometimes break them in half because of the truncation. Avoid using escape sequences with truncate functions, as it is UNSAFE.
+}
 
 // validateProgramsFrom validates programs against the files in the specified directory against the remote binaries.
-// It returns the validated programs based on the last element of the received list of programs.
 func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]string, error) {
 	// Fetch the list of binaries from the remote source once
 	remotePrograms, err := listBinaries()
@@ -405,16 +403,5 @@ func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]str
 
 	// Handle the list of programs received based on the last element
 	// If programsToValidate is not nil, handle based on the last element
-	if len(programsToValidate) != 0 {
-		lastElement := programsToValidate[len(programsToValidate)-1]
-		switch lastElement {
-		case "_2_":
-			return invalidPrograms, nil
-		case "_3_":
-			return append(validPrograms, invalidPrograms...), nil
-		default:
-			return validPrograms, nil
-		}
-	}
 	return validPrograms, nil
 }

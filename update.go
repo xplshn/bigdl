@@ -90,8 +90,10 @@ func update(programsToUpdate []string) error {
 				return
 			}
 
+			// Start update process
+			truncatePrintf("\033[2K\r<%d/%d> %s | Looking for differences in %s against the repo's...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 			if checkDifferences(localSHA256, binaryInfo.SHA256) == 1 {
-				truncatePrintf("\033[2K\r<%d/%d> %s | Detected a difference in %s. Updating...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
+				truncatePrintf("\033[2K\r<%d/%d> %s | The repo's version of %s differs from yours. Updating...", atomic.LoadUint32(&checked), toBeChecked, padding, program)
 				err := installCommand(true, program)
 				if err != nil {
 					progressMutex.Lock()
