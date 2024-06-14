@@ -6,15 +6,16 @@
 
 BigDL is a sophisticated, Golang-based rewrite of the original [BDL](https://github.com/xplshn/Handyscripts/blob/master/bdl), it is like a package manager, but without the hassle of dependencies nor the bloat, every binary provided is statically linked. This tool is made to operate on Linux systems, BigDL is particularly well-suited for embedded systems, with support for both Amd64 AND Aarch64. Optionally, it works under Android too, but you'll have to set $INSTALL_DIR and $BIGDL_CACHE if you aren't running it under Termux, since depending the Android version and the ROM used, directories vary and the user's permission to modify them too.
 
-### I've seen lots of package manager projects. A "package manager" without "packages" is useless.
-I know! That's why we have lots of STATICALLY LINKED BINARIES in our repos:
-![Current amount of binaries in the repos! x86_64](https://raw.githubusercontent.com/xplshn/bigdl/master/counter.svg)
-
-
 ##### Why?
  > “I tend to think the drawbacks of dynamic linking outweigh the advantages for many (most?) applications.” – John Carmack
 
-## Features
+##### I've seen lots of package manager projects without "packages". What is different about this one?
+> There are currently
+![Current amount of binaries in the repos! x86_64](https://raw.githubusercontent.com/xplshn/bigdl/master/counter.svg)
+binaries in our repos. They are all statically linked.
+
+
+### Features
 
 ```
 $ bigdl --help
@@ -40,11 +41,10 @@ Commands:
 ```
  bigdl search editor
  bigdl install micro
- bigdl install lux --fancy "%s was installed to $INSTALL_DIR." --newline
- bigdl install bed --fancy --truncate "%s was installed to $INSTALL_DIR." --newline
- bigdl install orbiton --truncate "installed Orbiton to $INSTALL_DIR."
- bigdl remove bed
- bigdl remove orbiton tgpt lux
+ bigdl install lux micro aretext shfmt
+ bigdl install --silent bed && echo "[bed] was installed to $INSTALL_DIR/bed"
+ bigdl del bed
+ bigdl del orbiton tgpt lux
  bigdl info jq
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
