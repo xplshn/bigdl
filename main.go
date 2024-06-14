@@ -34,8 +34,8 @@ var (
 )
 
 const (
-	VERSION   = "1.6.8"                                                               // VERSION to be displayed
-	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
+	VERSION   = "1.6.8"                                            // VERSION to be displayed
+	usagePage = " [-v|-h] [list|add|del|run|info|search] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
 	// MaxCacheSize is the limit of binaries which can be stored at TEMP_DIR
@@ -131,36 +131,17 @@ Options:
  -v, --version    Show the version number
 
 Commands:
- list             List all available binaries
- install, add     Install a binary
- remove, del      Remove a binary
- update           Update binaries, by checking their SHA against the repo's SHA
- run              Run a specified binary from cache
- info             Show information about a specific binary OR display installed binaries
- search           Search for a binary - (not all binaries have metadata. Use list to see all binaries)
- tldr             Equivalent to "run --transparent --verbose tlrc" as argument
+ list      List all available binaries
+ info      Show information about a specific binary
+            OR display installed binaries         -
+ search    Search for binaries
+ add       Add binaries to your $INSTALL_DIR
+ del       Remove binaries from your $INSTALL_DIR
+ run       Run a specified binary from cache
 
-Variables:
- BIGDL_PRBAR      If present, and set to ZERO (0), the download progressbar will be disabled
- BIGDL_TRUNCATION If present, and set to ZERO (0), string truncation will be disabled
- BIGDL_CACHEDIR   If present, it must contain a valid directory
- INSTALL_DIR      If present, it must contain a valid directory
-
-Examples:
- bigdl search editor
- bigdl install micro
- bigdl install lux kakoune aretext shfmt
- bigdl install --silent bed && echo "[bed] was installed to $INSTALL_DIR/bed"
- bigdl del bed
- bigdl del orbiton tgpt lux
- bigdl info
- bigdl info jq
- bigdl list --described
- bigdl tldr gum
- bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
- bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
- bigdl run --transparent --silent micro ~/.profile
- bigdl run btop
+NOTE:
+ This is the order of the repos:
+  (Toolpacks->Baseutils->Handyscripts)
 
 Version: ` + VERSION
 
@@ -176,15 +157,15 @@ func main() {
 	flag.Parse()
 
 	if *version || *versionLong {
-		errorOut("bigdl %s\n", VERSION)
+		errorOut("ebdl %s\n", VERSION)
 	}
 
 	if flag.NArg() < 1 {
-		errorOut(" bigdl:%s\n", usagePage)
+		errorOut(" ebdl:%s\n", usagePage)
 	}
 
 	if err := os.MkdirAll(InstallDir, os.ModePerm); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: Failed to get user's Home directory. %v\n", err)
+		fmt.Fprintf(os.Stderr, "error: Failed to get user's Home directory. %v\n", err)
 		os.Exit(1)
 	}
 
@@ -192,31 +173,24 @@ func main() {
 	case "find_url":
 		binaryName := flag.Arg(1)
 		if binaryName == "" {
-			fmt.Println("Usage: bigdl find_url [binary]")
+			fmt.Println("Usage: ebdl find_url [binary]")
 			errorOutInsufficientArgs()
 		}
 		findURLCommand(binaryName)
 	case "list":
 		if len(os.Args) == 3 {
-			if os.Args[2] == "--described" || os.Args[2] == "-d" {
-				// Call fSearch with an empty query and a large limit to list all described binaries
-				fSearch("", 99999)
-			} else {
-				errorOut("bigdl: Unknown command.\n")
-			}
-		} else {
 			binaries, err := listBinaries()
 			if err != nil {
-				fmt.Println("Error listing binaries:", err)
+				errorOut("error listing binaries: %v", err)
 				os.Exit(1)
 			}
 			for _, binary := range binaries {
 				fmt.Println(binary)
 			}
 		}
-	case "install", "add":
+	case "add":
 		if flag.NArg() < 2 {
-			fmt.Printf("Usage: bigdl %s <--silent> [binar|y|ies]\n", flag.Arg(0))
+			fmt.Printf("Usage: ebdl %s <--silent> [binar|y|ies]\n", flag.Arg(0))
 			os.Exit(1)
 		}
 
@@ -234,27 +208,24 @@ func main() {
 			fmt.Printf("Installation failed: %v\n", err)
 			os.Exit(1)
 		}
-	case "remove", "del":
+	case "del":
 		if flag.NArg() < 2 {
-			fmt.Printf("Usage: bigdl %s [binar|y|ies]\n", flag.Arg(0))
+			fmt.Printf("Usage: ebdl %s [binar|y|ies]\n", flag.Arg(0))
 			errorOutInsufficientArgs()
 		}
 		remove(flag.Args()[1:])
 	case "run":
 		if flag.NArg() < 2 {
-			fmt.Println("Usage: bigdl run <--verbose, --silent, --transparent> [binary] <args>")
+			fmt.Println("Usage: ebdl run <--verbose, --silent, --transparent> [binary] <args>")
 			errorOutInsufficientArgs()
 		}
 		RunFromCache(flag.Arg(1), flag.Args()[2:])
-	case "tldr":
-		args := append([]string{"--transparent", "--verbose", "tlrc"}, flag.Args()[1:]...) // UGLY!
-		RunFromCache(args[0], args[1:])
 	case "info":
 		binaryName := flag.Arg(1)
 		if len(os.Args) < 3 {
 			installedPrograms, err := validateProgramsFrom(InstallDir, nil)
 			if err != nil {
-				fmt.Println("Error validating programs:", err)
+				errorOut("error validating programs: %v", err)
 				return
 			}
 			for _, program := range installedPrograms {
@@ -293,7 +264,7 @@ func main() {
 		queryIndex := 2
 
 		if len(os.Args) < queryIndex+1 {
-			fmt.Println("Usage: bigdl search <--limit||-l [int]> [query]")
+			fmt.Println("Usage: ebdl search <--limit||-l [int]> [query]")
 			os.Exit(1)
 		}
 
@@ -302,23 +273,17 @@ func main() {
 				var err error
 				limit, err = strconv.Atoi(os.Args[queryIndex+1])
 				if err != nil {
-					errorOut("Error: 'limit' value is not an int.\n")
+					errorOut("error: 'limit' value is not an int.\n")
 				}
 				queryIndex += 2
 			} else {
-				errorOut("Error: Missing 'limit' value.\n")
+				errorOut("error: Missing 'limit' value.\n")
 			}
 		}
 
 		query := os.Args[queryIndex]
 		fSearch(query, limit)
-	case "update":
-		var programsToUpdate []string
-		if len(os.Args) > 2 {
-			programsToUpdate = os.Args[2:]
-		}
-		update(programsToUpdate)
 	default:
-		errorOut("bigdl: Unknown command.\n")
+		errorOut("ebdl: Unknown command.\n")
 	}
 }
