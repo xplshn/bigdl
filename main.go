@@ -149,12 +149,13 @@ Variables:
 Examples:
  bigdl search editor
  bigdl install micro
- bigdl install lux --fancy "%s was installed to $INSTALL_DIR." --newline
- bigdl install bed --fancy --truncate "%s was installed to $INSTALL_DIR." --newline
- bigdl install orbiton --truncate "installed Orbiton to $INSTALL_DIR."
- bigdl remove bed
- bigdl remove orbiton tgpt lux
+ bigdl install lux kakoune aretext shfmt
+ bigdl install --silent bed && echo "[bed] was installed to $INSTALL_DIR/bed"
+ bigdl del bed
+ bigdl del orbiton tgpt lux
+ bigdl info
  bigdl info jq
+ bigdl list --described
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
  bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
