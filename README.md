@@ -41,11 +41,13 @@ Commands:
 ```
  bigdl search editor
  bigdl install micro
- bigdl install lux micro aretext shfmt
+ bigdl install lux kakoune aretext shfmt
  bigdl install --silent bed && echo "[bed] was installed to $INSTALL_DIR/bed"
  bigdl del bed
  bigdl del orbiton tgpt lux
+ bigdl info
  bigdl info jq
+ bigdl list --described
  bigdl tldr gum
  bigdl run --verbose curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -
  bigdl run --silent elinks -no-home "https://fatbuffalo.neocities.org/def"
