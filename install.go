@@ -57,7 +57,7 @@ func installCommand(silent bool, binaryNames string) error {
 			if InstallMessage != "disabled" {
 				fmt.Print(InstallMessage)
 			} else {
-				fmt.Printf("Succesfully created %s\n", installPath)
+				fmt.Printf("Successfully created %s\n", installPath)
 			}
 		}
 	}
