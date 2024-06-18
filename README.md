@@ -1,6 +1,6 @@
 # BigDL: Advanced Binary Management Tool
 [![Go Report Card](https://goreportcard.com/badge/github.com/xplshn/bigdl)](https://goreportcard.com/report/github.com/xplshn/bigdl)
-[![License](https://img.shields.io/badge/license-%20RABRMS-green)](https://github.com/xplshn/bigdl/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-%20RABRMS-bright_green)](https://github.com/xplshn/bigdl/blob/master/LICENSE)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/xplshn/bigdl?include_prereleases)](https://github.com/xplshn/bigdl/releases/latest)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/xplshn/bigdl)
 
