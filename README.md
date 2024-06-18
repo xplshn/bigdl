@@ -113,6 +113,11 @@ Yes! Absolutely. The repo's URL's are declared in main.go, simply add another on
 
 MetadataURLs provide info about the binaries, which is used to `search` and update `binaries`, also for the functionality of `info` in both of its use-cases(showing the binaries which were installed to $INSTALL_DIR from the [Toolpacks](https://github.com/Azathothas/Toolpacks) repo).
 
+### Libraries
+I am using these two libraries for `bigdl`:
+1. https://github.com/schollz/progressbar
+2. https://github.com/goccy/go-json
+
 ## Contributing
 
 Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and simpler. If you can provide repos that meet the requirements to add them to `bigdl`, I'd be grateful.
