@@ -121,7 +121,7 @@ I am using these two libraries for `bigdl`:
 ## Contributing
 
 Contributions are welcome! Whether you've found a bug, have a feature request, or wish to improve the documentation, your input is valuable. Fork the repository, make your changes, and submit a pull request. Together, we can make BigDL even more powerful and simpler. If you can provide repos that meet the requirements to add them to `bigdl`, I'd be grateful.
-Also, I need help optimizing the cyclomatic complexity of `bigdl`, so I'd be grateful 🤗
+Also, I need help optimizing the cyclomatic complexity of `bigdl`.
 
 ## License
 
