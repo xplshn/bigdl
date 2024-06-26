@@ -85,7 +85,7 @@ SHA256: 697fb918c800071c4d1a853d515331a9a3f245bb8a7da1c6d3653737d17ce3c4
 ## Getting Started ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
 
 To begin using BigDL, simply run one of these commands on your Linux system. No additional setup is required. You may also build the project using `go build or go install`
-#### Use without installing ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+#### Use without installing
 ```
 wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- --help
 ```
