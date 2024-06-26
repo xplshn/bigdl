@@ -36,7 +36,7 @@ Commands:
  tldr             Show a brief description & usage examples for a given program/command. This is an alias equivalent to using "run" with "tlrc" as argument.
 ```
 
-### Examples ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+### Examples
 ```
  bigdl search editor
  bigdl install micro
