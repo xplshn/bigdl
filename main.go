@@ -122,12 +122,12 @@ func init() {
 	arch = ValidatedArch[0]
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
-	Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
+	//Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
 	RNMetadataURL = "https://bin.ajam.dev/" + arch + "/METADATA.json" // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
 	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
-	MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
+	//MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
 }
 
 func printHelp() {
