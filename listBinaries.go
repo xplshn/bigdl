@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"path/filepath"
-	"sort"
 	"strings"
 )
 
@@ -46,11 +45,8 @@ func listBinaries() ([]string, error) {
 		}
 	}
 
-	// Remove duplicates
+	// Remove duplicates based on their names
 	uniqueBinaries := removeDuplicates(filteredBinaries)
-
-	// Sort binaries alphabetically
-	sort.Strings(uniqueBinaries)
 
 	// Return the list of binaries
 	return uniqueBinaries, nil

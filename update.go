@@ -126,7 +126,9 @@ func update(programsToUpdate []string) error {
 	}
 	// Print final counts
 	fmt.Println(finalCounts)
-	fmt.Print(errorMessages)
+	for error := range errorMessages {
+		fmt.Println(error)
+	}
 
 	return nil
 }

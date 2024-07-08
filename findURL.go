@@ -18,17 +18,22 @@ func findURLCommand(binaryName string) {
 
 // findURL fetches the URL for the specified binary.
 func findURL(binaryName string) (string, error) {
+	iterations := 0
 	for _, Repository := range Repositories {
+		iterations++
 		url := fmt.Sprintf("%s%s", Repository, binaryName)
+		fmt.Printf("\033[2K\r<%d/%d> | Working: Checking if \"%s\" is in the repos.", iterations, len(Repositories), binaryName)
 		resp, err := http.Head(url)
 		if err != nil {
 			return "", err
 		}
 
 		if resp.StatusCode == http.StatusOK {
+			fmt.Printf("\033[2K\r<%d/%d> | Found \"%s\" at %s", iterations, len(Repositories), binaryName, Repository)
 			return url, nil
 		}
 	}
 
-	return "", fmt.Errorf("binary's SOURCE_URL was not found")
+	fmt.Printf("\033[2K\r")
+	return "", fmt.Errorf("Didn't find the SOURCE_URL for [%s]", binaryName)
 }

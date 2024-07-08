@@ -31,10 +31,12 @@ var (
 	UseProgressBar = true
 	// DisableTruncation determines if update.go, fsearch.go, etc, truncate their messages or not
 	DisableTruncation = false
+	// Always adds a NEWLINE to text truncated by the truncateSprintf/truncatePrintf function
+	AddNewLineToTruncateFn = true
 )
 
 const (
-	VERSION   = "1.6.8"                                                               // VERSION to be displayed
+	VERSION   = "1.6.9"                                                               // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
@@ -63,9 +65,11 @@ var excludedFileNames = map[string]struct{}{
 	"TEST":                     {},
 	"LICENSE":                  {},
 	"experimentalBinaries_dir": {},
+	"bundles_dir":              {},
+	"blobs_dir":                {},
 	"robotstxt":                {},
 	"bdl.sh":                   {},
-	// Because the repo contains duplicated files. And I do not manage the repo:
+	// Because the repo contains duplicated files. And I do not manage the repo nor plan to implement sha256 filtering :
 	"uroot":             {},
 	"uroot-busybox":     {},
 	"gobusybox":         {},
@@ -92,6 +96,9 @@ func init() {
 	}
 	if os.Getenv("BIGDL_TRUNCATION") == "0" {
 		DisableTruncation = true
+	}
+	if os.Getenv("BIGDL_ADDNEWLINE") == "1" {
+		AddNewLineToTruncateFn = true
 	}
 	if os.Getenv("BIGDL_PRBAR") == "0" {
 		UseProgressBar = false
@@ -143,6 +150,7 @@ Commands:
 Variables:
  BIGDL_PRBAR      If present, and set to ZERO (0), the download progressbar will be disabled
  BIGDL_TRUNCATION If present, and set to ZERO (0), string truncation will be disabled
+ BIGDL_ADDNEWLINE If present, and set to ONE  (1), truncated strings will always be on a new line
  BIGDL_CACHEDIR   If present, it must contain a valid directory
  INSTALL_DIR      If present, it must contain a valid directory
 

@@ -333,6 +333,7 @@ func getTerminalWidth() int {
 	return 80
 }
 
+// NOTE: \n will always get cut off when using a truncate function, this may also happen to other formatting options
 // truncateSprintf formats the string and truncates it if it exceeds the terminal width.
 func truncateSprintf(format string, a ...interface{}) string {
 	// Format the string first
@@ -351,11 +352,13 @@ func truncateSprintf(format string, a ...interface{}) string {
 	return formatted
 }
 
-// NOTE: \n will always get cut off when using a truncate function, this may also happen to other formatting options
 // truncatePrintf is a drop-in replacement for fmt.Printf that truncates the input string if it exceeds a certain length.
 func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 	if DisableTruncation {
 		return fmt.Printf(format, a...)
+	}
+	if AddNewLineToTruncateFn {
+		return fmt.Println(truncateSprintf(format, a...))
 	}
 	return fmt.Print(truncateSprintf(format, a...))
 }
