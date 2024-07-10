@@ -111,7 +111,7 @@ Yes! Absolutely. The repo's URL's are declared in main.go, simply add another on
 
 >Good to hear, now... What about the so-called MetadataURLs?
 
-MetadataURLs provide info about the binaries, which is used to `search` and update `binaries`, also for the functionality of `info` in both of its use-cases (showing the binaries which were installed to $INSTALL_DIR from the [Toolpacks](https://github.com/Azathothas/Toolpacks) repo).
+MetadataURLs provide info about the binaries, which is used to `search` and update `binaries`, also for the functionality of `info` in both of its use-cases (showing the binaries which were installed to $INSTALL_DIR from the [Toolpacks](https://github.com/Azathothas/Toolpacks) repo) and showing a binary's description, size, etc.
 
 ### Libraries
 I am using these two libraries for `bigdl`:
