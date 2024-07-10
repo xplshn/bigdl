@@ -32,7 +32,7 @@ var (
 	// DisableTruncation determines if update.go, fsearch.go, etc, truncate their messages or not
 	DisableTruncation = false
 	// Always adds a NEWLINE to text truncated by the truncateSprintf/truncatePrintf function
-	AddNewLineToTruncateFn = true
+	AddNewLineToTruncateFn = false
 )
 
 const (
