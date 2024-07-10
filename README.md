@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-%20RABRMS-bright_green)](https://github.com/xplshn/bigdl/blob/master/LICENSE)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/xplshn/bigdl?include_prereleases)](https://github.com/xplshn/bigdl/releases/latest)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/xplshn/bigdl)
+
 [![AMD64 repo status](https://github.com/Azathothas/Toolpacks/actions/workflows/build_x86_64_Linux.yaml/badge.svg)](https://github.com/Azathothas/Toolpacks)
 [![ARM64 repo status](https://github.com/Azathothas/Toolpacks/actions/workflows/build_aarch64_Linux.yaml/badge.svg)](https://github.com/Azathothas/Toolpacks)
 
