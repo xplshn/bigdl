@@ -17,7 +17,7 @@ jobs:
       
       - name: Download MoeCounter image
         run: |
-          wget -O ./counter.svg "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=5&theme=gelbooru&pixelated=true"
+          wget -O ./misc/assets/counter.svg "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=5&theme=gelbooru&pixelated=true"
       
       - name: Commit and push updated counter image
         run: |
