@@ -23,6 +23,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ./counter.svg
+          git add ./misc/assets/counter.svg
           git commit -m "[WEEKLY] Update MoeCounter image"
           git push
