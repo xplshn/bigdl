@@ -12,11 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Get the Go toolchain (outdated, ofc, because Ubuntu is Debian based and both suck)
-        run: |
-          sudo apt update --yes
-          sudo apt install --yes go
 
       - name: Build the modMetadata command
         run: |
