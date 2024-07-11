@@ -1,5 +1,4 @@
 name: Modify Toolpacks & Baseutils metadata
-uses: actions/setup-go@v5.0.2
 
 on:
   schedule:
@@ -11,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4, actions/setup-go@v5.0.2
 
       - name: Build the modMetadata command
         run: |
