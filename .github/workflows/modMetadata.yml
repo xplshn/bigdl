@@ -18,9 +18,12 @@ jobs:
       - name: Build the modMetadata command
         run: |
           cd misc/cmd/modMetadata
+          if find . -maxdepth 1 -type f -name "*.json" | grep -q "."; then rm *.json; fi
+          #rm *.json
+
+      - name: Build the modMetadata command
+        run: |
           go build
-          rm *.json
-          ./modMetadata
 
       - name: modify the Metadata
         run: |
