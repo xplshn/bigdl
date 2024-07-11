@@ -19,13 +19,15 @@ jobs:
         run: |
           cd misc/cmd/modMetadata
           if find . -maxdepth 1 -type f -name "*.json" | grep -q "."; then rm *.json; fi
-          #rm *.json
           go build
 
       - name: modify the Metadata
         run: |
           cd misc/cmd/modMetadata
           ./modMetadata
+          if [ -f ./modMetadata ]; then
+            rm ./modMetadata
+          fi
       
       - name: Commit and push the updated metadata files
         run: |
