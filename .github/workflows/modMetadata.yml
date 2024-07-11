@@ -1,4 +1,5 @@
 name: Modify Toolpacks & Baseutils metadata
+uses: actions/setup-go@v5.0.2
 
 on:
   schedule:
