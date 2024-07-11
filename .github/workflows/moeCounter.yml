@@ -16,11 +16,9 @@ jobs:
         id: get-listc
         run: |
           LISTC=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- list | wc -l)
-          echo "LISTC=$LISTC" >> $GITHUB_ENV
       
       - name: Download MoeCounter image
         run: |
-          LISTC=$LISTC
           wget -O ./counter.svg "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=5&theme=gelbooru&pixelated=true"
       
       - name: Commit and push updated counter image
