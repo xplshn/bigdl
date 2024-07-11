@@ -1,0 +1,1844 @@
+[
+  {
+    "name": "[",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/[",
+    "size": "132.68 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "addpart",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/addpart",
+    "size": "600 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "agetty",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/agetty",
+    "size": "863.82 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "awk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/awk",
+    "size": "661.23 kB",
+    "build_date": "2024-04-01T00:42:11"
+  },
+  {
+    "name": "b2sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/b2sum",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "base32",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/base32",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "base64",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/base64",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "basename",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/basename",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "basenc",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/basenc",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "bash",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/bash",
+    "size": "1.28 MB",
+    "build_date": "2024-04-01T00:41:27"
+  },
+  {
+    "name": "blkdiscard",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/blkdiscard",
+    "size": "797.7 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "blkid",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/blkid",
+    "size": "863.31 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "blkpr",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/blkpr",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "blkzone",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/blkzone",
+    "size": "665.71 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "blockdev",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/blockdev",
+    "size": "665.7 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "bore",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/bore",
+    "size": "1.24 MB",
+    "build_date": "2024-04-01T00:41:27"
+  },
+  {
+    "name": "busybox",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/busybox",
+    "size": "1.24 MB",
+    "build_date": "2024-04-01T00:41:28"
+  },
+  {
+    "name": "cal",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cal",
+    "size": "798.38 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "capconvert",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/capconvert",
+    "size": "8951 B",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "cat",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cat",
+    "size": "132.78 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "cfdisk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cfdisk",
+    "size": "1.65 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "chcon",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chcon",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "chcpu",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chcpu",
+    "size": "665.71 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "chgrp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chgrp",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "chmem",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chmem",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "chmod",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chmod",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "choom",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/choom",
+    "size": "665.71 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "chown",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chown",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "chroot",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chroot",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "chrt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/chrt",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "cksum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cksum",
+    "size": "198.61 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "clear",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/clear",
+    "size": "134.02 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "col",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/col",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "colcrt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/colcrt",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "colrm",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/colrm",
+    "size": "600 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "column",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/column",
+    "size": "665.89 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "comm",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/comm",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "cp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cp",
+    "size": "198.61 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "croc",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/croc",
+    "size": "7.43 MB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "csplit",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/csplit",
+    "size": "198.34 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "ctrlaltdel",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ctrlaltdel",
+    "size": "665.7 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "curl",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/curl",
+    "size": "7.38 MB",
+    "build_date": "2024-04-01T00:41:32"
+  },
+  {
+    "name": "cut",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/cut",
+    "size": "133.05 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "date",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/date",
+    "size": "198.61 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dbclient",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dbclient",
+    "size": "1.13 MB",
+    "build_date": "2024-04-01T00:41:34"
+  },
+  {
+    "name": "dcgen",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dcgen",
+    "size": "1335 B",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dd",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dd",
+    "size": "132.85 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "delpart",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/delpart",
+    "size": "600 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "df",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/df",
+    "size": "198.82 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dir",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dir",
+    "size": "264.34 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dircolors",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dircolors",
+    "size": "133.05 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dirname",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dirname",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "dmesg",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dmesg",
+    "size": "865.87 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "dropbear",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dropbear",
+    "size": "1.32 MB",
+    "build_date": "2024-04-01T00:41:35"
+  },
+  {
+    "name": "dropbearconvert",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dropbearconvert",
+    "size": "928.25 kB",
+    "build_date": "2024-04-01T00:41:36"
+  },
+  {
+    "name": "dropbearkey",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dropbearkey",
+    "size": "928.25 kB",
+    "build_date": "2024-04-01T00:41:38"
+  },
+  {
+    "name": "dropbearmulti",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dropbearmulti",
+    "size": "1.39 MB",
+    "build_date": "2024-04-01T00:41:39"
+  },
+  {
+    "name": "dropbearscp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/dropbearscp",
+    "size": "600.14 kB",
+    "build_date": "2024-04-01T00:41:40"
+  },
+  {
+    "name": "du",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/du",
+    "size": "329.68 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "echo",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/echo",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "eject",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/eject",
+    "size": "994.89 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "enosys",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/enosys",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "env",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/env",
+    "size": "133.21 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "exch",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/exch",
+    "size": "599.99 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "expand",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/expand",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "expr",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/expr",
+    "size": "198.3 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "factor",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/factor",
+    "size": "198.61 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "fadvise",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fadvise",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fallocate",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fallocate",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "false",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/false",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "fdisk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fdisk",
+    "size": "1.32 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fincore",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fincore",
+    "size": "665.98 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "find",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/find",
+    "size": "330.72 kB",
+    "build_date": "2024-04-01T00:41:52"
+  },
+  {
+    "name": "findfs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/findfs",
+    "size": "863.25 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "findmnt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/findmnt",
+    "size": "1.13 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "flock",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/flock",
+    "size": "665.63 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fmt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fmt",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "fold",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fold",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "frcode",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/frcode",
+    "size": "67.34 kB",
+    "build_date": "2024-04-01T00:41:52"
+  },
+  {
+    "name": "free",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/free",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "fsck",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fsck",
+    "size": "994.97 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fsck.cramfs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fsck.cramfs",
+    "size": "665.61 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fsck.minix",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fsck.minix",
+    "size": "731.3 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fsfreeze",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fsfreeze",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "fstrim",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/fstrim",
+    "size": "994.87 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "gawk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/gawk",
+    "size": "661.23 kB",
+    "build_date": "2024-04-01T00:42:13"
+  },
+  {
+    "name": "getlimits",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/getlimits",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "getopt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/getopt",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ginstall",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ginstall",
+    "size": "198.63 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "gost",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/gost",
+    "size": "12.65 MB",
+    "build_date": "2024-04-01T00:42:04"
+  },
+  {
+    "name": "grep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/grep",
+    "size": "1.26 MB",
+    "build_date": "2024-04-01T00:42:14"
+  },
+  {
+    "name": "groups",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/groups",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "gzexe",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/gzexe",
+    "size": "6446 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "gzip",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/gzip",
+    "size": "133.73 kB",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "hardlink",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/hardlink",
+    "size": "665.65 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "head",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/head",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "hexdump",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/hexdump",
+    "size": "797.95 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "hostid",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/hostid",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "hugetop",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/hugetop",
+    "size": "1.13 MB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "hwclock",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/hwclock",
+    "size": "731.45 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "id",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/id",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "infocmp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/infocmp",
+    "size": "269.13 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "ionice",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ionice",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ipcmk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ipcmk",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ipcrm",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ipcrm",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ipcs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ipcs",
+    "size": "796.84 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "irqtop",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/irqtop",
+    "size": "994.9 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "isosize",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/isosize",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "join",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/join",
+    "size": "133.1 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "kill",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/kill",
+    "size": "599.99 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "kmod",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/kmod",
+    "size": "263.82 kB",
+    "build_date": "2024-04-01T00:42:09"
+  },
+  {
+    "name": "last",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/last",
+    "size": "862.38 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ldattach",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ldattach",
+    "size": "600.02 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "link",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/link",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "ln",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ln",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "locate",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/locate",
+    "size": "198.29 kB",
+    "build_date": "2024-04-01T00:41:52"
+  },
+  {
+    "name": "logger",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/logger",
+    "size": "863.02 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "logname",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/logname",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "look",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/look",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "losetup",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/losetup",
+    "size": "731.58 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ls",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ls",
+    "size": "264.34 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "lsblk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsblk",
+    "size": "1.32 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsclocks",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsclocks",
+    "size": "862.57 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lscpu",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lscpu",
+    "size": "796.96 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsfd",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsfd",
+    "size": "994.8 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsipc",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsipc",
+    "size": "862.55 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsirq",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsirq",
+    "size": "731.57 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lslocks",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lslocks",
+    "size": "1.06 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lslogins",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lslogins",
+    "size": "928.15 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsmem",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsmem",
+    "size": "731.42 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lsns",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lsns",
+    "size": "1.06 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "lzmadec",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lzmadec",
+    "size": "67.3 kB",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "lzmainfo",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/lzmainfo",
+    "size": "132.82 kB",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "make-prime-list",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/make-prime-list",
+    "size": "67.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "mcookie",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mcookie",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "md5sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/md5sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "mesg",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mesg",
+    "size": "665.56 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mkdir",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkdir",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "mkfifo",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkfifo",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "mkfs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkfs",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mkfs.bfs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkfs.bfs",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mkfs.cramfs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkfs.cramfs",
+    "size": "665.56 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mkfs.minix",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkfs.minix",
+    "size": "665.74 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mknod",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mknod",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "mkswap",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mkswap",
+    "size": "863.42 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mktemp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mktemp",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "more",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/more",
+    "size": "797.95 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mount",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mount",
+    "size": "1.19 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mountpoint",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mountpoint",
+    "size": "994.87 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "mv",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/mv",
+    "size": "198.61 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "namei",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/namei",
+    "size": "731.28 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ngrok",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ngrok",
+    "size": "23.91 MB",
+    "build_date": "2024-04-01T00:42:20"
+  },
+  {
+    "name": "nice",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nice",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "nl",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nl",
+    "size": "198.67 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "nohup",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nohup",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "nologin",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nologin",
+    "size": "600.15 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "nproc",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nproc",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "nsenter",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/nsenter",
+    "size": "665.96 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "numfmt",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/numfmt",
+    "size": "133.1 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "od",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/od",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "partx",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/partx",
+    "size": "863.42 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "paste",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/paste",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "pathchk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pathchk",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "pgrep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pgrep",
+    "size": "928.38 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "pidof",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pidof",
+    "size": "862.73 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "pidwait",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pidwait",
+    "size": "928.38 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "pinky",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pinky",
+    "size": "198.34 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "pipesz",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pipesz",
+    "size": "665.71 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "pivot_root",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pivot_root",
+    "size": "600 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "pkill",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pkill",
+    "size": "928.38 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "pmap",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pmap",
+    "size": "862.76 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "pr",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pr",
+    "size": "198.67 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "printenv",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/printenv",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "printf",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/printf",
+    "size": "263.86 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "prlimit",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/prlimit",
+    "size": "666.4 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "ps",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ps",
+    "size": "994.5 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "ptx",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ptx",
+    "size": "198.62 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "pwd",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pwd",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "pwdx",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/pwdx",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "readlink",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/readlink",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "readprofile",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/readprofile",
+    "size": "665.74 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "realpath",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/realpath",
+    "size": "132.75 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "rename",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rename",
+    "size": "665.55 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "renice",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/renice",
+    "size": "731.26 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "resizepart",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/resizepart",
+    "size": "665.7 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "rev",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rev",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "rfkill",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rfkill",
+    "size": "731.46 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "rm",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rm",
+    "size": "133.05 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "rmdir",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rmdir",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "rtcwake",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/rtcwake",
+    "size": "665.57 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "runcon",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/runcon",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "scp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/scp",
+    "size": "375.06 kB",
+    "build_date": "2024-04-01T00:42:32"
+  },
+  {
+    "name": "script",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/script",
+    "size": "731.12 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "scriptlive",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/scriptlive",
+    "size": "665.55 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "scriptreplay",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/scriptreplay",
+    "size": "665.54 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "sed",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sed",
+    "size": "198.7 kB",
+    "build_date": "2024-04-01T00:42:16"
+  },
+  {
+    "name": "seq",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/seq",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "setarch",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/setarch",
+    "size": "665.98 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "setpgid",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/setpgid",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "setpriv",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/setpriv",
+    "size": "862.41 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "setsid",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/setsid",
+    "size": "600.02 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "setterm",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/setterm",
+    "size": "732.42 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "sfdisk",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sfdisk",
+    "size": "1.32 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "sftp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sftp",
+    "size": "371.18 kB",
+    "build_date": "2024-04-01T00:42:33"
+  },
+  {
+    "name": "sftp-server",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sftp-server",
+    "size": "280.58 kB",
+    "build_date": "2024-04-01T00:42:34"
+  },
+  {
+    "name": "sha1sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sha1sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sha224sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sha224sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sha256sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sha256sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sha384sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sha384sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sha512sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sha512sum",
+    "size": "132.99 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "shred",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/shred",
+    "size": "132.82 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "shuf",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/shuf",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "slabtop",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/slabtop",
+    "size": "929.06 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "sleep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sleep",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "slirp4netns",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/slirp4netns",
+    "size": "1.94 MB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "sort",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sort",
+    "size": "198.84 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "split",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/split",
+    "size": "133.24 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "ssh",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh",
+    "size": "5.04 MB",
+    "build_date": "2024-04-01T00:42:42"
+  },
+  {
+    "name": "ssh-add",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh-add",
+    "size": "4.34 MB",
+    "build_date": "2024-04-01T00:42:35"
+  },
+  {
+    "name": "ssh-agent",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh-agent",
+    "size": "4.3 MB",
+    "build_date": "2024-04-01T00:42:36"
+  },
+  {
+    "name": "ssh-keygen",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh-keygen",
+    "size": "4.48 MB",
+    "build_date": "2024-04-01T00:42:37"
+  },
+  {
+    "name": "ssh-keyscan",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh-keyscan",
+    "size": "4.55 MB",
+    "build_date": "2024-04-01T00:42:38"
+  },
+  {
+    "name": "ssh-keysign",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ssh-keysign",
+    "size": "4.58 MB",
+    "build_date": "2024-04-01T00:42:39"
+  },
+  {
+    "name": "sshd",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sshd",
+    "size": "5.13 MB",
+    "build_date": "2024-04-01T00:42:40"
+  },
+  {
+    "name": "sshd_config",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sshd_config",
+    "size": "3107 B",
+    "build_date": "2024-04-01T00:42:41"
+  },
+  {
+    "name": "stat",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/stat",
+    "size": "198.37 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "stdbuf",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/stdbuf",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "stty",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/stty",
+    "size": "132.82 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sulogin",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sulogin",
+    "size": "993.43 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "sum",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sum",
+    "size": "132.98 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "swaplabel",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/swaplabel",
+    "size": "797.69 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "swapoff",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/swapoff",
+    "size": "994.95 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "swapon",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/swapon",
+    "size": "1.06 MB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "switch_root",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/switch_root",
+    "size": "600.03 kB",
+    "build_date": "2024-04-01T00:23:23"
+  },
+  {
+    "name": "sync",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sync",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "sysctl",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/sysctl",
+    "size": "797.06 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "tabs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tabs",
+    "size": "137.66 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "tac",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tac",
+    "size": "198.29 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tail",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tail",
+    "size": "132.84 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tailscale",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tailscale",
+    "size": "11.13 MB",
+    "build_date": "2024-04-01T00:42:57"
+  },
+  {
+    "name": "tailscaled",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tailscaled",
+    "size": "21.77 MB",
+    "build_date": "2024-04-01T00:42:58"
+  },
+  {
+    "name": "tar",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tar",
+    "size": "734.35 kB",
+    "build_date": "2024-04-01T00:42:18"
+  },
+  {
+    "name": "taskset",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/taskset",
+    "size": "600.18 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "tee",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tee",
+    "size": "133.05 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "test",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/test",
+    "size": "132.67 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tic",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tic",
+    "size": "293.74 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "timeout",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/timeout",
+    "size": "133.22 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tload",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tload",
+    "size": "665.56 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "toe",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/toe",
+    "size": "214.82 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "top",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/top",
+    "size": "1.07 MB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "touch",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/touch",
+    "size": "198.37 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "toybox",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/toybox",
+    "size": "841.69 kB",
+    "build_date": "2024-04-01T00:42:59"
+  },
+  {
+    "name": "tput",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tput",
+    "size": "146.7 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "tr",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tr",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "true",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/true",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "truncate",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/truncate",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tset",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tset",
+    "size": "147.07 kB",
+    "build_date": "2024-04-01T00:35:26"
+  },
+  {
+    "name": "tsort",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tsort",
+    "size": "133.04 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "tty",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/tty",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "uclampset",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uclampset",
+    "size": "665.71 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "ul",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/ul",
+    "size": "666.86 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "umount",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/umount",
+    "size": "1.13 MB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "uname",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uname",
+    "size": "132.81 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "uncompress",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uncompress",
+    "size": "2337 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "unexpand",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/unexpand",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "uniq",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uniq",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "unlink",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/unlink",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "unshare",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/unshare",
+    "size": "797.05 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "updatedb",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/updatedb",
+    "size": "9107 B",
+    "build_date": "2024-04-01T00:41:52"
+  },
+  {
+    "name": "uptime",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uptime",
+    "size": "862.77 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "users",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/users",
+    "size": "132.84 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "utmpdump",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/utmpdump",
+    "size": "665.74 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "uuidd",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uuidd",
+    "size": "731.86 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "uuidgen",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uuidgen",
+    "size": "665.72 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "uuidparse",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/uuidparse",
+    "size": "731.45 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "vdir",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/vdir",
+    "size": "264.34 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "vmstat",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/vmstat",
+    "size": "797.65 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "waitpid",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/waitpid",
+    "size": "600.01 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "wall",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/wall",
+    "size": "797.04 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "watch",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/watch",
+    "size": "994.66 kB",
+    "build_date": "2024-04-01T00:42:56"
+  },
+  {
+    "name": "wc",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/wc",
+    "size": "133.06 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "wdctl",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/wdctl",
+    "size": "731.46 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "wget-busybox",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/wget-busybox",
+    "size": "116.98 kB",
+    "build_date": "2024-04-01T00:43:01"
+  },
+  {
+    "name": "whereis",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/whereis",
+    "size": "600.51 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "which",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/which",
+    "size": "67.81 kB",
+    "build_date": "2024-04-01T00:42:19"
+  },
+  {
+    "name": "who",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/who",
+    "size": "198.41 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "whoami",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/whoami",
+    "size": "132.8 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "wipefs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/wipefs",
+    "size": "863.42 kB",
+    "build_date": "2024-04-01T00:23:24"
+  },
+  {
+    "name": "xargs",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xargs",
+    "size": "132.89 kB",
+    "build_date": "2024-04-01T00:41:52"
+  },
+  {
+    "name": "xz",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xz",
+    "size": "264.41 kB",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "xzdec",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xzdec",
+    "size": "132.83 kB",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "xzdiff",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xzdiff",
+    "size": "7595 B",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "xzgrep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xzgrep",
+    "size": "10.42 kB",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "xzless",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xzless",
+    "size": "2390 B",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "xzmore",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/xzmore",
+    "size": "2241 B",
+    "build_date": "2024-04-01T00:43:03"
+  },
+  {
+    "name": "yes",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/yes",
+    "size": "132.74 kB",
+    "build_date": "2024-04-01T00:41:31"
+  },
+  {
+    "name": "zcat",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zcat",
+    "size": "1975 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zcmp",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zcmp",
+    "size": "1680 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zdiff",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zdiff",
+    "size": "6451 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zegrep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zegrep",
+    "size": "31 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zfgrep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zfgrep",
+    "size": "31 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zforce",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zforce",
+    "size": "2078 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zgrep",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zgrep",
+    "size": "8210 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zless",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zless",
+    "size": "2436 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zmore",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zmore",
+    "size": "1839 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "znew",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/znew",
+    "size": "4574 B",
+    "build_date": "2024-04-01T00:42:08"
+  },
+  {
+    "name": "zramctl",
+    "download_url": "https://bin.ajam.dev/aarch64_arm64_Linux/Baseutils/zramctl",
+    "size": "731.53 kB",
+    "build_date": "2024-04-01T00:23:24"
+  }
+]
