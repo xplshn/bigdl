@@ -19,7 +19,7 @@ jobs:
         run: |
           cd misc/cmd/modMetadata
           go build
-          rm *.json >/dev/null 2>&1
+          rm *.json
           ./modMetadata
 
       - name: modify the Metadata
