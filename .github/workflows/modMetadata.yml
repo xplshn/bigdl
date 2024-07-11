@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
-  update-counter:
+  update-modified-metadata:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
