@@ -75,6 +75,7 @@ var excludedFileNames = map[string]struct{}{
 	"gobusybox":         {},
 	"sysinfo-collector": {},
 	"neofetch":          {},
+	"sh":                {}, // Because in the repo, it is a duplicate of bash and not a POSIX implementation nor the original Thompshon Shell
 }
 
 func init() {
@@ -113,8 +114,8 @@ func init() {
 		ValidatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
 	case "arm64_android":
 		ValidatedArch = [3]string{"arm64_v8a_Android", "arm64_v8a_Android", "arm64-v8a-Android"}
-	case "amd64_windows":
-		ValidatedArch = [3]string{"x64_Windows", "x64_Windows", "AMD64-Windows_NT"}
+		//	case "amd64_windows": // not yet supported. Not sure if it will ever be.
+		//		ValidatedArch = [3]string{"x64_Windows", "x64_Windows", "AMD64-Windows_NT"}
 	default:
 		fmt.Println("Unsupported architecture:", arch)
 		os.Exit(1)
