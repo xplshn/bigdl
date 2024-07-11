@@ -1,0 +1,37 @@
+name: Modify Toolpacks & Baseutils metadata
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  update-counter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Get the Go toolchain (outdated, ofc, because Ubuntu is Debian based and both suck)
+        run: |
+          sudo apt update --yes
+          sudo apt install --yes go
+
+      - name: Build the modMetadata command
+        run: |
+          cd misc/cmd/modMetadata
+          go build
+          rm *.json
+          ./modMetadata
+
+      - name: modify the Metadata
+        run: |
+          ./modMetadata
+      
+      - name: Commit and push the updated metadata files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./misc/cmd/modMetadata
+          git commit -m "[WEEKLY] Update Metadata files"
+          git push
