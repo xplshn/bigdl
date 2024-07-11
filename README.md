@@ -15,9 +15,9 @@ BigDL is a sophisticated, Golang-based rewrite of the original [BDL](https://git
 
 > I've seen lots of package manager projects without "packages". What is different about this one?
 
- There are currently ![Current amount of binaries in the repos! x86_64](https://raw.githubusercontent.com/xplshn/bigdl/master/counter.svg) binaries in our repos. They are all statically linked.
+ There are currently ![Current amount of binaries in the repos! x86_64](https://raw.githubusercontent.com/xplshn/bigdl/master/misc/assets/counter.svg) binaries in our repos. They are all statically linked.
 
-### Features ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+### Features ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/misc/assets/pin.svg)
 
 ```
 $ bigdl --help
