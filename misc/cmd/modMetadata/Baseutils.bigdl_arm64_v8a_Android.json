@@ -15,7 +15,7 @@
     "name": "b3sum",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/b3sum",
     "size": "1.27 MB",
-    "build_date": "2024-07-09T22:54:04"
+    "build_date": "2024-07-12T22:54:28"
   },
   {
     "name": "base32",
@@ -45,7 +45,7 @@
     "name": "bash",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/bash",
     "size": "1.78 MB",
-    "build_date": "2024-07-09T22:56:04"
+    "build_date": "2024-07-12T22:56:22"
   },
   {
     "name": "bsdcat",
@@ -75,26 +75,16 @@
     "name": "busybox",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/busybox",
     "size": "1.54 MB",
-    "build_date": "2024-07-09T22:59:55"
+    "build_date": "2024-07-12T22:59:45"
   },
   {
     "name": "busybox/busybox",
     "description": "A Software Suite that provides Several Unix Utilities in a single Executable",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/busybox/busybox",
     "size": "1.54 MB",
-    "b3sum": "1609d382ae36a85934a414761f07e783f61dc3b16b04ad081367d2521db6e405",
-    "sha256": "5dfd13f45846960aa9fbe11557e7ae38afecd656077048cb7f6c1065fdd64444",
-    "build_date": "2024-07-08T04:39:59",
-    "repo_url": "https://git.busybox.net/busybox/",
-    "web_url": "https://www.busybox.net/",
-    "extra_bins": "[,[[,acpid,add_shell,addgroup,adduser,adjtimex,arch,arp,arping,ascii,ash,awk,base32,base64,basename,bb_arch,bb_sysctl,bc,beep,blkdiscard,blkid,blockdev,bootchartd,brctl,bunzip2,bzcat,bzip2,cal,cat,chat,chattr,chgrp,chmod,chown,chpasswd,chpst,chroot,chrt,chvt,cksum,clear,cmp,comm,conspy,cp,cpio,crc32,crond,crontab,cryptpw,cttyhack,cut,date,dc,dd,deallocvt,delgroup,deluser,depmod,devmem,df,dhcprelay,diff,dirname,dmesg,dnsd,dnsdomainname,dos2unix,dpkg,dpkg_deb,du,dumpkmap,dumpleases,echo,ed,egrep,eject,env,envdir,envuidgid,ether_wake,expand,expr,factor,fakeidentd,fallocate,false,fatattr,fbset,fbsplash,fdflush,fdformat,fdisk,fgconsole,fgrep,find,findfs,flock,fold,free,freeramdisk,fsck,fsck_minix,fsfreeze,fstrim,fsync,ftpd,ftpget,ftpput,fuser,getfattr,getopt,getty,grep,groups,gunzip,gzip,halt,hd,hdparm,head,hexdump,hexedit,hostid,hostname,httpd,hush,hwclock,i2cdetect,i2cdump,i2cget,i2cset,i2ctransfer,id,ifconfig,ifdown,ifenslave,ifplugd,ifup,inetd,init,insmod,install,ionice,iostat,ip,ipaddr,ipcalc,ipcrm,ipcs,iplink,ipneigh,iproute,iprule,iptunnel,kbd_mode,kill,killall,killall5,klogd,last,less,link,linux32,linux64,linuxrc,ln,loadfont,loadkmap,logger,login,logname,logread,losetup,lpd,lpq,lpr,ls,lsattr,lsmod,lsof,lspci,lsscsi,lsusb,lzcat,lzma,lzop,makedevs,makemime,man,md5sum,mdev,mesg,microcom,mim,mkdir,mkdosfs,mke2fs,mkfifo,mkfs_ext2,mkfs_minix,mkfs_vfat,mknod,mkpasswd,mkswap,mktemp,modinfo,modprobe,more,mount,mountpoint,mpstat,mt,mv,nameif,nanddump,nandwrite,nbdclient,nc,netstat,nice,nl,nmeter,nohup,nologin,nproc,nsenter,nslookup,ntpd,od,openvt,partprobe,passwd,paste,patch,pgrep,pidof,ping,ping6,pipe_progress,pivot_root,pkill,pmap,popmaildir,poweroff,powertop,printenv,printf,ps,pscan,pstree,pwd,pwdx,raidautorun,rdate,rdev,readahead,readlink,readprofile,realpath,reboot,reformime,remove_shell,renice,reset,resize,resume,rev,rm,rmdir,rmmod,route,rpm,rpm2cpio,rtcwake,run_init,run_parts,runlevel,runsv,runsvdir,rx,script,scriptreplay,sed,seedrng,sendmail,seq,setarch,setconsole,setfattr,setfont,setkeycodes,setlogcons,setpriv,setserial,setsid,setuidgid,sh,sh_is_ash,sha1sum,sha256sum,sha3sum,sha512sum,showkey,shred,shuf,slattach,sleep,smemcap,softlimit,sort,split,ssl_client,start_stop_daemon,stat,strings,stty,su,sulogin,sum,sv,svc,svlogd,svok,swapoff,swapon,switch_root,sync,sysctl,syslogd,tac,tail,tar,taskset,tc,tcpsvd,tee,telnet,telnetd,test,test1,test2,tftp,tftpd,time,timeout,top,touch,tr,traceroute,traceroute6,tree,true,truncate,ts,tsort,tty,ttysize,tunctl,ubiattach,ubidetach,ubimkvol,ubirename,ubirmvol,ubirsvol,ubiupdatevol,udhcpc,udhcpc6,udhcpd,udpsvd,uevent,umount,uname,unexpand,uniq,unix2dos,unlink,unlzma,unshare,unxz,unzip,uptime,users,usleep,uudecode,uuencode,vconfig,vi,vlock,volname,w,wall,watch,watchdog,wc,wget,which,who,whoami,whois,xargs,xxd,xz,xzcat,yes,zcat,zcip"
-  },
-  {
-    "name": "busybox/to_human_bytes.jq",
-    "description": "A Software Suite that provides Several Unix Utilities in a single Executable",
-    "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/busybox/to_human_bytes.jq",
-    "size": "469 B",
-    "build_date": "2024-07-08T04:40:34",
+    "b3sum": "11cd43131703ad8746ad1299ad0a718ac5a5e8f826ff9e7b6952db2aa75aa87a",
+    "sha256": "88ddc47b0b797ca4092e33b223326f865665215d1c9e8cc183738f94512590f7",
+    "build_date": "2024-07-10T04:44:55",
     "repo_url": "https://git.busybox.net/busybox/",
     "web_url": "https://www.busybox.net/",
     "extra_bins": "[,[[,acpid,add_shell,addgroup,adduser,adjtimex,arch,arp,arping,ascii,ash,awk,base32,base64,basename,bb_arch,bb_sysctl,bc,beep,blkdiscard,blkid,blockdev,bootchartd,brctl,bunzip2,bzcat,bzip2,cal,cat,chat,chattr,chgrp,chmod,chown,chpasswd,chpst,chroot,chrt,chvt,cksum,clear,cmp,comm,conspy,cp,cpio,crc32,crond,crontab,cryptpw,cttyhack,cut,date,dc,dd,deallocvt,delgroup,deluser,depmod,devmem,df,dhcprelay,diff,dirname,dmesg,dnsd,dnsdomainname,dos2unix,dpkg,dpkg_deb,du,dumpkmap,dumpleases,echo,ed,egrep,eject,env,envdir,envuidgid,ether_wake,expand,expr,factor,fakeidentd,fallocate,false,fatattr,fbset,fbsplash,fdflush,fdformat,fdisk,fgconsole,fgrep,find,findfs,flock,fold,free,freeramdisk,fsck,fsck_minix,fsfreeze,fstrim,fsync,ftpd,ftpget,ftpput,fuser,getfattr,getopt,getty,grep,groups,gunzip,gzip,halt,hd,hdparm,head,hexdump,hexedit,hostid,hostname,httpd,hush,hwclock,i2cdetect,i2cdump,i2cget,i2cset,i2ctransfer,id,ifconfig,ifdown,ifenslave,ifplugd,ifup,inetd,init,insmod,install,ionice,iostat,ip,ipaddr,ipcalc,ipcrm,ipcs,iplink,ipneigh,iproute,iprule,iptunnel,kbd_mode,kill,killall,killall5,klogd,last,less,link,linux32,linux64,linuxrc,ln,loadfont,loadkmap,logger,login,logname,logread,losetup,lpd,lpq,lpr,ls,lsattr,lsmod,lsof,lspci,lsscsi,lsusb,lzcat,lzma,lzop,makedevs,makemime,man,md5sum,mdev,mesg,microcom,mim,mkdir,mkdosfs,mke2fs,mkfifo,mkfs_ext2,mkfs_minix,mkfs_vfat,mknod,mkpasswd,mkswap,mktemp,modinfo,modprobe,more,mount,mountpoint,mpstat,mt,mv,nameif,nanddump,nandwrite,nbdclient,nc,netstat,nice,nl,nmeter,nohup,nologin,nproc,nsenter,nslookup,ntpd,od,openvt,partprobe,passwd,paste,patch,pgrep,pidof,ping,ping6,pipe_progress,pivot_root,pkill,pmap,popmaildir,poweroff,powertop,printenv,printf,ps,pscan,pstree,pwd,pwdx,raidautorun,rdate,rdev,readahead,readlink,readprofile,realpath,reboot,reformime,remove_shell,renice,reset,resize,resume,rev,rm,rmdir,rmmod,route,rpm,rpm2cpio,rtcwake,run_init,run_parts,runlevel,runsv,runsvdir,rx,script,scriptreplay,sed,seedrng,sendmail,seq,setarch,setconsole,setfattr,setfont,setkeycodes,setlogcons,setpriv,setserial,setsid,setuidgid,sh,sh_is_ash,sha1sum,sha256sum,sha3sum,sha512sum,showkey,shred,shuf,slattach,sleep,smemcap,softlimit,sort,split,ssl_client,start_stop_daemon,stat,strings,stty,su,sulogin,sum,sv,svc,svlogd,svok,swapoff,swapon,switch_root,sync,sysctl,syslogd,tac,tail,tar,taskset,tc,tcpsvd,tee,telnet,telnetd,test,test1,test2,tftp,tftpd,time,timeout,top,touch,tr,traceroute,traceroute6,tree,true,truncate,ts,tsort,tty,ttysize,tunctl,ubiattach,ubidetach,ubimkvol,ubirename,ubirmvol,ubirsvol,ubiupdatevol,udhcpc,udhcpc6,udhcpd,udpsvd,uevent,umount,uname,unexpand,uniq,unix2dos,unlink,unlzma,unshare,unxz,unzip,uptime,users,usleep,uudecode,uuencode,vconfig,vi,vlock,volname,w,wall,watch,watchdog,wc,wget,which,who,whoami,whois,xargs,xxd,xz,xzcat,yes,zcat,zcip"
@@ -224,7 +214,7 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/cat",
     "size": "525.4 kB",
-    "b3sum": "456536996d6c0c8285812b55ee1158badb8b1869cbf3e571147d11221e594752",
+    "b3sum": "d919b6c8451274ef5506f901a25133279d0dc18d325f48f45dd9a957365c0fca",
     "sha256": "3e559029e215e05d08ad18f5fb4d7eb25d85bb69ca162fda7b8cba0c0d617a9b",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
@@ -368,8 +358,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/dd",
     "size": "553.75 kB",
-    "b3sum": "20ad72b448565d7957a2c0743306b9012b813dde58d09e8bc7515793540e5b5a",
-    "sha256": "124884824b2f06d194b04e19f103fb1997743cc41a2a37d508338e9b88d5dd63",
+    "b3sum": "bdac9a2783435ecb285589c2052c33c83fece4b1e594303381409ee549851f00",
+    "sha256": "88c3eef9fe542d91032451f95e08b407e5e9a6ecf47ce257a16987b88073ef74",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -380,8 +370,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/df",
     "size": "603.6 kB",
-    "b3sum": "28a7fb4b06a8aaacdaa7fc02adffbb75ccc8ddadd129c3990c197ea2b858cfa1",
-    "sha256": "1eedf1326bf405fad9fadc8e50680895f8b9695a4165062f82fcadc2b5fca8ff",
+    "b3sum": "9fd0729d0a597cefe9d2e8b8ec5c861711879b99d4f1f4af874905bdb8a5bb5f",
+    "sha256": "afafdc59df8386c3d7c17b5860915b135abbd63b4ea954119ea44c27f4748814",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -392,8 +382,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/dir",
     "size": "706.14 kB",
-    "b3sum": "28361054361a2f2e53757a22586f80f10bc520dca1e258da087932c5f75b6966",
-    "sha256": "1eedf1326bf405fad9fadc8e50680895f8b9695a4165062f82fcadc2b5fca8ff",
+    "b3sum": "3944946afcbf6f24858445a74011edeabc1d9c82576c17d37d87d3a097a42f93",
+    "sha256": "95cf6f79a191325b3c118612940d6b6aa17bcd49a728008149c6a95c713aca49",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -512,8 +502,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/fmt",
     "size": "529.73 kB",
-    "b3sum": "31eff78953c88b743cbdfc970c9816c9e2d00e40625d25816a768aa563b99ba4",
-    "sha256": "c68c2b7820f762874267781221de06a612f7971b866c1e4ea7bc282aadc4302f",
+    "b3sum": "dba2aa1efe687f6a89d3e4c5ceefa73bd26e516e866fe668a553bb980076b31b",
+    "sha256": "e11d1753a31b32c52fc8680a8a70634fe372b5a2e5998cb290e268536374be43",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -644,8 +634,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/ls",
     "size": "706.14 kB",
-    "b3sum": "0c9952fc36bf0a988d7577d8a747a98644d42082c1d3006c44c9fb92c04f8380",
-    "sha256": "4174a0eb501cb2f473712fb1fa349285390874a2718f147b77abc5e8233ffb08",
+    "b3sum": "5f093453f4026da0dd562d9bac02f6f6e57a602eca50394a03143870f2c8692f",
+    "sha256": "9326fc8551f3817f6cb579b0f1d99ad0ec314a72eb6d252489e7b0d54cbf38a0",
     "build_date": "2024-05-15T17:09:47",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -740,7 +730,7 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/nl",
     "size": "584.38 kB",
-    "b3sum": "9a17069b0fb130a6fe4233904cc31e02749d39079036217789070a15517aa072",
+    "b3sum": "dadfab18569109d9cbae5981b66c0bd0dfe7944e2f1cac58985005748e31da31",
     "sha256": "5071687977119dab4a7008d714b51f2f478ea78d5627207f5c3ed492b657bc4a",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
@@ -788,8 +778,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/od",
     "size": "575.53 kB",
-    "b3sum": "58864989e730a0ee5d72df55c1a2ef3ddc4e902f83bc0bf673468d0c2e97d10b",
-    "sha256": "0a603a237512d633d1f93c04ec0c9f3a6c7b05c2ab488208a6eca7d4e1935a68",
+    "b3sum": "abc022a95f5d4f16a97ffbe1157fcdc71601c591adcd6dada45087998910fd3e",
+    "sha256": "8eaa115cedf30fefd5cfbd13eadf1a5b972172b9272a52081cb45ef0540ac047",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -836,8 +826,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/pr",
     "size": "593.06 kB",
-    "b3sum": "5819c06599f545e7a4b85704110d773f182a96264a5166d28862af364df976f5",
-    "sha256": "07081312b9113dc2357ef0eecd2f002a032cae0b7bb677d42f344ab5fea95270",
+    "b3sum": "7b87082cab26ffeb624f81bfa0e27fb0418a15d827a82a8b9c4c5846eb7c4549",
+    "sha256": "bbf7652b9c4085e785f5f0d1ec3955d51f2a8412574c463386a7d7d52a8ba75e",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -921,7 +911,7 @@
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/rm",
     "size": "553.21 kB",
     "b3sum": "9b44445744202f803c38bba35dfaa5c1bf4cff0ffaa67257e90b1d5e0f4d1615",
-    "sha256": "82438ab32d9d878d095a7b64463899c5dc3ebd2acefe485880ecdf9ab1297c29",
+    "sha256": "999185e9fec705f20b5b178cd98e419489cb091f060a2e224d1f0cc242872b10",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -1064,7 +1054,7 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/sort",
     "size": "627.22 kB",
-    "b3sum": "399c14848297d4761b2fac56b5b39fb16e092b51a443e96f342b9219f6a71c5f",
+    "b3sum": "5190a0721a687857f13a102add63fd1d5323e6dc77c6161de3306f35fac3784d",
     "sha256": "475fb0806fb7455cd1e900795f88d1ae17e13c5f12183706250bd371b6990a21",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
@@ -1076,7 +1066,7 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/split",
     "size": "551.9 kB",
-    "b3sum": "0562bff169382d65fc1cf16e4e8a2e303e8a750194fc3643e7bb97b5739160ed",
+    "b3sum": "d942d5ae718a6072debd29cdbca2020d44d5f61a0fd57c6044ebb715716222b4",
     "sha256": "541c81dc30f14eaf39b5d1d1dbeec0e6f8f3631b950f6be95db4344da786e136",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
@@ -1100,9 +1090,9 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/stdbuf",
     "size": "527.77 kB",
-    "b3sum": "bd970dd9558bb011df26f4cacc159cdb6d6a540e8b41f2613fd640901d5abe13",
-    "sha256": "4addd2ae774bb8177fd224294aeee4d411ac863d72a0267b707aa4730200a8a7",
-    "build_date": "2024-07-08T04:41:47",
+    "b3sum": "4fade232f5d167454dc60f82e2b72b23520df8c3863d96a09e8b6aa0b2c7d028",
+    "sha256": "0b9fa1cd1ffaa8cacec7ab7c207645602ef29c0b8520bcd4924877f2a912f806",
+    "build_date": "2024-07-10T04:46:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
     "extra_bins": "[,b2sum,base32,base64,basename,basenc,cat,chcon,chgrp,chmod,chown,chroot,cksum,comm,cp,csplit,cut,date,dd,df,dir,dircolors,dirname,du,echo,env,expand,expr,factor,false,fmt,fold,groups,head,id,install,join,kill,link,ln,logname,ls,md5sum,mkdir,mkfifo,mknod,mktemp,mv,nice,nl,nohup,nproc,numfmt,od,paste,pathchk,pinky,pr,printenv,printf,ptx,pwd,readlink,realpath,rm,rmdir,runcon,seq,sha1sum,sha224sum,sha256sum,sha384sum,sha512sum,shred,shuf,sleep,sort,split,stat,stty,sum,sync,tac,tail,tee,test,timeout,touch,tr,true,truncate,tsort,tty,uname,unexpand,uniq,unlink,uptime,users,vdir,wc,who,whoami,yes"
@@ -1124,8 +1114,8 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/sum",
     "size": "533.3 kB",
-    "b3sum": "20ad72b448565d7957a2c0743306b9012b813dde58d09e8bc7515793540e5b5a",
-    "sha256": "0bc2d1e08c4942ccab894714a361bfdeb20089cbe0c8de231e3367e6ca9fb64d",
+    "b3sum": "38b1e4503179c5cb96a4f0a4f9e78bbf11509b4252e461e72b9dda781fc91a7d",
+    "sha256": "48857d75a09e93aca27298238a8cb09437a9cc379421c13c02c64dea802c50ce",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -1204,16 +1194,6 @@
     "extra_bins": "[,b2sum,base32,base64,basename,basenc,cat,chcon,chgrp,chmod,chown,chroot,cksum,comm,cp,csplit,cut,date,dd,df,dir,dircolors,dirname,du,echo,env,expand,expr,factor,false,fmt,fold,groups,head,id,install,join,kill,link,ln,logname,ls,md5sum,mkdir,mkfifo,mknod,mktemp,mv,nice,nl,nohup,nproc,numfmt,od,paste,pathchk,pinky,pr,printenv,printf,ptx,pwd,readlink,realpath,rm,rmdir,runcon,seq,sha1sum,sha224sum,sha256sum,sha384sum,sha512sum,shred,shuf,sleep,sort,split,stat,stdbuf,stty,sum,sync,tac,tail,tee,test,touch,tr,true,truncate,tsort,tty,uname,unexpand,uniq,unlink,uptime,users,vdir,wc,who,whoami,yes"
   },
   {
-    "name": "coreutils/to_human_bytes.jq",
-    "description": "GNU File, Shell, and Text utilities",
-    "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/to_human_bytes.jq",
-    "size": "469 B",
-    "build_date": "2024-07-01T20:48:41",
-    "repo_url": "https://github.com/coreutils/coreutils",
-    "web_url": "https://www.gnu.org/software/coreutils/",
-    "extra_bins": "[,b2sum,base32,base64,basename,basenc,cat,chcon,chgrp,chmod,chown,chroot,cksum,comm,cp,csplit,cut,date,dd,df,dir,dircolors,dirname,du,echo,env,expand,expr,factor,false,fmt,fold,groups,head,id,install,join,kill,link,ln,logname,ls,md5sum,mkdir,mkfifo,mknod,mktemp,mv,nice,nl,nohup,nproc,numfmt,od,paste,pathchk,pinky,pr,printenv,printf,ptx,pwd,readlink,realpath,rm,rmdir,runcon,seq,sha1sum,sha224sum,sha256sum,sha384sum,sha512sum,shred,shuf,sleep,sort,split,stat,stdbuf,stty,sum,sync,tac,tail,tee,test,timeout,touch,tr,true,truncate,tsort,tty,uname,unexpand,uniq,unlink,uptime,users,vdir,wc,who,whoami,yes"
-  },
-  {
     "name": "coreutils/touch",
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/touch",
@@ -1230,7 +1210,7 @@
     "description": "GNU File, Shell, and Text utilities",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/tr",
     "size": "532.48 kB",
-    "b3sum": "456536996d6c0c8285812b55ee1158badb8b1869cbf3e571147d11221e594752",
+    "b3sum": "835f68a9fd94334150413601de7e2adf49ca29b8a5838f7cd1d7d139f4866b2e",
     "sha256": "09acdbc7f2b2270e2410118ed2bd383ad175545a1565049b09e63b7cf3769d99",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
@@ -1279,7 +1259,7 @@
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/coreutils/tty",
     "size": "519.7 kB",
     "b3sum": "39dabc83b3940811ac78c7232a67ff7da06c80db0fd20a776298e29566c3a3fc",
-    "sha256": "35a669b49c73897869a4f24a368dcc52d35b31327e88ba41f8bf9fd2b01a2310",
+    "sha256": "4b1fba98dc8b0b6487d9a821975e0bb267b8ab7467b4979483d856b57b820d9d",
     "build_date": "2024-05-15T17:09:48",
     "repo_url": "https://github.com/coreutils/coreutils",
     "web_url": "https://www.gnu.org/software/coreutils/",
@@ -1433,7 +1413,7 @@
     "name": "curl",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/curl",
     "size": "5.3 MB",
-    "build_date": "2024-07-09T23:04:02"
+    "build_date": "2024-07-12T23:03:53"
   },
   {
     "name": "cut",
@@ -1614,16 +1594,6 @@
     "repo_url": "https://github.com/libarchive/libarchive",
     "web_url": "https://www.libarchive.org/",
     "extra_bins": "bsdcat,bsdcpio,bsdtar"
-  },
-  {
-    "name": "libarchive/to_human_bytes.jq",
-    "description": "Multi-format archive and compression Tools",
-    "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/libarchive/to_human_bytes.jq",
-    "size": "469 B",
-    "build_date": "2024-07-03T04:48:06",
-    "repo_url": "https://github.com/libarchive/libarchive",
-    "web_url": "https://www.libarchive.org/",
-    "extra_bins": "bsdcat,bsdcpio,bsdunzip"
   },
   {
     "name": "link",
@@ -1863,7 +1833,7 @@
     "name": "rsync",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/rsync",
     "size": "5.26 MB",
-    "build_date": "2024-07-09T23:15:11"
+    "build_date": "2024-07-12T23:14:34"
   },
   {
     "name": "runcon",
@@ -1953,7 +1923,7 @@
     "name": "stdbuf",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/stdbuf",
     "size": "527.77 kB",
-    "build_date": "2024-07-09T23:01:48"
+    "build_date": "2024-07-12T23:01:37"
   },
   {
     "name": "stty",
@@ -2103,7 +2073,7 @@
     "name": "vim",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/vim",
     "size": "5.07 MB",
-    "build_date": "2024-07-09T23:30:57"
+    "build_date": "2024-07-12T23:29:58"
   },
   {
     "name": "wc",
@@ -2115,13 +2085,13 @@
     "name": "wget",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/wget",
     "size": "5.81 MB",
-    "build_date": "2024-07-09T23:32:02"
+    "build_date": "2024-07-12T23:31:01"
   },
   {
     "name": "wget_static",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/wget_static",
     "size": "5.94 MB",
-    "build_date": "2024-07-09T23:34:25"
+    "build_date": "2024-07-12T23:33:17"
   },
   {
     "name": "who",
@@ -2231,7 +2201,7 @@
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/xz/lzma",
     "size": "652.7 kB",
     "b3sum": "04f85b4aebcd7b79c283b81946ee3810f46e48f99a78ebf94b8dd99e75c30d92",
-    "sha256": "7f0c5b03047aefd2bfdae21abe643eaf2d35d57156b1c977942bc985932c2ae8",
+    "sha256": "ac7835804730e2767897413a1e871bebb727d8f8366c8a85f6027b4db4cf967b",
     "build_date": "2024-07-03T05:13:32",
     "repo_url": "https://github.com/tukaani-project/xz",
     "web_url": "https://tukaani.org/xz/",
@@ -2274,16 +2244,6 @@
     "extra_bins": "lzcat,lzcmp,lzdiff,lzegrep,lzfgrep,lzgrep,lzless,lzma,lzmadec,lzmainfo,unlzma,unxz,xz,xzcat,xzcmp,xzdec,xzdiff,xzegrep,xzfgrep,xzgrep,xzless,xzmore"
   },
   {
-    "name": "xz/to_human_bytes.jq",
-    "description": "A general-purpose data compression software, successor of LZMA",
-    "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/xz/to_human_bytes.jq",
-    "size": "469 B",
-    "build_date": "2024-07-03T05:14:40",
-    "repo_url": "https://github.com/tukaani-project/xz",
-    "web_url": "https://tukaani.org/xz/",
-    "extra_bins": "lzcat,lzcmp,lzdiff,lzegrep,lzfgrep,lzgrep,lzless,lzma,lzmadec,lzmainfo,lzmore,unlzma,unxz,xzcat,xzcmp,xzdec,xzdiff,xzegrep,xzfgrep,xzgrep,xzless,xzmore"
-  },
-  {
     "name": "xz/unlzma",
     "description": "A general-purpose data compression software, successor of LZMA",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/xz/unlzma",
@@ -2313,7 +2273,7 @@
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/xz/xz",
     "size": "652.7 kB",
     "b3sum": "04f85b4aebcd7b79c283b81946ee3810f46e48f99a78ebf94b8dd99e75c30d92",
-    "sha256": "0df3313e5d5e4dfd18d7146cc0c58970d400dafceacd54e3febe320185d26259",
+    "sha256": "ac7835804730e2767897413a1e871bebb727d8f8366c8a85f6027b4db4cf967b",
     "build_date": "2024-07-03T05:13:32",
     "repo_url": "https://github.com/tukaani-project/xz",
     "web_url": "https://tukaani.org/xz/",
@@ -2491,6 +2451,6 @@
     "name": "zsh",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/zsh",
     "size": "1.8 MB",
-    "build_date": "2024-07-09T23:36:52"
+    "build_date": "2024-07-12T23:35:43"
   }
 ]
