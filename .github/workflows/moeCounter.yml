@@ -19,12 +19,12 @@ jobs:
       - name: Download MoeCounter image
         run: |
           LISTC=$LISTC
-          wget -O ./counter.svg "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=5&theme=gelbooru&pixelated=true"
+          wget -O ./misc/counter.svg "https://api.sefinek.net/api/v2/moecounter?number=${LISTC}&length=5&theme=gelbooru&pixelated=true"
       
       - name: Commit and push updated counter image
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ./counter.svg
+          git add ./misc/counter.svg
           git commit -m "[WEEKLY] Update MoeCounter image"
           git push
