@@ -59,7 +59,7 @@ Commands:
  bigdl run btop
 ```
 
-#### What are these optional flags? ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+#### What are these optional flags? ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/misc/assets/pin.svg)
 ##### Flags that correspond to the `run` functionality
 In the case of `--transparent`, it runs the program from $PATH and if it isn't available in the user's $PATH it will pull the binary from `bigdl`'s repos and run it from cache.
 In the case of `--silent`, it simply hides the progressbar and all optional messages (warnings) that `bigdl` can show, as oppossed to `--verbose`, which will always report if the binary is found on cache + the return code of the binary to be ran if it differs from 0.
@@ -87,7 +87,7 @@ SHA256: 697fb918c800071c4d1a853d515331a9a3f245bb8a7da1c6d3653737d17ce3c4
 `search` can only receive ONE search term, if the name of a binary or a description of a binary contains the term, it is shown as a search result.
 `search` can optionally receive a `--limit` argument, which changes the limit on how many search results can be displayed (default is 90).
 
-## Getting Started ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+## Getting Started ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/misc/assets/pin.svg)
 
 To begin using BigDL, simply run one of these commands on your Linux system. No additional setup is required. You may also build the project using `go build or go install`
 #### Use without installing
@@ -105,7 +105,7 @@ Whenever you want to pull a specific GNU coreutil, busybox, toybox, etc, insert 
 system_info=$(wget -qO- "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo - || curl -qsfSL "https://raw.githubusercontent.com/xplshn/bigdl/master/stubdl" | sh -s -- run --silent albafetch --no-logo -)
 ```
 
-### Where do these binaries come from? ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/pin.svg)
+### Where do these binaries come from? ![pin](https://raw.githubusercontent.com/xplshn/bigdl/master/misc/assets/pin.svg)
 - https://github.com/Azathothas/Toolpacks [https://bin.ajam.dev] [https://bin.ajam.dev/*/Baseutils/]
 >Hmm, can I add my own repos?
 
