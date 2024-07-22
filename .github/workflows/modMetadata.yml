@@ -2,7 +2,7 @@ name: Modify Toolpacks & Baseutils metadata
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
+    - cron: '0 0 * * MON,THU'  # Runs bi-weekly
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
