@@ -18,10 +18,14 @@ func fSearch(searchTerm string, limit int) {
 
 	// Fetch metadata
 	var binaries []tBinary
-	err := fetchJSON(RNMetadataURL, &binaries)
-	if err != nil {
-		fmt.Println("Failed to fetch and decode binary information:", err)
-		return
+	for _, url := range MetadataURLs {
+		var tempBinaries []tBinary
+		err := fetchJSON(url, &tempBinaries)
+		if err != nil {
+			fmt.Println("Failed to fetch and decode binary information:", err)
+			return
+		}
+		binaries = append(binaries, tempBinaries...)
 	}
 
 	// Filter binaries based on the search term and architecture

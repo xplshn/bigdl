@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -363,48 +364,167 @@ func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 	return fmt.Print(truncateSprintf(format, a...))
 }
 
-// validateProgramsFrom validates programs against the files in the specified directory against the remote binaries.
-func validateProgramsFrom(InstallDir string, programsToValidate []string) ([]string, error) {
-	// Fetch the list of binaries from the remote source once
+// validateProgramsFrom checks the validity of programs against a remote source.
+// validateProgramsFrom checks the validity of programs against a remote source.
+func validateProgramsFrom(installDir string, programsToValidate []string) ([]string, error) {
+	// Fetch the list of binaries from the remote source
 	remotePrograms, err := listBinaries()
 	if err != nil {
 		return nil, fmt.Errorf("failed to list remote binaries: %w", err)
 	}
 
 	// List files from the specified directory
-	files, err := listFilesInDir(InstallDir)
+	files, err := listFilesInDir(installDir)
 	if err != nil {
-		return nil, fmt.Errorf("failed to list files in %s: %w", InstallDir, err)
+		return nil, fmt.Errorf("failed to list files in %s: %w", installDir, err)
 	}
 
-	validPrograms := make([]string, 0)
-	invalidPrograms := make([]string, 0)
+	validPrograms := []string{}
+	invalidPrograms := []string{}
 
+	// Remove duplicate entries from the programs list
 	programsToValidate = removeDuplicates(programsToValidate)
 
-	// If programsToValidate is nil, validate all programs in the install directory
+	// Define a function to get the program name for validation
+	getProgramNameForValidation := func(binaryName string) (string, error) {
+		realBinaryName, err := getBinaryNameFromTrackerFile(binaryName)
+		if err != nil {
+			return "", err
+		}
+		return realBinaryName, nil
+	}
+
+	// Validate all programs in the install directory if no specific programs are provided
 	if programsToValidate == nil {
 		for _, file := range files {
-			// Extract the file name from the full path
 			fileName := filepath.Base(file)
-			if contains(remotePrograms, fileName) {
-				validPrograms = append(validPrograms, fileName)
+			realBinaryName, _ := getProgramNameForValidation(fileName)
+			if realBinaryName == "" {
+				realBinaryName = fileName
+			}
+			if contains(remotePrograms, realBinaryName) {
+				validPrograms = append(validPrograms, realBinaryName)
 			} else {
 				invalidPrograms = append(invalidPrograms, fileName)
 			}
 		}
 	} else {
-		// Only check the ones specified in programsToValidate
+		// Validate only the specified programs
 		for _, program := range programsToValidate {
-			if contains(remotePrograms, program) {
-				validPrograms = append(validPrograms, program)
+			realBinaryName, _ := getProgramNameForValidation(program)
+			if realBinaryName == "" {
+				realBinaryName = program
+			}
+			if contains(remotePrograms, realBinaryName) {
+				validPrograms = append(validPrograms, realBinaryName)
 			} else {
-				invalidPrograms = append(invalidPrograms, program)
+				invalidPrograms = append(invalidPrograms, realBinaryName)
 			}
 		}
 	}
 
-	// Handle the list of programs received based on the last element
-	// If programsToValidate is not nil, handle based on the last element
+	if DebugMode {
+		fmt.Printf("validateProgramsFrom, contents of invalidPrograms: %v\n", invalidPrograms)
+		fmt.Printf("validateProgramsFrom, contents of validPrograms: %v\n", validPrograms)
+	}
+
 	return validPrograms, nil
+}
+
+// addToTrackerFile appends a binary name to the tracker file.
+func addToTrackerFile(binaryName string) error {
+	if realBinary, _ := getBinaryNameFromTrackerFile(binaryName); realBinary == "" {
+		// Open or create the tracker file in append mode
+		file, err := os.OpenFile(TrackerFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+		if err != nil {
+			return fmt.Errorf("could not open tracker file: %w", err)
+		}
+		defer file.Close()
+
+		// Write the binary name to the tracker file
+		_, err = file.WriteString(fmt.Sprintf("%s -> %s\n", filepath.Base(binaryName), binaryName))
+		if err != nil {
+			return fmt.Errorf("could not write to tracker file: %w", err)
+		}
+	}
+	return nil
+}
+
+// getBinaryNameFromTrackerFile retrieves the full binary name from the tracker file based on the base name.
+func getBinaryNameFromTrackerFile(baseName string) (string, error) {
+	baseName = filepath.Base(baseName)
+
+	file, err := os.Open(TrackerFile)
+	if err != nil {
+		return "", fmt.Errorf("could not open tracker file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Split(line, " -> ")
+		if len(parts) != 2 {
+			continue
+		}
+
+		if DebugMode {
+			fmt.Printf("getBinaryNameFromTrackerFile, baseName: %s, parts[0]: %s, parts[1]: %s\n", baseName, parts[0], parts[1])
+		}
+
+		if parts[0] == baseName {
+			if parts[1] != "" {
+				return parts[1], nil
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return "", fmt.Errorf("error reading tracker file: %w", err)
+	}
+	return "", fmt.Errorf("no match found for %s in tracker file", baseName)
+}
+
+// cleanupTrackerFile removes invalid entries from the tracker file.
+func cleanupTrackerFile() error {
+	file, err := os.Open(TrackerFile)
+	if err != nil {
+		return fmt.Errorf("could not open tracker file: %w", err)
+	}
+	defer file.Close()
+
+	var validEntries []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.Split(line, " -> ")
+		if len(parts) != 2 {
+			continue
+		}
+		binaryName := parts[1]
+		installPath := filepath.Join(InstallDir, filepath.Base(binaryName))
+
+		// Check if the binary is valid
+		if _, err := findURL(binaryName); err == nil && fileExists(installPath) {
+			validEntries = append(validEntries, line)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading tracker file: %w", err)
+	}
+
+	// Rewrite the tracker file with valid entries
+	file, err = os.Create(TrackerFile)
+	if err != nil {
+		return fmt.Errorf("could not create tracker file: %w", err)
+	}
+	defer file.Close()
+
+	for _, entry := range validEntries {
+		if _, err := file.WriteString(entry + "\n"); err != nil {
+			return fmt.Errorf("could not write to tracker file: %w", err)
+		}
+	}
+
+	return nil
 }

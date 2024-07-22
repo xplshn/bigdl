@@ -51,7 +51,7 @@ func update(programsToUpdate []string) error {
 		go func(program string) {
 			defer wg.Done()
 
-			installPath := filepath.Join(InstallDir, program)
+			installPath := filepath.Join(InstallDir, filepath.Base(program))
 			if !fileExists(installPath) {
 				progressMutex.Lock()
 				atomic.AddUint32(&checked, 1)

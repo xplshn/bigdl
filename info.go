@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 )
 
 // BinaryInfo struct holds binary metadata used in main.go for the `info`, `update`, `list` functionality
@@ -19,9 +20,11 @@ type BinaryInfo struct {
 	Source      string `json:"download_url"`
 }
 
+// findBinaryInfo searches for binary metadata in the provided metadata slice.
 func findBinaryInfo(metadata []map[string]interface{}, binaryName string) (BinaryInfo, bool) {
 	for _, binMap := range metadata {
-		if name, ok := binMap["name"].(string); ok && name == binaryName {
+		name, nameOk := binMap["name"].(string)
+		if nameOk && name == binaryName {
 			description, _ := binMap["description"].(string)
 			repo, _ := binMap["repo_url"].(string)
 			buildDate, _ := binMap["build_date"].(string)
@@ -49,15 +52,27 @@ func findBinaryInfo(metadata []map[string]interface{}, binaryName string) (Binar
 	return BinaryInfo{}, false
 }
 
+// getBinaryInfo retrieves binary metadata for the specified binary name by fetching and searching through multiple JSON files.
 func getBinaryInfo(binaryName string) (*BinaryInfo, error) {
+	// Check the tracker file first
+	realBinaryName, err := getBinaryNameFromTrackerFile(filepath.Base(binaryName))
+	if err == nil {
+		binaryName = realBinaryName
+	}
+
 	var metadata []map[string]interface{}
-	if err := fetchJSON(RNMetadataURL, &metadata); err != nil {
-		return nil, err
+	for _, url := range MetadataURLs {
+		var tempMetadata []map[string]interface{}
+		err := fetchJSON(url, &tempMetadata)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch and decode binary information from %s: %v", url, err)
+		}
+		metadata = append(metadata, tempMetadata...)
 	}
 
 	binInfo, found := findBinaryInfo(metadata, binaryName)
 	if !found {
-		return nil, fmt.Errorf("error: info for the requested binary ('%s') not found in the metadata.json file", binaryName)
+		return nil, fmt.Errorf("error: info for the requested binary ('%s') not found in any of the metadata files", binaryName)
 	}
 
 	return &binInfo, nil

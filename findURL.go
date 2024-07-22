@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 )
 
 // findURLCommand returns the URL for the specified binary. We do not use info.go for this because unmarshalling such big files is slower than pinging to see which exists
@@ -18,6 +19,12 @@ func findURLCommand(binaryName string) {
 
 // findURL fetches the URL for the specified binary.
 func findURL(binaryName string) (string, error) {
+	// Check the tracker file first
+	realBinaryName, err := getBinaryNameFromTrackerFile(filepath.Base(binaryName))
+	if err == nil {
+		binaryName = realBinaryName
+	}
+
 	iterations := 0
 	for _, Repository := range Repositories {
 		iterations++

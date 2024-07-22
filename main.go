@@ -15,12 +15,8 @@ var (
 	Repositories []string
 	// MetadataURLs are used for listing the binaries themselves. Not to be confused with R*MetadataURLs.
 	MetadataURLs []string
-	// RNMetadataURL should contain the JSON that describes available binaries for your architecture
-	RNMetadataURL string
-	// ValidatedArch is used in fsearch.go, info.go and main.go to determine which repos to use.
-	ValidatedArch = [3]string{}
 	// InstallDir holds the directory that shall be used for installing, removing, updating, listing with `info`. It takes the value of $INSTALL_DIR if it is set in the user's env, otherwise it is set to have a default value
-	InstallDir = os.Getenv("INSTALL_DIR")
+	InstallDir = os.Getenv("BIGDL_INSTALL_DIR")
 	// TEMPDIR will be used as the dir to download files to before moving them to a final destination AND as the place that will hold cached binaries downloaded by `run`
 	TEMPDIR = os.Getenv("BIGDL_CACHEDIR")
 	// InstallMessage will be printed when installCommand() succeeds
@@ -33,10 +29,16 @@ var (
 	DisableTruncation = false
 	// Always adds a NEWLINE to text truncated by the truncateSprintf/truncatePrintf function
 	AddNewLineToTruncateFn = false
+	// Enables the use of a tracker file. To keep track of which specific binary was installed, this allows for `update` to be accurate and not replace your binaries with different implementations, for example, if you added busybox/dd but then used `bigdl update`, your `dd` binary would get replaced with whatever the repo has at /dd instead of /busybox/dd
+	TrackFiles = false
+	// Which file is used as our tracker file
+	TrackerFile = os.Getenv("BIGDL_TRACKERFILE")
+	// DebugMode enables BIGDL`s debug mode
+	DebugMode bool
 )
 
 const (
-	VERSION   = "1.6.9"                                                               // VERSION to be displayed
+	VERSION   = "1.7"                                                                 // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
@@ -79,12 +81,12 @@ var excludedFileNames = map[string]struct{}{
 }
 
 func init() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		errorOut("error: Failed to get user's Home directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
+		os.Exit(1)
+	}
 	if InstallDir == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			errorOut("error: Failed to get user's Home directory. Maybe set $BIGDL_CACHEDIR? %v\n", err)
-			os.Exit(1)
-		}
 		InstallDir = filepath.Join(homeDir, ".local", "bin")
 	}
 	if TEMPDIR == "" {
@@ -104,31 +106,35 @@ func init() {
 	if os.Getenv("BIGDL_PRBAR") == "0" {
 		UseProgressBar = false
 	}
+	if os.Getenv("BIGDL_TRACKFILES") == "1" {
+		TrackFiles = true
+		if TrackerFile == "" {
+			TrackerFile = filepath.Join(homeDir, ".config", "bigdl.tracker")
+		}
+	}
+	if os.Getenv("BIGDL_DEBUGMODE") == "1" {
+		DebugMode = true
+	}
 
 	// The repos are a mess. So we need to do this. Sorry
 	arch := runtime.GOARCH + "_" + runtime.GOOS
 	switch arch {
 	case "amd64_linux":
-		ValidatedArch = [3]string{"x86_64_Linux", "x86_64", "x86_64-Linux"}
+		arch = "x86_64_Linux"
 	case "arm64_linux":
-		ValidatedArch = [3]string{"aarch64_arm64_Linux", "aarch64_arm64", "aarch64-Linux"}
+		arch = "aarch64_arm64_Linux"
 	case "arm64_android":
-		ValidatedArch = [3]string{"arm64_v8a_Android", "arm64_v8a_Android", "arm64-v8a-Android"}
-		//	case "amd64_windows": // not yet supported. Not sure if it will ever be.
-		//		ValidatedArch = [3]string{"x64_Windows", "x64_Windows", "AMD64-Windows_NT"}
+		arch = "arm64_v8a_Android"
 	default:
 		fmt.Println("Unsupported architecture:", arch)
 		os.Exit(1)
 	}
-	arch = ValidatedArch[0]
+
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/")
 	Repositories = append(Repositories, "https://bin.ajam.dev/"+arch+"/Baseutils/")
-	//Repositories = append(Repositories, "https://raw.githubusercontent.com/xplshn/Handyscripts/master/")
 	// Binaries that are available in the Repositories but aren't described in any MetadataURLs will not be updated, nor listed with `info` nor `list`
-	RNMetadataURL = "https://bin.ajam.dev/" + arch + "/METADATA.json" // RNMetadataURL is the file which contains a concatenation of all metadata in the different repos, this one also contains sha256 checksums
-	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/METADATA.json")
-	MetadataURLs = append(MetadataURLs, "https://bin.ajam.dev/"+arch+"/Baseutils/METADATA.json")
-	//MetadataURLs = append(MetadataURLs, "https://api.github.com/repos/xplshn/Handyscripts/contents")
+	MetadataURLs = append(MetadataURLs, "https://raw.githubusercontent.com/xplshn/bigdl/master/misc/cmd/modMetadata/Toolpacks.bigdl_"+arch+".json")
+	MetadataURLs = append(MetadataURLs, "https://raw.githubusercontent.com/xplshn/bigdl/master/misc/cmd/modMetadata/Baseutils.bigdl_"+arch+".json")
 }
 
 func printHelp() {
@@ -149,11 +155,13 @@ Commands:
  tldr             Equivalent to "run --transparent --verbose tlrc" as argument
 
 Variables:
- BIGDL_PRBAR      If present, and set to ZERO (0), the download progressbar will be disabled
- BIGDL_TRUNCATION If present, and set to ZERO (0), string truncation will be disabled
- BIGDL_ADDNEWLINE If present, and set to ONE  (1), truncated strings will always be on a new line
- BIGDL_CACHEDIR   If present, it must contain a valid directory
- INSTALL_DIR      If present, it must contain a valid directory
+ BIGDL_PRBAR       If present, and set to ZERO (0), the download progressbar will be disabled
+ BIGDL_TRUNCATION  If present, and set to ZERO (0), string truncation will be disabled
+ BIGDL_ADDNEWLINE  If present, and set to ONE  (1), truncated strings will always be on a new line
+ BIGDL_TRACKFILES  If present, and set to ONE  (1), bigdl will keep track of binaries to be able to correctly perform updates
+ BIGDL_TRACKERFILE If present, it must contain a valid destination for a tracker file to be created
+ BIGDL_INSTALL_DIR If present, it must contain a valid directory
+ BIGDL_CACHEDIR    If present, it must contain a valid directory
 
 Examples:
  bigdl search editor

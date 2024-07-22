@@ -53,6 +53,12 @@ func installCommand(silent bool, binaryNames string) error {
 			return fmt.Errorf("%v", err)
 		}
 
+		if TrackFiles {
+			if err := addToTrackerFile(binaryName); err != nil {
+				return fmt.Errorf("failed to update tracker file: %v", err)
+			}
+		}
+
 		if !silent {
 			if InstallMessage != "disabled" {
 				fmt.Print(InstallMessage)
