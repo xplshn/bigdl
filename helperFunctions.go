@@ -365,7 +365,6 @@ func truncatePrintf(format string, a ...interface{}) (n int, err error) {
 }
 
 // validateProgramsFrom checks the validity of programs against a remote source.
-// validateProgramsFrom checks the validity of programs against a remote source.
 func validateProgramsFrom(installDir string, programsToValidate []string) ([]string, error) {
 	// Fetch the list of binaries from the remote source
 	remotePrograms, err := listBinaries()
