@@ -1,99 +1,170 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
+)
+
+var (
+	installSuccesses uint32
+	errorCount       uint32
+	errorMessages    []string   // Slice to collect error messages
+	progressMutex    sync.Mutex // Mutex to synchronize progress printing
+	nextPrintIndex   int
+	interrupted      bool
 )
 
 // installBinary handles the installation of a single binary
-func installBinary(binaryName string, silent bool, wg *sync.WaitGroup, errCh chan<- error) {
+func installBinary(ctx context.Context, binaryName string, index int, totalCount int, wg *sync.WaitGroup, interruptChecker func() bool) {
 	defer wg.Done()
 
-	// Extract the last part of the binaryName to use as the filename
+	// Helper function to check context cancellation and log an error if interrupted
+	checkContext := func(action string) bool {
+		if ctx.Err() != nil || interruptChecker() {
+			appendErrorMessage(fmt.Sprintf("%s interrupted for %s", action, binaryName))
+			atomic.AddUint32(&errorCount, 1)
+			return true
+		}
+		return false
+	}
+
+	// Check initial context
+	if checkContext("initial") {
+		return
+	}
+
+	// Extract the filename from the binaryName
 	fileName := filepath.Base(binaryName)
 
-	// Construct the installPath using the extracted filename
+	// Construct the installation path
 	installPath := filepath.Join(InstallDir, fileName)
 
-	// Use ReturnCachedFile to check for a cached file
 	if InstallUseCache {
-		cachedFile, err := ReturnCachedFile(binaryName)
+		cachedFilePath, err := ReturnCachedFile(binaryName)
 		if err == 0 {
-			// If the cached file exists, use it
-			if !silent {
-				fmt.Printf("Using cached file: %s\n", cachedFile)
-			}
-			// Copy the cached file to the install path
-			if err := copyFile(cachedFile, installPath); err != nil {
-				errCh <- fmt.Errorf("error: Could not copy cached file: %v", err)
+			if checkContext("before copying cached file") {
 				return
 			}
-
-			// Set executable bit immediately after copying
+			if err := copyFile(cachedFilePath, installPath); err != nil {
+				appendErrorMessage(fmt.Sprintf("error: Could not copy cached file for %s: %v", binaryName, err))
+				atomic.AddUint32(&errorCount, 1)
+				return
+			}
 			if err := os.Chmod(installPath, 0o755); err != nil {
-				errCh <- fmt.Errorf("failed to set executable bit: %v", err)
+				appendErrorMessage(fmt.Sprintf("failed to set executable bit for %s: %v", binaryName, err))
+				atomic.AddUint32(&errorCount, 1)
 				return
 			}
-
+			atomic.AddUint32(&installSuccesses, 1)
+			printProgress(index, totalCount, installPath)
 			return
 		}
 	}
 
 	// If the cached file does not exist, download the binary
-	url, err := findURL(binaryName)
+	downloadURL, err := findURL(binaryName)
 	if err != nil {
-		errCh <- fmt.Errorf("%v", err)
+		appendErrorMessage(fmt.Sprintf("failed to find URL for %s: %v", binaryName, err))
+		atomic.AddUint32(&errorCount, 1)
 		return
 	}
 
-	if err := fetchBinaryFromURL(url, installPath); err != nil {
-		errCh <- fmt.Errorf("%v", err)
+	if checkContext("before fetching binary") {
+		return
+	}
+
+	if err := fetchBinaryFromURL(downloadURL, installPath); err != nil {
+		appendErrorMessage(fmt.Sprintf("failed to fetch binary from URL for %s: %v", binaryName, err))
+		atomic.AddUint32(&errorCount, 1)
+		return
+	}
+
+	if checkContext("after fetching binary") {
 		return
 	}
 
 	if TrackFiles {
 		if err := addToTrackerFile(binaryName); err != nil {
-			errCh <- fmt.Errorf("failed to update tracker file: %v", err)
+			appendErrorMessage(fmt.Sprintf("failed to update tracker file for %s: %v", binaryName, err))
+			atomic.AddUint32(&errorCount, 1)
 			return
 		}
 	}
 
-	if !silent {
-		if InstallMessage != "disabled" {
-			fmt.Print(InstallMessage)
-		} else {
-			fmt.Printf("Successfully created %s\n", installPath)
-		}
-	}
+	atomic.AddUint32(&installSuccesses, 1)
+	printProgress(index, totalCount, installPath)
 }
 
+// appendErrorMessage appends an error message to the global slice in a thread-safe manner
+func appendErrorMessage(message string) {
+	progressMutex.Lock()
+	defer progressMutex.Unlock()
+	errorMessages = append(errorMessages, message)
+}
+
+// printProgress ensures progress messages are printed in the correct order
+func printProgress(index int, totalCount int, installPath string) {
+	progressMutex.Lock()
+	defer progressMutex.Unlock()
+
+	for nextPrintIndex != index {
+		progressMutex.Unlock()
+		progressMutex.Lock()
+	}
+
+	truncatePrintf("\033[2K\r<%d/%d> | Successfully created %s", index+1, totalCount, filepath.Base(installPath))
+	nextPrintIndex++
+}
+
+// installCommand handles the overall installation process
 func installCommand(silent bool, binaryNames string) error {
-	// Disable the progressbar if the installation is to be performed silently
 	if silent {
 		UseProgressBar = false
 	}
-	binaries := strings.Fields(binaryNames)
+
+	binaryList := strings.Fields(binaryNames)
+	totalBinaries := len(binaryList)
 
 	var wg sync.WaitGroup
-	errCh := make(chan error, len(binaries)) // Buffered channel to collect errors
+	nextPrintIndex = 0 // Initialize the next print index
 
-	for _, binaryName := range binaries {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel() // Ensure the cancel function is called when the function returns
+
+	// Set up signal handling
+	interruptedFunc, err := signalHandler(ctx, cancel)
+	if err != nil {
+		return fmt.Errorf("failed to set up signal handler: %v", err)
+	}
+
+	for i, binaryName := range binaryList {
 		wg.Add(1)
-		go installBinary(binaryName, silent, &wg, errCh)
+		go installBinary(ctx, binaryName, i, totalBinaries, &wg, interruptedFunc)
 	}
 
 	// Wait for all goroutines to complete
 	wg.Wait()
-	close(errCh)
 
-	// Collect and return the first error encountered
-	for err := range errCh {
-		if err != nil {
-			return err
-		}
+	if interrupted {
+		fmt.Println("\033[2K\rinstallCommand: Quitting, user bailed out. Cleaning up...")
+		return nil
+	}
+
+	// Print final counts
+	finalCounts := fmt.Sprintf("\033[2K\rInstalled: %d", atomic.LoadUint32(&installSuccesses))
+	if atomic.LoadUint32(&errorCount) > 0 {
+		finalCounts += fmt.Sprintf("\tErrors: %d", atomic.LoadUint32(&errorCount))
+	}
+	fmt.Println(finalCounts)
+
+	// Print collected error messages
+	for _, errMsg := range errorMessages {
+		fmt.Println(errMsg)
 	}
 
 	return nil

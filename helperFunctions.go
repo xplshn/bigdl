@@ -27,6 +27,7 @@ func signalHandler(ctx context.Context, cancel context.CancelFunc) (func() bool,
 
 	go func() {
 		<-sigChan
+		interrupted = true
 		cancel() // Call the cancel function when an interrupt is received
 	}()
 
@@ -119,13 +120,14 @@ func fetchBinaryFromURL(url, destination string) error {
 
 	// Check if the operation was interrupted
 	if interrupted() {
-		fmt.Println("\r\033[KDownload interrupted. Cleaning up...")
+		fmt.Println("\033[2K\rfetchBinaryFromURL: Quitting, user bailed out. Cleaning up...")
 		// Ensure the temporary file is removed if the operation was interrupted
 		if err := os.Remove(tempFile); err != nil && !os.IsNotExist(err) {
 			fmt.Printf("failed to remove temporary file: %v\n", err)
 		}
 	}
-	fmt.Print("\033[2K\r") // Clean the line
+
+	//fmt.Print("\033[2K\r") // Clean the line
 	return nil
 }
 
@@ -432,6 +434,7 @@ func validateProgramsFrom(installDir string, programsToValidate []string) ([]str
 
 // addToTrackerFile appends a binary name to the tracker file.
 func addToTrackerFile(binaryName string) error {
+	cleanupTrackerFile()
 	if realBinary, _ := getBinaryNameFromTrackerFile(binaryName); realBinary == "" {
 		// Open or create the tracker file in append mode
 		file, err := os.OpenFile(TrackerFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
@@ -483,28 +486,45 @@ func getBinaryNameFromTrackerFile(baseName string) (string, error) {
 	return "", fmt.Errorf("no match found for %s in tracker file", baseName)
 }
 
-// cleanupTrackerFile removes invalid entries from the tracker file.
 func cleanupTrackerFile() error {
+	// Create a temporary file for writing valid entries
+	tempFile, err := os.CreateTemp("", "trackerfile_*.tmp")
+	if err != nil {
+		return fmt.Errorf("could not create temporary file: %w", err)
+	}
+	defer os.Remove(tempFile.Name()) // Ensure the temp file is removed if something goes wrong
+
+	// Open the original tracker file for reading
 	file, err := os.Open(TrackerFile)
 	if err != nil {
 		return fmt.Errorf("could not open tracker file: %w", err)
 	}
 	defer file.Close()
 
-	var validEntries []string
+	writer := bufio.NewWriter(tempFile)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		parts := strings.Split(line, " -> ")
 		if len(parts) != 2 {
+			// Line does not have exactly two parts, skip it
 			continue
 		}
 		binaryName := parts[1]
-		installPath := filepath.Join(InstallDir, filepath.Base(binaryName))
+		if _, err := exec.LookPath(binaryName); err != nil {
+			// Binary is not found in PATH, skip it
+			continue
+		}
 
-		// Check if the binary is valid
-		if _, err := findURL(binaryName); err == nil && fileExists(installPath) {
-			validEntries = append(validEntries, line)
+		expectedPath := filepath.Join(InstallDir, filepath.Base(binaryName))
+		if parts[0] != expectedPath {
+			// Path does not match the expected install path, skip it
+			continue
+		}
+
+		// Write valid line to the temporary file
+		if _, err := writer.WriteString(line + "\n"); err != nil {
+			return fmt.Errorf("could not write to temporary file: %w", err)
 		}
 	}
 
@@ -512,17 +532,13 @@ func cleanupTrackerFile() error {
 		return fmt.Errorf("error reading tracker file: %w", err)
 	}
 
-	// Rewrite the tracker file with valid entries
-	file, err = os.Create(TrackerFile)
-	if err != nil {
-		return fmt.Errorf("could not create tracker file: %w", err)
+	if err := writer.Flush(); err != nil {
+		return fmt.Errorf("could not flush temporary file: %w", err)
 	}
-	defer file.Close()
 
-	for _, entry := range validEntries {
-		if _, err := file.WriteString(entry + "\n"); err != nil {
-			return fmt.Errorf("could not write to tracker file: %w", err)
-		}
+	// Use copyFile to move the binary to its destination
+	if err := copyFile(tempFile.Name(), TrackerFile); err != nil {
+		return fmt.Errorf("failed to move to destination: %v\n", err)
 	}
 
 	return nil
