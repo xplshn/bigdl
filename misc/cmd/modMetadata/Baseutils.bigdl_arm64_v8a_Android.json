@@ -4813,7 +4813,7 @@
     "name": "curl",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/curl",
     "size": "5.3 MB",
-    "build_date": "2024-07-19T19:05:58"
+    "build_date": "2024-07-21T19:05:24"
   },
   {
     "name": "cut",
@@ -10399,7 +10399,7 @@
     "name": "rsync",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/rsync",
     "size": "5.26 MB",
-    "build_date": "2024-07-19T19:15:55"
+    "build_date": "2024-07-21T19:15:39"
   },
   {
     "name": "run-parts",
@@ -10939,7 +10939,7 @@
     "name": "wget",
     "download_url": "https://bin.ajam.dev/arm64_v8a_Android/Baseutils/wget",
     "size": "5.81 MB",
-    "build_date": "2024-07-19T19:24:42"
+    "build_date": "2024-07-21T19:24:21"
   },
   {
     "name": "wget_static",
