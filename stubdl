@@ -32,5 +32,5 @@ else
         fi
 
         [ -e "$DEST" ] && [ "$1" = "--install" ] && chmod +x "$DEST" && echo "BIGDL IS NOW AVAILABLE. ($DEST)" && exit 0
-        [ ! "$1" = "--install" ] && "$DEST" "$@"
+        [ ! "$1" = "--install" ] && chmod +x "$DEST" && "$DEST" "$@"
 fi
