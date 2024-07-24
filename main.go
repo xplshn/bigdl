@@ -38,7 +38,7 @@ var (
 )
 
 const (
-	VERSION   = "1.7"                                                                 // VERSION to be displayed
+	VERSION   = "1.7sid"                                                              // VERSION to be displayed
 	usagePage = " [-v|-h] [list|install|remove|update|run|info|search|tldr] <-args->" // usagePage to be shown
 	// Truncation indicator
 	indicator = "...>"
